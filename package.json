@@ -1,0 +1,34 @@
+{
+  "name": "comment-js",
+  "description": "API Documentation builder",
+  "tags": ["documentation", "javascript", "comment", "api"],
+  "author": {
+    "name": "Denis Ciccale",
+    "email": "dciccale@gmail.com",
+    "url": "http://webdecs.wordpress.com"
+  },
+
+  "version": "0.0.1",
+  "main": "comment",
+  "bin": { "comment-js": "./bin/comment-js" },
+
+  "dependencies": {
+    "commander": "0.2.x",
+    "eve": "0.x.x"
+  },
+
+  "devDependencies": {
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dciccale/comment.js.git"
+  },
+
+  "bugs": {
+    "url": "http://github.com/dciccale/comment.js/issues"
+  },
+
+  "contributors": [
+  ]
+}

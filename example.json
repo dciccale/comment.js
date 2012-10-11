@@ -1,0 +1,10 @@
+{
+    "title": "Comment.js",
+    "output": "documentation/docs.html",
+    "scripts": ["reference.js"],
+    "files": [{
+        "url": "example.js"
+    }, {
+        "url": "example2.js"
+    }]
+}

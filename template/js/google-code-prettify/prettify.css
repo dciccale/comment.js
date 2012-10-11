@@ -1,0 +1,32 @@
+.com { color: #75715e; }
+.lit { color: #ae81ff; }
+.pun, .opn, .clo { color: #f8f8f2; }
+.str, .atv { color: #e6db74; }
+.kwd, .prettyprint .tag { color: #f92672; }
+.pln { color: #f8f8f2; }
+
+.fun { color: red; }
+.typ, .atn, .dec, .var { color: red; }
+
+.prettyprint {
+  padding: 8px 4px;
+  background-color: #272822;
+  border: 1px solid black;
+}
+
+pre {
+  margin: 0;
+  padding: 0;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 0.8em;
+}
+ol.linenums {
+  margin: 0;
+  margin-left: 50px;
+  padding: 0;
+}
+ol.linenums li {
+  color: #8d8d8a;
+  line-height: 20px;
+}

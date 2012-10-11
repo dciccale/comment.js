@@ -1,0 +1,19 @@
+prefix(prop, val)
+  -webkit-{prop} val
+  -moz-{prop} val
+  -ms-{prop} val
+  -o-{prop} val
+  {prop} val
+
+box-shadow()
+  prefix('box-shadow', arguments)
+
+box-sizing()
+  prefix('box-sizing', arguments)
+
+border-radius()
+  prefix('border-radius', arguments)
+
+opacity(val)
+  opacity val
+  filter unquote('alpha(opacity=' + val * 100 + ')')
