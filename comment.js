@@ -11,7 +11,7 @@ var fs = require("fs"),
   format = require("./formatter.js"),
   exec = require("child_process").exec,
   // windows support..
-  isWindows = process.platform === "win32",
+  isWindows = /win/.test(process.platform),
   mkdir = isWindows ? "mkdir " : "mkdir -p ",
   cp = isWindows ? "copy " : "cp ",
   cssFile = 'comment.css',
@@ -73,7 +73,7 @@ function main(files) {
 
   // no files, exit
   if (!files.length || /''/.test(files[0]) || !files[0]) {
-    console.log("Usage: " + (module.parent ? "commentjs " : "node comment.js ") + "<your_file.js/.json>");
+    console.log("Usage: " + (module.parent ? "comment-js " : "node comment.js ") + "<file1.js file2.js or a .json file>");
     process.exit(1);
   }
 
@@ -228,9 +228,9 @@ function main(files) {
           _writeFile(sourceFileName, res.source);
         }
 
-      // no commentjs format? warn but continue to next file
+      // no comment-js format? warn but continue to next file
       } else {
-        console.log("\033[31mNo commentjs format found in\033[0m " + file);
+        console.log("\033[31mNo comment-js format found in\033[0m " + file);
       }
     });
 
@@ -280,7 +280,7 @@ function main(files) {
 }
 
 
-// if commentjs has been required return the main function
+// if comment-js has been required return the main function
 if (module.parent) {
   module.exports = main;
 
