@@ -9,7 +9,9 @@
     return;
   }
 
-  var cjs, commentjsTocFilter = cjs = {
+  var cjs, commentjsTocFilter;
+
+  cjs = commentjsTocFilter = {
     toc: toc,
     lis: toc.getElementsByTagName('a'),
     names: [],
@@ -56,13 +58,11 @@
     },
 
     // calculate weight
-    calcWeight: function score(txt, search) {
+    calcWeight: function (txt, search) {
       txt = cjs.toString(txt);
       search = cjs.toString(search);
 
-      var score = 0,
-        chunk = txt.toLowerCase(),
-        i, j, l;
+      var i, j, l, score = 0, chunk = txt.toLowerCase();
 
       if (txt === search) {
         return 1;
@@ -73,7 +73,7 @@
       }
 
       if (cjs.isABBR(txt, search)) {
-        return .9;
+        return 0.9;
       }
 
       for (i = 0, l = search.length; i < l; i += 1) {
@@ -88,7 +88,9 @@
       return score;
     },
 
+    // optimize saving last search
     lastSearchText: '',
+
     // filters toc items
     filter: function () {
       var searchTxt = cjs.input.value,
@@ -122,7 +124,7 @@
         });
       }
 
-      // save last search text for optimization
+      // save last search
       cjs.lastSearchText = searchTxt;
     },
 
@@ -133,7 +135,7 @@
         cjs.input.value = '';
         cjs.filter();
       }
-    },
+    }
   };
 
   // init filterable toc
