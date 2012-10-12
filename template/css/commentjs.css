@@ -259,6 +259,14 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+html {
+  height: 100%;
+  min-height: 100%;
+}
+body {
+  height: 100%;
+  min-height: 100%;
+}
 body {
   background: url("../img/subtlenet2.png");
 }
@@ -271,14 +279,18 @@ body {
   color: #fff;
 }
 #header {
-  height: 52px;
   padding: 7px 10px 0px 10px;
-  background: #4c9242 url("../img/diamond_upholstery_green.png");
+  height: 53px;
+  background: #4c9242 url("../img/diamond_upholstery_green.png") 0 31px;
   -webkit-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
   -moz-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
   -ms-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
   -o-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
   box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 #cjs-main {
   height: 100%;
@@ -297,7 +309,7 @@ body {
 }
 #cjs-nav {
   position: fixed;
-  top: 60px;
+  top: 70px;
   right: 0;
   width: 275px;
   overflow: hidden;
@@ -309,16 +321,17 @@ body {
   -o-user-select: none;
   user-select: none;
 }
-#cjs-nav header {
-  padding: 10px 0;
+#cjs-nav .cjs-nav-header {
+  padding-bottom: 10px;
+  margin-right: 10px;
   border-bottom: 1px solid #bababa;
+  height: 24px;
 }
 #cjs-toc {
   width: 265px;
-  margin-top: 10px;
   overflow: auto;
   position: absolute;
-  top: 46px;
+  top: 45px;
   bottom: 60px;
 }
 #cjs-nav li {
@@ -329,6 +342,7 @@ body {
   text-decoration: none;
   padding: 6px 18px;
   display: block;
+  height: 1%;
   color: #4c9242;
   -webkit-transition: background-color 150ms linear;
   -moz-transition: background-color 150ms linear;
@@ -338,13 +352,17 @@ body {
 }
 #cjs-nav a:hover {
   color: #084501;
-  background-color: #dfe6df;
   background-color: rgba(8,69,1,0.1);
+}
+.lt-ie8 #cjs-nav a:hover {
+  background-color: #dfe6df;
 }
 #cjs-nav a.cjs-selected {
   color: #fff;
-  background-color: #4e7949;
   background-color: rgba(8,69,1,0.7);
+}
+.lt-ie8 #cjs-nav a.cjs-selected {
+  background-color: #4e7949;
 }
 #cjs-nav form {
   position: relative;
@@ -379,7 +397,7 @@ body {
 }
 #cjs-search-reset {
   top: -1px;
-  right: 10px;
+  right: 0;
   position: absolute;
   padding: 8px 12px 6px 4px;
   display: block;

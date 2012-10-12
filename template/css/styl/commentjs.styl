@@ -18,19 +18,18 @@ $toc-item-width = $toc-width - $global-sep
 //--------------
 // bg images
 $body-bg-img = '../img/subtlenet2.png'
-$header-bg-img = '../img/diamond_upholstery_green.png'
 $input-search-bg-img = '../img/search.png'
 
 
 //--------------
 // top header
-$header-bg = #4c9242 url($header-bg-img)
+$header-bg = #4c9242 url('../img/diamond_upholstery_green.png') 0 31px
 
 
 //--------------
 // nav header
 $nav-header-border-bottom-color = #BABABA
-
+$nav-header-height = 25px + $global-sep
 
 //--------------
 // search input
@@ -76,9 +75,18 @@ $scrollbar-thumb-border-color-active = #7d7d7d
 $toc-item-width -= $scrollbar-size
 
 
+
 // ==========================================================================
-// MAIN
+// MAIN STYLES
 // ==========================================================================
+
+html
+ height 100%
+ min-height 100%
+
+body
+  height 100%
+  min-height 100%
 
 body
   background url($body-bg-img)
@@ -86,10 +94,14 @@ body
 selection(hsla(114, 97%, 14%, 70%), #fff)
 
 #header
-  height 52px
   padding 7px 10px 0px 10px
+  height $header-height - @padding[0]
   background $header-bg
   box-shadow rgba(0, 0, 0, 0.2) 0 2px 4px
+  position absolute
+  top 0
+  left 0
+  right 0
 
 #cjs-main
   height 100%
@@ -99,7 +111,7 @@ selection(hsla(114, 97%, 14%, 70%), #fff)
 
 #cjs-documentation
   position absolute
-  top $header-height+10
+  top $header-height + $global-sep
   right $nav-width + $global-sep
   bottom 0
   left 0
@@ -108,7 +120,7 @@ selection(hsla(114, 97%, 14%, 70%), #fff)
 
 #cjs-nav
   position fixed
-  top $header-height
+  top $header-height + $global-sep
   right 0
   width $nav-width
   overflow hidden
@@ -116,16 +128,17 @@ selection(hsla(114, 97%, 14%, 70%), #fff)
   height 100%
   user-select none
 
-#cjs-nav header
-  padding 10px 0
+#cjs-nav .cjs-nav-header
+  padding-bottom $global-sep
+  margin-right $global-sep
   border-bottom 1px solid $nav-header-border-bottom-color
+  height $nav-header-height - @padding-bottom - @border-bottom[0]
 
 #cjs-toc
   width $toc-width
-  margin-top $global-sep
   overflow auto
   position absolute
-  top 46px
+  top $nav-header-height + $global-sep
   bottom 60px
 
 #cjs-nav li
@@ -136,18 +149,23 @@ selection(hsla(114, 97%, 14%, 70%), #fff)
   text-decoration none
   padding 6px 18px
   display block
+  height 1%
   color $nav-link-color
   transition background-color 150ms linear;
 
 #cjs-nav a:hover
   color $nav-link-color-hover
-  background-color $nav-link-bg-color-hover-ie
   background-color $nav-link-bg-color-hover
+
+.lt-ie8 #cjs-nav a:hover
+  background-color $nav-link-bg-color-hover-ie
 
 #cjs-nav a.cjs-selected
   color $nav-link-color-selected
-  background-color $nav-link-bg-color-selected-ie
   background-color $nav-link-bg-color-selected
+
+.lt-ie8 #cjs-nav a.cjs-selected
+  background-color $nav-link-bg-color-selected-ie
 
 #cjs-nav form
   position relative
@@ -171,7 +189,7 @@ selection(hsla(114, 97%, 14%, 70%), #fff)
 
 #cjs-search-reset
   top -1px
-  right $global-sep
+  right 0
   position absolute
   padding 8px 12px 6px 4px
   display block

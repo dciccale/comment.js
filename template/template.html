@@ -1,4 +1,9 @@
 <!doctype html>
+  <!--[if lt IE 7]>      <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+  <!--[if IE 7]>         <html class="lt-ie9 lt-ie8"> <![endif]-->
+  <!--[if IE 8]>         <html class="lt-ie9"> <![endif]-->
+  <!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+
   <meta charset="utf-8">
   <title>Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,25 +27,25 @@
       <h1>API Documentation Title</h1>
 
       <!-- object section -->
-      <section>
+      <div class="cjs-section">
         <h2>$B</h2>
         <p>Description for $B Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum porttitor enim eget porta.</p>
-      </section>
+      </div>
 
       <!-- object section -->
-      <section>
+      <div class="cjs-section">
         <h3>$B.ui</h3>
         <p>Description for $B.ui Donec tincidunt laoreet cursus. Ut ultrices porttitor orci quis bibendum.</p>
-      </section>
+      </div>
 
       <!-- object section -->
-      <section>
+      <div class="cjs-section">
         <h4>$B.ui.dialog</h4>
         <p>Description for $B.ui.dialog Phasellus nulla enim, dignissim sit amet tincidunt nec, gravida id ligula. Nam leo metus, volutpat sed venenatis euismo.</p>
-      </section>
+      </div>
 
       <!-- method section -->
-      <section>
+      <div class="cjs-section">
         <!-- method name -->
         <h5>$B.ui.dialog.close(id, [force])</h5>
           <!-- method description -->
@@ -76,16 +81,16 @@ dialogOptions: {
 }
 });
 </code></pre>
-      </section>
+      </div>
     </div>
   </div>
-  <nav id="cjs-nav">
-    <header>
+  <div id="cjs-nav">
+    <div class="cjs-nav-header">
       <form>
         <input type="text" id="cjs-filter">
         <span role="button" id="cjs-search-reset">×</span>
       </form>
-    </header>
+    </div>
     <ul id="cjs-toc" class="cjs-panel">
       <li class="cjs-lvl-0"><a href="#$B">$B</a></li>
       <li class="cjs-lvl-1"><a href="#$B.ui">$B.ui</a></li>
@@ -121,7 +126,7 @@ dialogOptions: {
       <li><a href="#$B.ui.dialog.open">$B.ui.dialog.open()</a></li>
       <li><a href="#$B.ui.dialog.set">$B.ui.dialog.set()</a></li>
     </ul>
-  </nav>
+  </div>
 
   <script src="js/google-code-prettify/prettify.js"></script>
   <script src="js/docs.js"></script>
