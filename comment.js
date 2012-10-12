@@ -238,7 +238,7 @@ function main(files) {
       RES = "";
 
     forEach(toc, function (currentToc, i) {
-      // comparare toc.name to be different from previous toc.name
+      // ensure no toc.name duplication
       if (!i || currentToc.name !== toc[i - 1].name) {
         TOC += format('<li class="cjs-lvl{indent}"><a href="#{name}" class="{clas}"><span>{name}{brackets}</span></a></li>', currentToc);
         RES += chunks[currentToc.name] || "";
