@@ -42,23 +42,26 @@
       <!-- method section -->
       <section>
         <!-- method name -->
-        <h5>$B.ui.dialog.close(id)</h5>
+        <h5>$B.ui.dialog.close(id, [force])</h5>
           <!-- method description -->
           <p>Close an existing dialog with the given id</p>
 
           <!-- arguments -->
-          <dl>
-            <dt>id</dt>
-            <dd>
-              <em>string</em> id of the dialog to open
-            </dd>
+          <dl class="cjs-arguments">
+            <dt class="cjs-param">id</dt>
+            <dd class="cjs-type"><em class="cjs-type-string">string</em></dd>
+            <dd class="cjs-param-desc">id of the dialog to open</dd>
+            <!-- optional -->
+            <dt class="cjs-param cjs-param-optional">force</dt>
+            <dd class="cjs-type cjs-type-boolean"><em class="cjs-type-string">boolean</em></dd>
+            <dd class="cjs-param-desc">force the dialog to open</dd>
           </dl>
 
           <!-- returns -->
-          <p>
+          <p class="cjs-return">
             <strong>Returns:</strong>
-            <em>object</em>
-            jQuery object of the dialog content
+            <em class="cjs-type-object">object</em>
+            <span class="cjs-param-dsc">jQuery object of the dialog content</span>
           </p>
 
           <!-- usage -->
