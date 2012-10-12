@@ -14,6 +14,21 @@ box-sizing()
 border-radius()
   prefix('border-radius', arguments)
 
+transition()
+  prefix('transition', arguments)
+
 opacity(val)
   opacity val
   filter unquote('alpha(opacity=' + val * 100 + ')')
+
+selection(bgColor, txtColor)
+  ::-moz-selection
+      background bgColor
+      color txtColor
+
+  ::selection
+      background bgColor
+      color txtColor
+
+user-select()
+  prefix('user-select', arguments)
