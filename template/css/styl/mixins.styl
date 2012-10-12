@@ -21,14 +21,14 @@ opacity(val)
   opacity val
   filter unquote('alpha(opacity=' + val * 100 + ')')
 
-selection(bgColor, txtColor)
-  ::-moz-selection
-      background bgColor
-      color txtColor
+selection(bgColor, txtColor, selector='')
+  {selector}::-moz-selection
+    background bgColor
+    color txtColor
 
-  ::selection
-      background bgColor
-      color txtColor
+  {selector}::selection
+    background bgColor
+    color txtColor
 
 user-select()
   prefix('user-select', arguments)

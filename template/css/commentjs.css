@@ -444,6 +444,28 @@ h6 {
 p {
   margin: 10px 0;
 }
+pre {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+pre code {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+}
+.prettyprint code span::-moz-selection {
+  background: rgba(69,69,69,0.99);
+  color: inherit;
+}
+.prettyprint code span::selection {
+  background: rgba(69,69,69,0.99);
+  color: inherit;
+}
 /* API identation levels */
 #cjs-nav .cjs-lvl-0 a {
   padding-left: 16px;
