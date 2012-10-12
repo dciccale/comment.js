@@ -56,7 +56,25 @@
   });
 
   // funcion que se encarga de centrar, redimensionar y aplicar scroll a ventanas modales
+
+
+
+
+  ////////////////////////////////////
+  // TEST COMMENT JS PROP DETECTION //
+  ////////////////////////////////////
+
+  /*\
+   * $B.ui.dialogSecureHeight
+   [ property ]
+   * Secure and nice separation from top and bottom of the window
+  \*/
   $B.ui.dialogSecureHeight = 100;
+
+
+
+
+
   $B.ui.dialogCenter = function ($uiDialog) {
     $uiDialog = $('.contenidoModal:visible:last').closest('.ui-dialog');
 
