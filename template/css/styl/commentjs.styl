@@ -1,0 +1,262 @@
+@import reset
+@import normalize
+@import mixins
+
+// ==========================================================================
+// TEMPLATE VARIABLES
+// ==========================================================================
+
+$global-sep = 10px
+
+//--------------
+// measures
+$nav-width = 275px
+$header-height = 60px
+$toc-width = $nav-width - $global-sep
+$toc-item-width = $toc-width - $global-sep
+
+//--------------
+// bg images
+$body-bg-img = '../img/subtlenet2.png'
+$header-bg-img = '../img/diamond_upholstery_green.png'
+$input-search-bg-img = '../img/search.png'
+
+
+//--------------
+// top header
+$header-bg = #4c9242 url($header-bg-img)
+
+
+//--------------
+// nav header
+$nav-header-border-bottom-color = #BABABA
+
+
+//--------------
+// search input
+$input-search-bg = #EDEDED url($input-search-bg-img) no-repeat 7px 5px
+$input-search-bg-focus = #fff
+
+
+//--------------
+// nav links
+
+// base
+$nav-link-color = #4c9242
+// hover
+$nav-link-color-hover = #084501
+$nav-link-bg-color-hover = rgba(8, 69, 1, 0.1)
+$nav-link-bg-color-hover-ie = #dfe6df
+// selected
+$nav-link-color-selected = #fff
+$nav-link-bg-color-selected-ie = #4e7949
+$nav-link-bg-color-selected = rgba(8, 69, 1, 0.7)
+
+
+//--------------
+// scrollbar
+
+// size
+$scrollbar-size = 10px
+// scrollbar bg
+$scrollbar-bg = transparent
+// thumb size
+$scrollbar-thumb-min-height = 50px
+// thumb bg
+$scrollbar-thumb-bg = rgba(0, 0, 0, 0.1)
+$scrollbar-thumb-bg-hover = rgba(0, 0, 0, 0.2)
+$scrollbar-thumb-bg-active = rgba(0, 0, 0, 0.3)
+// thumb border color
+$scrollbar-thumb-border-color = #ABABAB
+$scrollbar-thumb-border-color-hover = #969696
+$scrollbar-thumb-border-color-active = #7d7d7d
+
+// substract scrollbar size to toc item
+// to make a space between item and scrollbar
+$toc-item-width -= $scrollbar-size
+
+
+// ==========================================================================
+// MAIN
+// ==========================================================================
+
+body
+  background url($body-bg-img)
+
+selection(hsla(114, 97%, 14%, 70%), #fff)
+
+#header
+  height 52px
+  padding 7px 10px 0px 10px
+  background $header-bg
+  box-shadow rgba(0, 0, 0, 0.2) 0 2px 4px
+
+#cjs-main
+  height 100%
+
+.cjs-panel
+  font-family "Myriad Pro", "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif
+
+#cjs-documentation
+  position absolute
+  top $header-height+10
+  right $nav-width + $global-sep
+  bottom 0
+  left 0
+  padding 0 30px
+  overflow auto
+
+#cjs-nav
+  position fixed
+  top $header-height
+  right 0
+  width $nav-width
+  overflow hidden
+  overflow-x auto
+  height 100%
+  user-select none
+
+#cjs-nav header
+  padding 10px 0
+  border-bottom 1px solid $nav-header-border-bottom-color
+
+#cjs-toc
+  width $toc-width
+  margin-top $global-sep
+  overflow auto
+  position absolute
+  top 46px
+  bottom 60px
+
+#cjs-nav li
+  list-style-type none
+  width $toc-item-width
+
+#cjs-nav a
+  text-decoration none
+  padding 6px 18px
+  display block
+  color $nav-link-color
+  transition background-color 150ms linear;
+
+#cjs-nav a:hover
+  color $nav-link-color-hover
+  background-color $nav-link-bg-color-hover-ie
+  background-color $nav-link-bg-color-hover
+
+#cjs-nav a.cjs-selected
+  color $nav-link-color-selected
+  background-color $nav-link-bg-color-selected-ie
+  background-color $nav-link-bg-color-selected
+
+#cjs-nav form
+  position relative
+
+#cjs-nav input
+  height 13px
+  padding 5px 8px 5px 27px
+  border 1px solid #ABABAB
+  color #333
+  background $input-search-bg
+  box-sizing content-box
+  border-radius 13px
+  box-shadow inset 0 1px 4px rgba(0, 0, 0, 0.3)
+  // calc innput width
+  width ($nav-width) - (@padding[1]) - (@padding[3]) - (@border[0]*2) - $global-sep
+
+#cjs-nav input:focus
+  outline 0
+  background-color $input-search-bg-focus
+  color black
+
+#cjs-search-reset
+  top -1px
+  right $global-sep
+  position absolute
+  padding 8px 12px 6px 4px
+  display block
+  line-height 12px
+  font-family "Helvetica Neue", Helvetica, Arial, sans-serif
+  font-size 20px
+  font-weight bold
+  color black
+  text-shadow 0 1px 0 white
+  border 0
+  cursor pointer
+  opacity 0.2
+  background none
+
+#cjs-search-reset:hover
+  opacity 0.4
+
+h1, h2, h3, h4, h5, h6
+  margin 20px 0 10px 0
+  font-family inherit
+  font-weight bold
+  line-height 1
+  color inherit
+  text-rendering optimizelegibility
+
+h1
+  font-size 38px
+  margin-bottom 60px
+
+h2
+  font-size 38px
+
+h3
+  font-size 28px
+
+h4
+  font-size 20px
+
+h5
+  font-size 18px
+
+h6
+  font-size 16px
+
+h1, h2, h3
+  line-height 40px
+
+h4, h5, h6
+  line-height 20px
+
+p
+  margin 10px 0
+
+
+/* API identation levels */
+lvls = 0 1 2 3 4
+lvl_0 = 0
+for i in lvls
+  lvl_0 += 16
+  {'#cjs-nav .cjs-lvl-' + i + ' a'}
+    padding-left unit(lvl_0, 'px')
+
+
+/* scrollbar */
+.cjs-panel::-webkit-scrollbar
+  width $scrollbar-size
+  height $scrollbar-size
+  background-color $scrollbar-bg
+  border-radius 4px
+
+.cjs-panel::-webkit-scrollbar-thumb
+  border-radius 4px
+  border 1px solid $scrollbar-thumb-border-color
+  height $scrollbar-thumb-min-height
+  background-color $scrollbar-thumb-bg
+
+.cjs-panel::-webkit-scrollbar-thumb:hover
+  border 1px solid $scrollbar-thumb-border-color-hover
+  background-color $scrollbar-thumb-bg-hover
+
+.cjs-panel::-webkit-scrollbar-thumb:active
+  border 1px solid $scrollbar-thumb-border-color-active
+  background-color $scrollbar-thumb-bg-active
+
+.cjs-panel::-webkit-scrollbar-button
+  height 0
+  display block
+  background-color transparent

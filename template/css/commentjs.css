@@ -289,7 +289,7 @@ body {
 #cjs-documentation {
   position: absolute;
   top: 70px;
-  right: 280px;
+  right: 285px;
   bottom: 0;
   left: 0;
   padding: 0 30px;
@@ -314,8 +314,8 @@ body {
   border-bottom: 1px solid #bababa;
 }
 #cjs-toc {
-  width: 93%;
-  margin-top: 5px;
+  width: 265px;
+  margin-top: 10px;
   overflow: auto;
   position: absolute;
   top: 46px;
@@ -323,7 +323,7 @@ body {
 }
 #cjs-nav li {
   list-style-type: none;
-  width: 98%;
+  width: 245px;
 }
 #cjs-nav a {
   text-decoration: none;
@@ -337,20 +337,19 @@ body {
   transition: background-color 150ms linear;
 }
 #cjs-nav a:hover {
+  color: #084501;
   background-color: #dfe6df;
   background-color: rgba(8,69,1,0.1);
-  color: #084501;
 }
 #cjs-nav a.cjs-selected {
+  color: #fff;
   background-color: #4e7949;
   background-color: rgba(8,69,1,0.7);
-  color: #fff;
 }
 #cjs-nav form {
   position: relative;
 }
 #cjs-nav input {
-  width: 233px;
   height: 13px;
   padding: 5px 8px 5px 27px;
   border: 1px solid #ababab;
@@ -371,6 +370,7 @@ body {
   -ms-box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
   -o-box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
   box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
+  width: 228px;
 }
 #cjs-nav input:focus {
   outline: 0;
@@ -379,7 +379,7 @@ body {
 }
 #cjs-search-reset {
   top: -1px;
-  right: 5px;
+  right: 10px;
   position: absolute;
   padding: 8px 12px 6px 4px;
   display: block;
@@ -444,7 +444,7 @@ h6 {
 p {
   margin: 10px 0;
 }
-/* API identation */
+/* API identation levels */
 #cjs-nav .cjs-lvl-0 a {
   padding-left: 16px;
 }
@@ -460,7 +460,7 @@ p {
 #cjs-nav .cjs-lvl-4 a {
   padding-left: 80px;
 }
-/* Scrollbar */
+/* scrollbar */
 .cjs-panel::-webkit-scrollbar {
   width: 10px;
   height: 10px;
