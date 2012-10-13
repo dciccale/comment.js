@@ -280,7 +280,7 @@ html {
 body {
   height: 100%;
   min-height: 100%;
-  background: url("../img/subtlenet2.png");
+  background: #f8f8f8 url("../img/subtlenet2.png");
   color: #32392b;
 }
 a {
@@ -455,6 +455,11 @@ em.cjs-type-object {
   background-color: #cfb1ed;
   border-color: #b588e3;
   color: #361458;
+}
+em.cjs-type-array {
+  background-color: #ffc48e;
+  border-color: #ffa95b;
+  color: #5b2b00;
 }
 .cjs-return {
   border-top: 1px solid #bababa;

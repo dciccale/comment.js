@@ -1,0 +1,94 @@
+<!doctype html>
+<!-- Generated with comment.js -->
+<!--[if lt IE 7]>      <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+<meta charset="utf-8">
+<title>My API Docs</title>
+
+<link rel="stylesheet" href="js\google-code-prettify\prettify.css">
+<link rel="stylesheet" href="css\comment.css">
+
+
+<!-- HTML5 Shim for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<div id="header">
+  <a href="http://kimbojs.com">
+    <img src="img/kimbojs_logo_white.png" width="138" height="38" alt="Kimbo.js" />
+  </a>
+</div>
+
+<div id="cjs-documentation" class="cjs-panel">
+  <h1>My API Docs</h1>
+  
+<div class="cjs-section publish-section">
+<h2 id="publish" class="cjs-title cjs-method">publish(channel, data)<a href="#publish" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 21 in the source" href="https://github.com/dciccale/xxspubsub/blob/master/xxspubsub.js#L21">xxspubsub.js:21</a></span></h2>
+<p>Publish data to a specified channel</p>
+<p class="cjs-header">Arguments</p>
+<dl class="cjs-arguments"><dt class="cjs-param">channel</dt>
+<dd class="cjs-type"><em class="cjs-type-string">string</em></dd>
+<dd class="cjs-param-desc">&#160;</dd>
+<dt class="cjs-param">data</dt>
+<dd class="cjs-type"><em class="cjs-type-array">array</em></dd>
+<dd class="cjs-param-desc">&#160;</dd>
+</dl>
+<p class="cjs-header">Usage</p>
+<pre class="prettyprint linenums"><code>publish('some/channel', ['Denis', 'Ciccale']);
+</code></pre>
+
+</div>
+
+<div class="cjs-section subscribe-section">
+<h2 id="subscribe" class="cjs-title cjs-method">subscribe(channel, handler)<a href="#subscribe" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 42 in the source" href="https://github.com/dciccale/xxspubsub/blob/master/xxspubsub.js#L42">xxspubsub.js:42</a></span></h2>
+<p>Subscribe a handler to a specified channel</p>
+<p class="cjs-header">Arguments</p>
+<dl class="cjs-arguments"><dt class="cjs-param">channel</dt>
+<dd class="cjs-type"><em class="cjs-type-string">string</em></dd>
+<dd class="cjs-param-desc">the channel to subscribe to</dd>
+<dt class="cjs-param">handler</dt>
+<dd class="cjs-type"><em class="cjs-type-function">function</em></dd>
+<dd class="cjs-param-desc">the function to execute when it's channel is published recieving the <a href="#publish" class="cjs-link">publish</a> data</dd>
+</dl>
+<p class="cjs-header">Usage</p>
+<pre class="prettyprint linenums"><code>var handle = subscribe('some/channel', function (name, lastName) {
+  console.log(name + ' ' + lastName);
+});
+</code></pre>
+
+</div>
+
+<div class="cjs-section unsubscribe-section">
+<h2 id="unsubscribe" class="cjs-title cjs-method">unsubscribe(handle)<a href="#unsubscribe" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 57 in the source" href="https://github.com/dciccale/xxspubsub/blob/master/xxspubsub.js#L57">xxspubsub.js:57</a></span></h2>
+<p>Unsubscribe a handler from a specified channel</p>
+<p class="cjs-header">Arguments</p>
+<dl class="cjs-arguments"><dt class="cjs-param">handle</dt>
+<dd class="cjs-type"><em class="cjs-type-array">array</em></dd>
+<dd class="cjs-param-desc">the array that is returned from the <a href="#subscribe" class="cjs-link">subscribe</a> function</dd>
+</dl>
+<p class="cjs-header">Usage</p>
+<pre class="prettyprint linenums"><code>// the handle variable is defined on the subscribe example
+unsubscribe(handle);
+</code></pre>
+
+</div>
+
+</div>
+
+<div id="cjs-nav">
+  <div class="cjs-nav-header">
+    <form>
+      <input type="text" id="cjs-filter">
+      <span role="button" id="cjs-search-reset">×</span>
+    </form>
+  </div>
+  <ul id="cjs-toc" class="cjs-panel">
+    <li class="cjs-lvl-0"><a href="#publish">publish()</a></li><li class="cjs-lvl-0"><a href="#subscribe">subscribe()</a></li><li class="cjs-lvl-0"><a href="#unsubscribe">unsubscribe()</a></li>
+  </ul>
+</div>
+
+<script src="js\google-code-prettify\prettify.js"></script>
+<script src="js\docs.js"></script>

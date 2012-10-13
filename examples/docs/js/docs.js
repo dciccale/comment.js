@@ -1,4 +1,5 @@
 (function (toc) {
+  // prettyfy code
   window.prettyPrint();
 
 
