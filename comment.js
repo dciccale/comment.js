@@ -8,27 +8,37 @@
 var fs = require("fs"),
   path = require("path"),
   docit = require("./doc.js"),
-  format = require("./formatter.js"),
   exec = require("child_process").exec,
+
   // windows support..
   isWindows = /win/.test(process.platform),
   mkdir = isWindows ? "mkdir " : "mkdir -p ",
   cp = isWindows ? "copy " : "cp ",
-  templateDir = 'template',
+
+  // template files
+  templateSrc = 'src' + path.sep,
   templateFile = 'template.html',
-  cssFile = 'css/comment.css',
-  cssDir = 'css',
-  imgDir = 'img',
-  googlePrettifyCss = 'js/google-code-prettify/prettify.css',
-  googlePrettifyJs = 'js/google-code-prettify/prettify.js',
-  // default js file
-  docs = 'js/docs.js',
+  outputFilesDir = 'outputfiles' + path.sep,
+
+  // assets directories
+  cssDir = 'css' + path.sep,
+  jsDir = 'js' + path.sep,
+  imgDir = 'img' + path.sep,
+
+  // path to assets
+  cssFile = cssDir + 'comment.css',
+  googlePath = jsDir + 'google-code-prettify' + path.sep,
+  googlePrettifyCss = googlePath + 'prettify.css',
+  googlePrettifyJs = googlePath + 'prettify.js',
+
+  // required js file
+  docs = jsDir + 'docs.js',
   srcFolder = 'src';
 
 
 // normalized __dirname path (must have quotes on windows)
 function getRootPath(file) {
-  var dirpath = path.normalize(__dirname) + path.sep + templateDir + path.sep + file;
+  var dirpath = path.normalize(__dirname) + path.sep + templateSrc + file;
   if (!isWindows) {
     return dirpath;
   } else {
@@ -72,6 +82,7 @@ function main(files) {
     outputFile,
     outputPath = "docs",
     scripts = [],
+    stylesheets = [],
     toc = [],
     sourceDir = currentDir + path.sep,
     filesSource = [],
@@ -210,13 +221,10 @@ function main(files) {
     process.exit(1);
   }
 
+
   // normalize output
   outputPath = normalizeOutputPath();
   outputFile = normalizeOutputFile();
-  cssFile = path.normalize(cssFile);
-  googlePrettifyCss = path.normalize(googlePrettifyCss);
-  googlePrettifyJs = path.normalize(googlePrettifyJs);
-  docs = path.normalize(docs);
 
   // processing function
   function generateDocs() {
@@ -238,8 +246,10 @@ function main(files) {
           }
         }
         title = title || res.title;
+
         console.log("Found \033[32m" + res.sections + "\033[0m sections.");
         console.log("Processing \033[32m" + res.loc + "\033[0m lines of code...");
+
         // if no source link create local src file
         if (!sourceLinks[i]) {
           _writeFile(sourceFileName, res.source);
@@ -253,13 +263,12 @@ function main(files) {
 
     var TOC = "",
       RES = "",
-      html,
-      _scripts = '';
+      html;
 
     forEach(toc, function (currentToc, i) {
       // ensure no toc.name duplication
       if (!i || currentToc.name !== toc[i - 1].name) {
-        TOC += format('<li class="cjs-lvl-{indent}"><a href="#{name}">{name}{brackets}</a></li>', currentToc);
+        TOC += '<li class="cjs-lvl-' + currentToc.indent + '"><a href="#' + currentToc.name + '">' + currentToc.name + currentToc.brackets + '</a></li>';
         RES += chunks[currentToc.name] || "";
       }
     });
@@ -267,22 +276,33 @@ function main(files) {
     // get base template
     html = _readFileSync(getRootPath(templateFile));
 
-    // replace variables
-    html = html.replace(/\{title\}/g, title)
-      .replace(/\{cssFile\}/, cssFile)
-      .replace(/\{googlePrettifyCss\}/, googlePrettifyCss)
-      .replace(/\{googlePrettifyJs\}/, googlePrettifyJs)
-      .replace(/\{docs\}/, docs)
+    // replace template variables
+    html = html
+      .replace(/\{title\}/g, title)
       .replace(/\{TOC\}/, TOC)
       .replace(/\{RES\}/, RES);
 
-    // add any script specified by the user in json config file
-    forEach(scripts, function (script) {
-      _scripts += '<script src="' + script + '"></script>\n';
-    });
 
-    html = html.replace(/\{scripts\}/, _scripts);
+    // helper for linking resources
+    function addResources(resources, type) {
+      var str = '',
+        tmpl = {
+          script: '<script src="{path}"></script>\n',
+          stylesheet: '<link rel="stylesheet" href="{path}">\n'
+        };
 
+      forEach(resources, function (res) {
+        str += tmpl[type].replace(/\{path\}/, res);
+      });
+
+      html = html.replace('{' + type + 's}', str);
+    }
+
+    // link resources
+    addResources([googlePrettifyCss, cssFile], 'stylesheet');
+    addResources([googlePrettifyJs, docs].concat(scripts), 'script');
+
+    // write output
     _writeFile(outputFile, html, function () {
       console.log('\n\nFinished!\n---------\nOutput: \033[32m' + outputFile + '\033[0m');
     });
@@ -294,26 +314,15 @@ function main(files) {
     generateDocs();
   });
 
-  // copy css file to its output directory
-  // exec(mkdir + outputPath + 'css', function () {
-  //   exec(cp + getRootPath(cssFile) + ' ' + outputPath + cssFile);
-  // });
+  function getResourcePath(dir) {
+    return getRootPath(outputFilesDir + dir + '*.*');
+  }
 
-  // copy google prettify to its output directory
-  exec(mkdir + outputPath + 'js' + path.sep + 'google-code-prettify', function () {
-    exec(cp + getRootPath(googlePrettifyCss) + ' ' + outputPath + googlePrettifyCss);
-    exec(cp + getRootPath(googlePrettifyJs) + ' ' + outputPath + googlePrettifyJs);
-    exec(cp + getRootPath(docs) + ' ' + outputPath + docs);
-  });
-
-  // copy img dir
-  exec(mkdir + outputPath + 'img', function () {
-    exec(cp + getRootPath(imgDir + path.sep + '*.*') + ' ' + outputPath + imgDir);
-  });
-
-  // copy css dir
-  exec(mkdir + outputPath + 'css', function () {
-    exec(cp + getRootPath(cssDir + path.sep + '*.*') + ' ' + outputPath + cssDir);
+  // bring required files
+  forEach([cssDir, jsDir, googlePath, imgDir], function (folder) {
+    exec(mkdir + outputPath + folder, function () {
+      exec(cp + getResourcePath(folder) + ' ' + outputPath + folder);
+    });
   });
 }
 
