@@ -347,6 +347,7 @@ a.cjs-hash {
   -ms-transition: opacity 200ms linear;
   -o-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
+  margin-left: 5px;
 }
 .cjs-title:hover a.cjs-hash {
   opacity: 1;
@@ -383,15 +384,18 @@ p.cjs-header {
   font-weight: bold;
   color: #495241;
 }
-dl.cjs-arguments {
+dl.cjs-arguments,
+.cjs-json .cjs-json {
   padding-left: 10px;
 }
-dt.cjs-param {
+dt.cjs-param,
+.cjs-json-key {
   margin-right: 10px;
   min-width: 120px;
   float: left;
 }
-dd.cjs-type {
+dd.cjs-type,
+.cjs-json .cjs-type {
   float: left;
 }
 .cjs-type em,
@@ -411,10 +415,21 @@ dd.cjs-type {
   background-color: #ccc;
   border-color: #b3b3b3;
   color: #333;
+  cursor: default;
 }
-dd.cjs-param-desc {
+.cjs-param-desc {
   display: block;
   margin-bottom: 10px;
+}
+.cjs-param-desc code {
+  padding: 2px 4px;
+  background-color: #444;
+  border: 1px solid #222;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
 }
 em.cjs-type-string {
   background-color: #eaea8a;
@@ -446,10 +461,16 @@ em.cjs-type-object {
   padding-top: 10px;
   margin: 15px 0;
 }
+.cjs-return em {
+  float: left;
+}
 .cjs-return .cjs-title {
   float: left;
   margin-right: 10px;
   width: 130px;
+}
+.cjs-json {
+  list-style-type: none;
 }
 #cjs-nav {
   position: fixed;

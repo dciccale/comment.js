@@ -73,19 +73,9 @@ module.exports = function (txt, filename, sourceFileName) {
     return String(text)
       .replace(/</g, "&lt;")
       .replace(ramp, '<em class="amp">&amp;</em>')
-      .replace(rcode, "<code>$1</code>")
+      .replace(rcode, '<code class="prettyprint">$1</code>')
       .replace(rlink, '$1<a href="#$2" class="cjs-link">$2</a>')
       .replace(rhref, '<a href="$1" rel="external">$1</a>');
-  }
-
-  function syntax(text) {
-    return text.replace(/</g, "&lt;")
-      .replace(ramp, "&amp;")
-      .replace(rkeywords, "<b>$1</b>")
-      .replace(rstrings, "<i>$1</i>")
-      .replace(roperators, '<span class="s">$1</span>')
-      .replace(rdigits, '<span class="d">$1</span>')
-      .replace(rcomments, '<span class="c">$1</span>') + "\n";
   }
 
   function syntaxSrc(text) {
@@ -116,29 +106,41 @@ module.exports = function (txt, filename, sourceFileName) {
   }
 
   eve.on("doc.*.list", function (mod, text) {
-    this != "-" && (html += "</dl>\n");
+    if (this != '-') {
+      html += "</dl>\n";
+    }
   });
 
   eve.on("doc.*.json", function (mod, text) {
-    this != "o" && (html += "</ol>\n");
+    if (this != 'o') {
+      html += "</ul>\n";
+    }
   });
 
   eve.on("doc.*.text", function (mod, text) {
-    this != "*" && (html += "</p>\n");
+    if (this != '*') {
+      html += "</p>\n";
+    }
   });
 
   eve.on("doc.*.head", function (mod, text) {
-    this != "*" && (html += "</p>\n");
+    if (this != '*') {
+      html += "</p>\n";
+    }
   });
 
   eve.on("doc.*.code", function (mod, text) {
-    this != "|" && (html += "</code></pre>\n");
+    if (this != "|") {
+      html += "</code></pre>\n";
+    }
   });
 
   eve.on("doc.s*.*", function (mod, text) {
-    mode != "text" && (html += "<p>");
+    if (mode != "text") {
+      html += "<p>";
+    }
     if (text) {
-      html += esc(text) + "\n";
+      html += esc(text);
     } else {
       html += "</p>\n<p>";
     }
@@ -146,8 +148,10 @@ module.exports = function (txt, filename, sourceFileName) {
   });
 
   eve.on("doc.s|.*", function (mod, text) {
-    mode != "code" && (html += '<pre class="javascript code"><code>');
-    html += syntax(text);
+    if (mode != "code") {
+      html += '<pre class="prettyprint linenums"><code>';
+    }
+    html += text + '\n';
     mode = "code";
   });
 
@@ -157,31 +161,28 @@ module.exports = function (txt, filename, sourceFileName) {
   });
 
   eve.on("doc.s>.*", function (mod, text) {
-    mode != "head" && (html += '<p class="header">');
-    html += esc(text) + "\n";
+    if (mode != 'head') {
+      html += '<p class="cjs-header">';
+    }
+    html += esc(text);
     mode = "head";
   });
 
   eve.on("doc.s[.*", function (mod, text) {
     var type;
 
-    text = esc(text)
-      .replace(/\(([^\)]+)\)/, function (all, t) {
+    text = esc(text).replace(/\(([^\)]+)\)/, function (all, t) {
       type = t;
       return "";
     });
 
-    itemData.type = esc(text)
-      .replace(/\s*\]\s*$/, "")
-      .split(/\s*,\s*/);
+    itemData.type = esc(text).replace(/\s*\]\s*$/, "").split(/\s*,\s*/);
     clas = itemData.clas = "cjs-" + itemData.type.join(" cjs-");
-    html += '<div class="' + clas + '">';
-    type && (html += '<em class="cjs-type cjs-type-' + type + '">' + type + '</em>');
-    mode = "";
-  });
 
-  eve.on("doc.end.*", function (mod, text) {
-    clas && (html += "</div>");
+    if (type) {
+      html += '<em class="cjs-type cjs-type-' + type + '">' + type + '</em>';
+    }
+    mode = "";
   });
 
   eve.on("doc.s=.*", function (mod, text) {
@@ -191,41 +192,42 @@ module.exports = function (txt, filename, sourceFileName) {
     var types = split.shift()
       .split(/\s*\|\s*/);
     split.shift();
-    html += '<p class="cjs-returns"><strong class="cjs-title">Returns:</strong> ';
+    html += '<p class="cjs-return"><strong class="cjs-title">Returns:</strong> ';
 
     forEach(types, function (_type, i) {
       types[i] = '<em class="cjs-type-' + _type + '">' + _type + '</em>';
     });
 
-    html += types.join(" ") + ' <span class="cjs-description">' + esc(split.join("")) + "</span></p>\n";
+    html += types.join(" ") + ' <span class="cjs-param-desc">' + esc(split.join("")) + "</span></p>\n";
     mode = "";
   });
 
+
+  // arguments
   eve.on("doc.s-.*", function (mod, text) {
     itemData.params = itemData.params || [];
 
     if (mode != "list") {
-      html += '<dl class="cjs-parameters">';
+      html += '<dl class="cjs-arguments">';
       itemData.params.push([]);
     }
 
     var optional,
-    data = itemData.params[itemData.params.length - 1];
+      data = itemData.params[itemData.params.length - 1];
 
+    // check if its optional parameter
     text = text.replace(/#optional\s*/g, function () {
       optional = true;
       return "";
     });
 
+    // create param name
     split = text.split(/(\s*[\(\)]\s*)/);
     data.push((optional ? "[" : "") + split[0] + (optional ? "]" : ""));
-    html += '<dt class="cjs-param' + (optional ? " optional" : "") + '">' + split.shift() + '</dt>\n';
+    html += '<dt class="cjs-param' + (optional ? " cjs-param-optional" : "") + '">' + split.shift() + '</dt>\n';
     split.shift();
 
-    if (optional) {
-      html += '<dd class="cjs-optional">optional</dd>\n';
-    }
-
+    // param type
     var types = split.shift().split(/\s*\|\s*/);
     split.shift();
     html += '<dd class="cjs-type">';
@@ -234,19 +236,23 @@ module.exports = function (txt, filename, sourceFileName) {
       types[i] = '<em class="cjs-type-' + _type + '">' + _type + '</em>';
     });
 
-    html += types.join(" ") + '</dd>\n<dd class="cjs-description">' + (esc(split.join("")) || "&#160;") + '</dd>\n';
+    html += types.join(" ") + '</dd>\n<dd class="cjs-param-desc">' + (esc(split.join("")) || "&#160;") + '</dd>\n';
     mode = "list";
   });
 
+
+  // json object
   eve.on("doc.so.*", function (mod, text) {
     if (mode != "json") {
-      html += '<ol class="cjs-json">';
+      html += '<ul class="cjs-json">';
     }
     var desc = text.match(/^\s*([^\(\s]+)\s*\(([^\)]+)\)\s*(.*?)\s*$/),
       start = text.match(/\s*\{\s*$/),
       end = text.match(/\s*\}\s*,?\s*$/);
 
-    !end && (html += "<li>");
+    if (!end) {
+      html += "<li>";
+    }
 
     if (desc) {
       html += '<span class="cjs-json-key">' + desc[1] + '</span>';
@@ -257,20 +263,22 @@ module.exports = function (txt, filename, sourceFileName) {
         types[i] = '<em class="cjs-type-' + _type + '">' + _type + '</em>';
       });
 
-      html += types.join(" ") + '</span><span class="cjs-json-description">' + (esc(desc[3]) || "&#160;") + '</span>\n';
-    } else {
-      !end && (html += text);
+      html += types.join(" ") + '</span><span class="cjs-param-desc">' + (esc(desc[3]) || "&#160;") + '</span>\n';
+    } else if (!end) {
+      html += text;
     }
     if (start) {
-      html += '<ol class="cjs-json">';
+      html += '<ul class="cjs-json">';
     }
     if (end) {
-      html += '</ol></li><li>' + text + '</li>';
+      html += '</ul></li><li>' + text + '</li>';
     }
     mode = "json";
   });
 
-  // total commentjs blocks
+
+
+  // document length
   out.sections = main.length;
   // split document content by lines
   main = txt.split("\n");
@@ -362,7 +370,10 @@ module.exports = function (txt, filename, sourceFileName) {
       itemData = {};
       eve("doc.item", pointer[_level]);
 
-      chunk += '<div class="' + name.replace(/\./g, "-") + '-section"><h' + hx + ' id="' + name + '" class="' + itemData.clas + '"><i class="cjs-trixie">&#160;</i>' + name;
+      chunk += '\n<div class="cjs-section ' + name.replace(/\./g, "-") + '-section">\n';
+
+      // title
+      chunk += '<h' + hx + ' id="' + name + '" class="cjs-title ' + itemData.clas + '">' + name;
 
       var isMethod = itemData.type && itemData.type.indexOf("method") + 1;
 
@@ -378,13 +389,17 @@ module.exports = function (txt, filename, sourceFileName) {
         }
       }
 
-      chunk += '<a href="#' + name + '" title="Link to this section" class="cjs-hash">✰</a>';
+      chunk += '<a href="#' + name + '" title="Link to this section" class="cjs-hash">#</a>';
       if (itemData.line) {
-        chunk += '<a class="cjs-sourceline" title="Go to line ' + itemData.line + ' in the source" href="' + srcfilename + '#L' + itemData.line + '">&#x27ad;</a>'
+        chunk += '<span class="cjs-sourceline">Defined in: <a title="Go to line ' + itemData.line + ' in the source" href="' + srcfilename + '#L' + itemData.line + '">' + filename + ':' + itemData.line + '</a></span>'
       }
       chunk += '</h' + hx + '>\n';
-      chunk += '<div class="extra" id="' + name + '-extra"></div></div>';
+
+      // section content
       chunk += html;
+      // end section
+      chunk += '\n</div>\n';
+
       chunks[name] = chunks[name] || "";
       chunks[name] += chunk;
       res += chunk;
@@ -394,7 +409,8 @@ module.exports = function (txt, filename, sourceFileName) {
       });
 
       var brackets = isMethod ? '()' : '';
-      toc += '<li class="cjs-lvl' + indent + '"><a href="#' + name + '" class="' + itemData.clas + '"><span>' + name + brackets + '</span></a></li>';
+      // toc += '<li class="cjs-lvl' + indent + '"><a href="#' + name + '" class="' + itemData.clas + '"><span>' + name + brackets + '</span></a></li>';
+      toc += '<li class="cjs-lvl-' + indent + '"><a href="#' + name + '">' + name + brackets + '</a></li>';
 
       if (!utoc[name]) {
         TOC.push({
@@ -415,14 +431,11 @@ module.exports = function (txt, filename, sourceFileName) {
   out.toc = TOC;
   out.title = Title ? Title[1] : "";
   out.source = '<!DOCTYPE html>'
-             + '\n<!-- Generated with comment.js -->'
-             + '\n<html lang="en">'
-             + '<head><meta charset="utf-8">'
+             + '\n<!-- Generated with comment.js -->\n'
+             + '<meta charset="utf-8">'
              + '<title>' + path.basename(filename) + '</title>'
-             + '<link rel="stylesheet" href="../comment.css">'
-             + '</head>'
-             + '<body id="src-cjs-js">' + src + '</body>'
-             + '</html>';
+             + '<link rel="stylesheet" href="../css/src.css">'
+             + '<body id="cjs-src">' + src + '</body>';
 
   eve.unbind("doc.*");
   return out;

@@ -14,13 +14,21 @@ var fs = require("fs"),
   isWindows = /win/.test(process.platform),
   mkdir = isWindows ? "mkdir " : "mkdir -p ",
   cp = isWindows ? "copy " : "cp ",
-  cssFile = 'comment.css',
-  srcFolder = 'files';
+  templateDir = 'template',
+  templateFile = 'template.html',
+  cssFile = 'css/comment.css',
+  cssDir = 'css',
+  imgDir = 'img',
+  googlePrettifyCss = 'js/google-code-prettify/prettify.css',
+  googlePrettifyJs = 'js/google-code-prettify/prettify.js',
+  // default js file
+  docs = 'js/docs.js',
+  srcFolder = 'src';
 
 
 // normalized __dirname path (must have quotes on windows)
 function getRootPath(file) {
-  var dirpath = path.normalize(__dirname) + path.sep + file;
+  var dirpath = path.normalize(__dirname) + path.sep + templateDir + path.sep + file;
   if (!isWindows) {
     return dirpath;
   } else {
@@ -38,6 +46,11 @@ function _writeFile(file, content, callback) {
       callback();
     }
   });
+}
+
+function _readFileSync(file) {
+  file = file.replace(/"/g, '');
+  return fs.readFileSync(file, "utf-8");
 }
 
 function forEach(arr, callback) {
@@ -139,14 +152,13 @@ function main(files) {
   if (files.length === 1 && path.extname(files[0]) === ".json") {
     configFileName = files[0];
     // parse json file
-    json = JSON.parse(fs.readFileSync(files[0], "utf-8"));
+    json = JSON.parse(_readFileSync(files[0]));
     // get docs title
     title = json.title;
     // empty array
     files.shift();
     // user options
     options = json.options;
-    fileRegex;
     filesSource = [];
 
     // source is required
@@ -163,13 +175,13 @@ function main(files) {
     if (isDirectory(options.source)) {
       // set correct source directory to look for files
       // sourceDir += path.basename(options.source) + path.sep;
-      sourceDir = options.source;
+      sourceDir = options.source + path.sep;
       // get all files in directory
       filesSource = fs.readdirSync(sourceDir);
 
     // is an array
     } else if (Array.isArray(options.source)) {
-      filesSource = options.source
+      filesSource = options.source;
 
     // is one file, push to stack
     } else if (typeof options.source === 'string') {
@@ -201,6 +213,10 @@ function main(files) {
   // normalize output
   outputPath = normalizeOutputPath();
   outputFile = normalizeOutputFile();
+  cssFile = path.normalize(cssFile);
+  googlePrettifyCss = path.normalize(googlePrettifyCss);
+  googlePrettifyJs = path.normalize(googlePrettifyJs);
+  docs = path.normalize(docs);
 
   // processing function
   function generateDocs() {
@@ -208,14 +224,15 @@ function main(files) {
 
     forEach(files, function (file, i) {
       console.log("Processing " + file);
-      var code = fs.readFileSync(file, "utf-8"),
+      var code = _readFileSync(file),
         sourceFileName = sourceLinks[i] || createSrcFileName(file),
         // parse file content
-        res = docit(code, file, sourceFileName);
+        res = docit(code, file, sourceFileName),
+        key;
 
       if (res.sections && res.source) {
         toc = toc.concat(res.toc);
-        for (var key in res.chunks) {
+        for (key in res.chunks) {
           if (res.chunks.hasOwnProperty(key)) {
             chunks[key] = res.chunks[key];
           }
@@ -235,34 +252,36 @@ function main(files) {
     });
 
     var TOC = "",
-      RES = "";
+      RES = "",
+      html,
+      _scripts = '';
 
     forEach(toc, function (currentToc, i) {
       // ensure no toc.name duplication
       if (!i || currentToc.name !== toc[i - 1].name) {
-        TOC += format('<li class="cjs-lvl{indent}"><a href="#{name}" class="{clas}"><span>{name}{brackets}</span></a></li>', currentToc);
+        TOC += format('<li class="cjs-lvl-{indent}"><a href="#{name}">{name}{brackets}</a></li>', currentToc);
         RES += chunks[currentToc.name] || "";
       }
     });
 
-    var html = '<!DOCTYPE html>'
-             + '\n<!-- Generated with comment.js -->'
-             + '\n<html lang="en">'
-             + '<head><meta charset="utf-8">'
-             + '<title>' + title + '</title>'
-             + '<link rel="stylesheet" href="' + cssFile + '" media="screen">'
-             + '</head>'
-             + '<body id="cjs-js"><div id="cjs"><ol class="cjs-toc" id="cjs-toc">' + TOC + '</ol>'
-             + '<div class="cjs-doc">'
-             + '<h1>' + title + '</h1>'
-             + RES +
-             "</div></div>\n";
+    // get base template
+    html = _readFileSync(getRootPath(templateFile));
 
+    // replace variables
+    html = html.replace(/\{title\}/g, title)
+      .replace(/\{cssFile\}/, cssFile)
+      .replace(/\{googlePrettifyCss\}/, googlePrettifyCss)
+      .replace(/\{googlePrettifyJs\}/, googlePrettifyJs)
+      .replace(/\{docs\}/, docs)
+      .replace(/\{TOC\}/, TOC)
+      .replace(/\{RES\}/, RES);
+
+    // add any script specified by the user in json config file
     forEach(scripts, function (script) {
-      html += '<script src="' + script + '"></script>\n';
+      _scripts += '<script src="' + script + '"></script>\n';
     });
 
-    html += "</body></html>";
+    html = html.replace(/\{scripts\}/, _scripts);
 
     _writeFile(outputFile, html, function () {
       console.log('\n\nFinished!\n---------\nOutput: \033[32m' + outputFile + '\033[0m');
@@ -275,8 +294,27 @@ function main(files) {
     generateDocs();
   });
 
-  // copy css file into the output directory
-  exec(cp + getRootPath(cssFile) + ' ' + outputPath + cssFile);
+  // copy css file to its output directory
+  // exec(mkdir + outputPath + 'css', function () {
+  //   exec(cp + getRootPath(cssFile) + ' ' + outputPath + cssFile);
+  // });
+
+  // copy google prettify to its output directory
+  exec(mkdir + outputPath + 'js' + path.sep + 'google-code-prettify', function () {
+    exec(cp + getRootPath(googlePrettifyCss) + ' ' + outputPath + googlePrettifyCss);
+    exec(cp + getRootPath(googlePrettifyJs) + ' ' + outputPath + googlePrettifyJs);
+    exec(cp + getRootPath(docs) + ' ' + outputPath + docs);
+  });
+
+  // copy img dir
+  exec(mkdir + outputPath + 'img', function () {
+    exec(cp + getRootPath(imgDir + path.sep + '*.*') + ' ' + outputPath + imgDir);
+  });
+
+  // copy css dir
+  exec(mkdir + outputPath + 'css', function () {
+    exec(cp + getRootPath(cssDir + path.sep + '*.*') + ' ' + outputPath + cssDir);
+  });
 }
 
 
