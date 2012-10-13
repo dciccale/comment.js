@@ -35,7 +35,9 @@ var fs = require("fs"),
   docs = jsDir + 'docs.js',
 
   // where generated source files goes
-  srcFolder = 'src';
+  srcFolder = 'src',
+
+  handlebars = require('handlebars');
 
 
 // normalized __dirname path (must have quotes on windows)
@@ -144,7 +146,7 @@ function main(files) {
 
   function dirExists(dir, callback) {
     fs.stat(dir, function (error, stat) {
-      callback(!error && stat.isDirectory())
+      callback(!error && stat.isDirectory());
     });
   }
 
@@ -268,46 +270,27 @@ function main(files) {
       }
     });
 
-    var TOC = "",
-      RES = "",
-      html;
+    var RES = "",
+      html,
+      template,
+      data;
 
+    // ensure no toc.name duplication
     forEach(toc, function (currentToc, i) {
-      // ensure no toc.name duplication
       if (!i || currentToc.name !== toc[i - 1].name) {
-        TOC += '<li class="cjs-lvl-' + currentToc.indent + '"><a href="#' + currentToc.name + '">' + currentToc.name + currentToc.brackets + '</a></li>';
         RES += chunks[currentToc.name] || "";
       }
     });
 
+    // in case I want to add the object type as a class in the nav links
+    // {{#if clas}} class="{{clas}}"{{/if}}
+
     // get base template
     html = _readFileSync(getRootPath(templateFile));
-
-    // replace template variables
-    html = html
-      .replace(/\{title\}/g, title)
-      .replace(/\{TOC\}/, TOC)
-      .replace(/\{RES\}/, RES);
-
-
-    // helper for linking resources
-    function addResources(resources, type) {
-      var str = '',
-        tmpl = {
-          script: '<script src="{path}"></script>\n',
-          stylesheet: '<link rel="stylesheet" href="{path}">\n'
-        };
-
-      forEach(resources, function (res) {
-        str += tmpl[type].replace(/\{path\}/, res);
-      });
-
-      html = html.replace('{' + type + 's}', str);
-    }
-
-    // link resources
-    addResources([prettifyCss, cssFile], 'stylesheet');
-    addResources([prettifyJs, docs].concat(scripts), 'script');
+    template = handlebars.compile(html);
+    data = { "title": title, "toc": toc, "RES": RES, "stylesheets": [prettifyCss, cssFile], "scripts": [prettifyJs, docs].concat(scripts) };
+    // render
+    html = template(data);
 
     // write output
     _writeFile(outputFile, html, function () {
