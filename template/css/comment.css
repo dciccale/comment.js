@@ -456,6 +456,11 @@ em.cjs-type-object {
   border-color: #b588e3;
   color: #361458;
 }
+em.cjs-type-array {
+  background-color: #ffc48e;
+  border-color: #ffa95b;
+  color: #5b2b00;
+}
 .cjs-return {
   border-top: 1px solid #bababa;
   padding-top: 10px;
