@@ -390,8 +390,10 @@ module.exports = function (txt, filename, sourceFileName) {
       }
 
       chunk += '<a href="#' + name + '" title="Link to this section" class="cjs-hash">#</a>';
+      // filename o srcfilename
+      var filenameIndicated = srcfilename.match(/\-src\.html/) ? filename : srcfilename;
       if (itemData.line) {
-        chunk += '<span class="cjs-sourceline">Defined in: <a title="Go to line ' + itemData.line + ' in the source" href="' + srcfilename + '#L' + itemData.line + '">' + filename + ':' + itemData.line + '</a></span>'
+        chunk += '<span class="cjs-sourceline">Defined in: <a title="Go to line ' + itemData.line + ' in the source" href="' + srcfilename + '#L' + itemData.line + '">' + path.basename(filenameIndicated) + ':' + itemData.line + '</a></span>'
       }
       chunk += '</h' + hx + '>\n';
 
