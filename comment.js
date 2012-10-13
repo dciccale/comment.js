@@ -28,11 +28,13 @@ var fs = require("fs"),
   // path to assets
   cssFile = cssDir + 'comment.css',
   googlePath = jsDir + 'google-code-prettify' + path.sep,
-  googlePrettifyCss = googlePath + 'prettify.css',
-  googlePrettifyJs = googlePath + 'prettify.js',
+  prettifyCss = googlePath + 'prettify.css',
+  prettifyJs = googlePath + 'prettify.js',
 
   // required js file
   docs = jsDir + 'docs.js',
+
+  // where generated source files goes
   srcFolder = 'src';
 
 
@@ -140,6 +142,12 @@ function main(files) {
     return fs.lstatSync(folder).isDirectory();
   }
 
+  function dirExists(dir, callback) {
+    fs.stat(dir, function (error, stat) {
+      callback(!error && stat.isDirectory())
+    });
+  }
+
   function pushFiles(file) {
     // external source file (e.g. github)
     var link = file.link,
@@ -221,7 +229,6 @@ function main(files) {
     process.exit(1);
   }
 
-
   // normalize output
   outputPath = normalizeOutputPath();
   outputFile = normalizeOutputFile();
@@ -299,8 +306,8 @@ function main(files) {
     }
 
     // link resources
-    addResources([googlePrettifyCss, cssFile], 'stylesheet');
-    addResources([googlePrettifyJs, docs].concat(scripts), 'script');
+    addResources([prettifyCss, cssFile], 'stylesheet');
+    addResources([prettifyJs, docs].concat(scripts), 'script');
 
     // write output
     _writeFile(outputFile, html, function () {
@@ -318,10 +325,15 @@ function main(files) {
     return getRootPath(outputFilesDir + dir + '*.*');
   }
 
-  // bring required files
+  // bring required files if needed
   forEach([cssDir, jsDir, googlePath, imgDir], function (folder) {
-    exec(mkdir + outputPath + folder, function () {
-      exec(cp + getResourcePath(folder) + ' ' + outputPath + folder);
+    var dir = outputPath + folder;
+    dirExists(dir, function (exists) {
+      if (!exists) {
+        exec(mkdir + dir, function () {
+          exec(cp + getResourcePath(folder) + ' ' + dir);
+        });
+      }
     });
   });
 }

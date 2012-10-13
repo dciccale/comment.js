@@ -34,7 +34,7 @@ o {
 o   sections (number) number of comment sections found
 o   loc (number) number of lines of code in source file
 o   doc (string) HTML for the documentation file
-o   source (string) HTML for the highlighted source file, it will be linked from the doc as `basename + "-src.html"`, i.e. if filename is “comment.js”, then it will be “comment-src.html”
+o   source (string) HTML for the highlighted source file, it will be linked from the doc as `basename + "-src.html"`, i.e. if filename is â€œcomment.jsâ€, then it will be â€œcomment-src.htmlâ€
 o }
 \*/
 module.exports = function (txt, filename, sourceFileName) {
@@ -78,6 +78,9 @@ module.exports = function (txt, filename, sourceFileName) {
       .replace(rhref, '<a href="$1" rel="external">$1</a>');
   }
 
+  // ==========================================================================
+  // FORMATS GENERATED SOURCE CODE
+  // ==========================================================================
   function syntaxSrc(text) {
     var isend = text.match(/\*\//);
     if (text.match(/\/\*/)) {
@@ -105,6 +108,10 @@ module.exports = function (txt, filename, sourceFileName) {
     return out;
   }
 
+
+  // ==========================================================================
+  // CLOSING TAGS
+  // ==========================================================================
   eve.on("doc.*.list", function (mod, text) {
     if (this != '-') {
       html += "</dl>\n";
@@ -135,6 +142,10 @@ module.exports = function (txt, filename, sourceFileName) {
     }
   });
 
+
+  // ==========================================================================
+  // PARAGRAPHS
+  // ==========================================================================
   eve.on("doc.s*.*", function (mod, text) {
     if (mode != "text") {
       html += "<p>";
@@ -147,6 +158,10 @@ module.exports = function (txt, filename, sourceFileName) {
     mode = "text";
   });
 
+
+  // ==========================================================================
+  // USAGE CODE
+  // ==========================================================================
   eve.on("doc.s|.*", function (mod, text) {
     if (mode != "code") {
       html += '<pre class="prettyprint linenums"><code>';
@@ -160,6 +175,10 @@ module.exports = function (txt, filename, sourceFileName) {
     mode = "html";
   });
 
+
+  // ==========================================================================
+  // HEADER
+  // ==========================================================================
   eve.on("doc.s>.*", function (mod, text) {
     if (mode != 'head') {
       html += '<p class="cjs-header">';
@@ -168,6 +187,10 @@ module.exports = function (txt, filename, sourceFileName) {
     mode = "head";
   });
 
+
+  // ==========================================================================
+  // PARAM TYPE
+  // ==========================================================================
   eve.on("doc.s[.*", function (mod, text) {
     var type;
 
@@ -185,6 +208,10 @@ module.exports = function (txt, filename, sourceFileName) {
     mode = "";
   });
 
+
+  // ==========================================================================
+  // RETURN
+  // ==========================================================================
   eve.on("doc.s=.*", function (mod, text) {
     var split = text.split(/(\s*[\(\)]\s*)/);
     split.shift();
@@ -203,7 +230,9 @@ module.exports = function (txt, filename, sourceFileName) {
   });
 
 
-  // arguments
+  // ==========================================================================
+  // ARGUMENTS
+  // ==========================================================================
   eve.on("doc.s-.*", function (mod, text) {
     itemData.params = itemData.params || [];
 
@@ -241,7 +270,9 @@ module.exports = function (txt, filename, sourceFileName) {
   });
 
 
-  // json object
+  // ==========================================================================
+  // JSON OBJECT
+  // ==========================================================================
   eve.on("doc.so.*", function (mod, text) {
     if (mode != "json") {
       html += '<ul class="cjs-json">';
@@ -278,7 +309,7 @@ module.exports = function (txt, filename, sourceFileName) {
 
 
 
-  // document length
+  // total commentjs blocks
   out.sections = main.length;
   // split document content by lines
   main = txt.split("\n");
@@ -370,13 +401,17 @@ module.exports = function (txt, filename, sourceFileName) {
       itemData = {};
       eve("doc.item", pointer[_level]);
 
+      //--------------
+      // section
       chunk += '\n<div class="cjs-section ' + name.replace(/\./g, "-") + '-section">\n';
 
-      // title
+      //--------------
+      // open title
       chunk += '<h' + hx + ' id="' + name + '" class="cjs-title ' + itemData.clas + '">' + name;
 
+      //--------------
+      // function args
       var isMethod = itemData.type && itemData.type.indexOf("method") + 1;
-
       if (isMethod) {
         if (itemData.params) {
           if (itemData.params.length == 1) {
@@ -389,22 +424,33 @@ module.exports = function (txt, filename, sourceFileName) {
         }
       }
 
+      //--------------
+      // hash link
       chunk += '<a href="#' + name + '" title="Link to this section" class="cjs-hash">#</a>';
-      // filename o srcfilename
+
+      //--------------
+      // source link
       var filenameIndicated = srcfilename.match(/\-src\.html/) ? filename : srcfilename;
       if (itemData.line) {
         chunk += '<span class="cjs-sourceline">Defined in: <a title="Go to line ' + itemData.line + ' in the source" href="' + srcfilename + '#L' + itemData.line + '">' + path.basename(filenameIndicated) + ':' + itemData.line + '</a></span>'
       }
-      chunk += '</h' + hx + '>\n';
 
+      chunk += '</h' + hx + '>\n';
+      // close title
+      //--------------
+
+      //--------------
       // section content
       chunk += html;
-      // end section
+
       chunk += '\n</div>\n';
+      // end section
+      //--------------
 
       chunks[name] = chunks[name] || "";
       chunks[name] += chunk;
       res += chunk;
+
       var indent = 0;
       name.replace(/\./g, function () {
         indent++;
@@ -429,6 +475,10 @@ module.exports = function (txt, filename, sourceFileName) {
   };
 
   runner(root, 2);
+
+  // ==========================================================================
+  // PREPARE OUTPUT
+  // ==========================================================================
   out.chunks = chunks;
   out.toc = TOC;
   out.title = Title ? Title[1] : "";
