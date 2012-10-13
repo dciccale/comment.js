@@ -430,6 +430,7 @@ dd.cjs-type,
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
+  font-size: 0.8em;
 }
 em.cjs-type-string {
   background-color: #eaea8a;

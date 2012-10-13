@@ -2,6 +2,7 @@
  * $B
  * Global namespace for BBVA
 \*/
+
 /*\
  * $B.ui
  * Global namespace for BBVA UI components
@@ -70,8 +71,6 @@
    * Secure and nice separation from top and bottom of the window
   \*/
   $B.ui.dialogSecureHeight = 100;
-
-
 
 
 
@@ -400,6 +399,20 @@
       }
     };
 
+    /*\
+     * $B.ui.dialog.get
+     [ method ]
+     * Get an existing dialog with the given id or any of its ui dialog options
+     > Arguments
+     - id (string) id of the dialog
+     - option (string) #optional get the value of ui dialog option (for setting a value see @$B.ui.dialog.set)
+     = (object) jQuery object of the dialog content if only the id is pass
+     * or if an option is passed
+     = (any) Value of the specified option
+     > Usage
+     | $B.ui.dialog.get('id')
+     | $B.ui.dialog.get('id', 'zIndex')
+    \*/
 
     /*\
      * $B.ui.dialog.get
