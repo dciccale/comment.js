@@ -8,6 +8,10 @@
 $global-sep = 10px
 
 //--------------
+// body bg
+$body-bg = #f8f8f8 url('../img/subtlenet2.png')
+
+//--------------
 // nav
 $nav-width = 275px
 // nav links
@@ -30,10 +34,6 @@ $header-bg = #4c9242 url('../img/diamond_upholstery_green.png') 0 31px
 // toc
 $toc-width = $nav-width - $global-sep
 $toc-item-width = $toc-width - $global-sep
-
-//--------------
-// body bg
-$body-bg-img = '../img/subtlenet2.png'
 
 //--------------
 // nav header
@@ -89,7 +89,7 @@ html
 body
   height 100%
   min-height 100%
-  background url($body-bg-img)
+  background $body-bg
   color #32392b
 
 a
@@ -185,7 +185,6 @@ h6 .cjs-sourceline
 // ==========================================================================
 // ARGUMENTS
 // ==========================================================================
-
 p.cjs-header
   font-weight bold
   color #495241
@@ -413,6 +412,7 @@ pre code
 
 // code selection
 selection(rgba(69, 69, 69, 0.99), inherit, '.prettyprint code span')
+
 
 // ==========================================================================
 // CUSTOM SCROLLBAR
