@@ -14,7 +14,8 @@
 
   "dependencies": {
     "commander": "0.2.x",
-    "eve": "0.x.x"
+    "eve": "0.x.x",
+    "handlebars": "1.0.x"
   },
 
   "devDependencies": {
