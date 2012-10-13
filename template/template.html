@@ -28,60 +28,105 @@
 
       <!-- object section -->
       <div class="cjs-section">
-        <h2>$B</h2>
+        <h2 class="cjs-title" id="$B">$B
+          <a href="#$B" title="Link to this section" class="cjs-hash">#</a>
+          <span class="cjs-sourceline">Defined in: <a href="#5" title="Go to line 5 in the source">bbva.ui.dialog.js:5</a></span>
+        </h2>
         <p>Description for $B Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum porttitor enim eget porta.</p>
       </div>
 
       <!-- object section -->
       <div class="cjs-section">
-        <h3>$B.ui</h3>
+        <h3 class="cjs-title" id="$B.ui">$B.ui
+          <a href="#$B.ui" title="Link to this section" class="cjs-hash">#</a>
+          <span class="cjs-sourceline">Defined in: <a href="#9" title="Go to line 9 in the source">bbva.ui.dialog.js:9</a></span>
+        </h3>
         <p>Description for $B.ui Donec tincidunt laoreet cursus. Ut ultrices porttitor orci quis bibendum.</p>
       </div>
 
       <!-- object section -->
       <div class="cjs-section">
-        <h4>$B.ui.dialog</h4>
+        <h4 class="cjs-title" id="$B.ui.dialog">$B.ui.dialog
+          <a href="#$B.ui.dialog" title="Link to this section" class="cjs-hash">#</a>
+          <span class="cjs-sourceline">Defined in: <a href="#15" title="Go to line 15 in the source">bbva.ui.dialog.js:15</a></span>
+        </h4>
         <p>Description for $B.ui.dialog Phasellus nulla enim, dignissim sit amet tincidunt nec, gravida id ligula. Nam leo metus, volutpat sed venenatis euismo.</p>
       </div>
 
       <!-- method section -->
       <div class="cjs-section">
         <!-- method name -->
-        <h5>$B.ui.dialog.close(id, [force])</h5>
-          <!-- method description -->
-          <p>Close an existing dialog with the given id</p>
+        <h5 class="cjs-title cjs-method" id="$B.ui.dialog.close">$B.ui.dialog.close(id, <em>[force]</em>)
+          <a href="#$B.ui.dialog.close" title="Link to this section" class="cjs-hash">#</a>
+          <span class="cjs-sourceline">Defined in: <a href="#620" title="Go to line 620 in the source">bbva.ui.dialog.js:620</a></span>
+        </h5>
 
-          <!-- arguments -->
-          <dl class="cjs-arguments">
-            <dt class="cjs-param">id</dt>
-            <dd class="cjs-type"><em class="cjs-type-string">string</em></dd>
-            <dd class="cjs-param-desc">id of the dialog to open</dd>
-            <!-- optional -->
-            <dt class="cjs-param cjs-param-optional">force</dt>
-            <dd class="cjs-type cjs-type-boolean"><em class="cjs-type-string">boolean</em></dd>
-            <dd class="cjs-param-desc">force the dialog to open</dd>
-          </dl>
+        <!-- method description -->
+        <p>Close an existing dialog with the given id</p>
 
-          <!-- returns -->
-          <p class="cjs-return">
-            <strong>Returns:</strong>
-            <em class="cjs-type-object">object</em>
-            <span class="cjs-param-dsc">jQuery object of the dialog content</span>
-          </p>
+        <!-- arguments -->
+        <p class="cjs-header">Arguments</p>
+        <dl class="cjs-arguments clear">
+          <!-- string -->
+          <dt class="cjs-param">id</dt>
+          <dd class="cjs-type"><em class="cjs-type-string">string</em></dd>
+          <dd class="cjs-param-desc">id of the dialog to close (for opening see <a href="#" class="cjs-link">$B.ui.dialog.open</a>)</dd>
 
-          <!-- usage -->
-          <p>Usage</p>
-<pre class="prettyprint linenums"><code>function (asd) {
-id: 'MyDialog',
-el: '#DialogElement',
-button: '#button',
-dialogOptions: {
-  draggable: true,
-  width: 640
+          <!-- number -->
+          <dt class="cjs-param">number</dt>
+          <dd class="cjs-type"><em class="cjs-type-number">number</em></dd>
+          <dd class="cjs-param-desc">number of z-index</dd>
+
+          <!-- object -->
+          <dt class="cjs-param">object</dt>
+          <dd class="cjs-type"><em class="cjs-type-object">object</em></dd>
+          <dd class="cjs-param-desc">options object</dd>
+
+          <!-- function -->
+          <dt class="cjs-param">function</dt>
+          <dd class="cjs-type"><em class="cjs-type-function">function</em></dd>
+          <dd class="cjs-param-desc">callback function</dd>
+
+          <!-- optional boolean -->
+          <dt class="cjs-param cjs-param-optional">force</dt>
+          <dd class="cjs-type"><em class="cjs-type-boolean">boolean</em></dd>
+          <dd class="cjs-param-desc">force the dialog to close</dd>
+        </dl>
+
+        <!-- returns -->
+        <p class="cjs-return">
+          <strong class="cjs-title">Returns:</strong>
+          <em class="cjs-type-object">object</em>
+          <span class="cjs-param-dsc">jQuery object of the dialog content</span>
+        </p>
+
+        <!-- usage -->
+        <p class="cjs-header">Usage</p>
+<pre class="prettyprint linenums"><code>// demo
+function demo() {
+  var obj = {
+    id: 'myDialog',
+    dialogOptions: {
+      draggable: true,
+      width: 640
+    };
+  return obj;
 }
-});
 </code></pre>
       </div>
+
+      <!-- property section -->
+      <div class="cjs-section">
+        <!-- property name -->
+        <h5 class="cjs-title cjs-property" id="$B.ui.dialog.cache">$B.ui.dialog.cache
+          <a href="#$B.ui.dialog.cache" title="Link to this section" class="cjs-hash">#</a>
+          <span class="cjs-sourceline">Defined in: <a href="#" title="Go to line 620 in the source">bbva.ui.dialog.js:620</a></span>
+        </h5>
+
+        <!-- property description -->
+        <p>Cache for all dialog windows created</p>
+      </div>
+
     </div>
   </div>
   <div id="cjs-nav">

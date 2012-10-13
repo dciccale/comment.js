@@ -259,16 +259,36 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+.clear:before,
+.clear:after {
+  content: " ";
+  display: table;
+}
+.clear:after {
+  clear: both;
+}
+.clear {
+  *zoom: 1;
+}
 html {
   height: 100%;
   min-height: 100%;
 }
+.lt-ie8 {
+  overflow-y: hidden;
+}
 body {
   height: 100%;
   min-height: 100%;
-}
-body {
   background: url("../img/subtlenet2.png");
+  color: #32392b;
+}
+a {
+  text-decoration: none;
+  color: #4c9242;
+}
+a:hover {
+  color: #084501;
 }
 ::-moz-selection {
   background: rgba(8,70,1,0.7);
@@ -300,12 +320,136 @@ body {
 }
 #cjs-documentation {
   position: absolute;
-  top: 70px;
+  top: 60px;
   right: 285px;
   bottom: 0;
   left: 0;
   padding: 0 30px;
   overflow: auto;
+}
+.cjs-section {
+  border-bottom: 1px solid #ddd;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+.cjs-method {
+  color: #531124;
+}
+.cjs-property {
+  color: #122c50;
+}
+a.cjs-hash {
+  font-family: sans-serif;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -ms-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
+}
+.cjs-title:hover a.cjs-hash {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.lt-ie9 a.cjs-hash {
+  display: none;
+}
+.lt-ie9 .cjs-title:hover a.cjs-hash {
+  display: inline;
+  line-height: 1%;
+}
+.cjs-sourceline {
+  color: #4e5745;
+  display: block;
+  font-size: 13px;
+  font-family: arial;
+  font-weight: normal;
+  font-style: italic;
+  padding-left: 3px;
+}
+h2 .cjs-sourceline {
+  line-height: 18px;
+}
+h3 .cjs-sourceline {
+  line-height: 8px;
+}
+h4 .cjs-sourceline,
+h5 .cjs-sourceline,
+h6 .cjs-sourceline {
+  line-height: 22px;
+}
+p.cjs-header {
+  font-weight: bold;
+  color: #495241;
+}
+dl.cjs-arguments {
+  padding-left: 10px;
+}
+dt.cjs-param {
+  margin-right: 10px;
+  min-width: 120px;
+  float: left;
+}
+dd.cjs-type {
+  float: left;
+}
+.cjs-type em,
+.cjs-return em {
+  margin-right: 10px;
+  display: inline-block;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  min-width: 80px;
+  padding: 2px 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background-color: #ccc;
+  border-color: #b3b3b3;
+  color: #333;
+}
+dd.cjs-param-desc {
+  display: block;
+  margin-bottom: 10px;
+}
+em.cjs-type-string {
+  background-color: #eaea8a;
+  border-color: #e2e25f;
+  color: #38380a;
+}
+em.cjs-type-boolean {
+  background-color: #a6caa9;
+  border-color: #86b78a;
+  color: #172718;
+}
+em.cjs-type-number {
+  background-color: #a9c5eb;
+  border-color: #80a9e1;
+  color: #122c50;
+}
+em.cjs-type-function {
+  background-color: #eda9bc;
+  border-color: #e47f9b;
+  color: #531124;
+}
+em.cjs-type-object {
+  background-color: #cfb1ed;
+  border-color: #b588e3;
+  color: #361458;
+}
+.cjs-return {
+  border-top: 1px solid #bababa;
+  padding-top: 10px;
+  margin: 15px 0;
+}
+.cjs-return .cjs-title {
+  float: left;
+  margin-right: 10px;
+  width: 130px;
 }
 #cjs-nav {
   position: fixed;
@@ -331,38 +475,52 @@ body {
   width: 265px;
   overflow: auto;
   position: absolute;
-  top: 45px;
-  bottom: 60px;
+  top: 35px;
+  bottom: 80px;
 }
 #cjs-nav li {
   list-style-type: none;
   width: 245px;
 }
 #cjs-nav a {
-  text-decoration: none;
   padding: 6px 18px;
   display: block;
-  height: 1%;
-  color: #4c9242;
   -webkit-transition: background-color 150ms linear;
   -moz-transition: background-color 150ms linear;
   -ms-transition: background-color 150ms linear;
   -o-transition: background-color 150ms linear;
   transition: background-color 150ms linear;
 }
+.lt-ie8 #cjs-nav a {
+  height: 1%;
+}
 #cjs-nav a:hover {
-  color: #084501;
   background-color: rgba(8,69,1,0.1);
 }
-.lt-ie8 #cjs-nav a:hover {
+.lt-ie9 #cjs-nav a:hover {
   background-color: #dfe6df;
 }
 #cjs-nav a.cjs-selected {
   color: #fff;
   background-color: rgba(8,69,1,0.7);
 }
-.lt-ie8 #cjs-nav a.cjs-selected {
+.lt-ie9 #cjs-nav a.cjs-selected {
   background-color: #4e7949;
+}
+#cjs-nav .cjs-lvl-0 a {
+  padding-left: 16px;
+}
+#cjs-nav .cjs-lvl-1 a {
+  padding-left: 32px;
+}
+#cjs-nav .cjs-lvl-2 a {
+  padding-left: 48px;
+}
+#cjs-nav .cjs-lvl-3 a {
+  padding-left: 64px;
+}
+#cjs-nav .cjs-lvl-4 a {
+  padding-left: 80px;
 }
 #cjs-nav form {
   position: relative;
@@ -423,7 +581,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 20px 0 10px 0;
+  margin: 10px 0;
   font-family: inherit;
   font-weight: bold;
   line-height: 1;
@@ -432,7 +590,8 @@ h6 {
 }
 h1 {
   font-size: 38px;
-  margin-bottom: 60px;
+  margin-bottom: 50px;
+  margin-top: 20px;
 }
 h2 {
   font-size: 38px;
@@ -468,6 +627,7 @@ pre {
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
+  font-size: 0.9em;
 }
 pre code {
   -webkit-user-select: text;
@@ -475,6 +635,8 @@ pre code {
   -ms-user-select: text;
   -o-user-select: text;
   user-select: text;
+  padding-left: 5px;
+  font-size: 14px;
 }
 .prettyprint code span::-moz-selection {
   background: rgba(69,69,69,0.99);
@@ -484,23 +646,13 @@ pre code {
   background: rgba(69,69,69,0.99);
   color: inherit;
 }
-/* API identation levels */
-#cjs-nav .cjs-lvl-0 a {
-  padding-left: 16px;
+::-webkit-scrollbar-button:vertical {
+  height: 10px;
 }
-#cjs-nav .cjs-lvl-1 a {
-  padding-left: 32px;
+#cjs-toc::-webkit-scrollbar-button:end {
+  height: 0;
+  background-color: #00f;
 }
-#cjs-nav .cjs-lvl-2 a {
-  padding-left: 48px;
-}
-#cjs-nav .cjs-lvl-3 a {
-  padding-left: 64px;
-}
-#cjs-nav .cjs-lvl-4 a {
-  padding-left: 80px;
-}
-/* scrollbar */
 .cjs-panel::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -528,9 +680,4 @@ pre code {
 .cjs-panel::-webkit-scrollbar-thumb:active {
   border: 1px solid #7d7d7d;
   background-color: rgba(0,0,0,0.3);
-}
-.cjs-panel::-webkit-scrollbar-button {
-  height: 0;
-  display: block;
-  background-color: transparent;
 }
