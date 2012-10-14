@@ -1,35 +1,38 @@
 {
   "name": "comment-js",
   "description": "API Documentation builder",
-  "tags": ["documentation", "javascript", "comment", "api"],
+  "version": "0.0.1",
   "author": {
     "name": "Denis Ciccale",
-    "email": "dciccale@gmail.com",
-    "url": "http://webdecs.wordpress.com"
+    "twitter": "@tdecs"
   },
-
-  "version": "0.0.1",
-  "main": "comment",
-  "bin": { "comment-js": "./bin/comment-js" },
-
-  "dependencies": {
-    "commander": "0.2.x",
-    "eve": "0.x.x",
-    "handlebars": "1.0.x"
-  },
-
-  "devDependencies": {
-  },
-
-  "repository": {
+  "homepage": "http://github.com/dciccale/comment.js",
+  "repositories": {
     "type": "git",
     "url": "https://github.com/dciccale/comment.js.git"
   },
-
   "bugs": {
     "url": "http://github.com/dciccale/comment.js/issues"
   },
-
-  "contributors": [
+  "licenses": [
+   {
+     "type": "MIT",
+     "url": "http://github.com/dciccale/comment.js/blob/master/LICENSE.txt",
+   }
+  ],
+  "main": "lib/comment",
+  "bin": {
+    "comment-js": "./bin/comment-js"
+  },
+  "dependencies": {
+    "commander": "0.x.x",
+    "eve": "0.x.x",
+    "handlebars": "1.x.x"
+  },
+  "devDependencies": {
+  },
+  "keywords": ["documentation", "javascript", "comment", "api"],
+  "engines": [
+    "node >= 0.4.1"
   ]
 }
