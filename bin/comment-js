@@ -1,21 +1,3 @@
 #!/usr/bin/env node
 
-var comment = require('../lib/comment'),
-  path = require('path'),
-  fs = require('fs'),
-  program = require('commander');
-
-function progInit() {
-  program.usage('target1.js [target2.js] ..');
-  program.parse(process.argv);
-  comment(process.argv);
-}
-
-fs.readFile(path.join(__dirname, '../package.json'), 'utf8', function(err, contents) {
-  if (!err) {
-    var packageData = JSON.parse(contents);
-    program.version(packageData.version);
-  }
-
-  progInit();
-});
+require('../lib/comment')(process.argv);
