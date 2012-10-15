@@ -733,7 +733,6 @@ pre code {
 }
 #cjs-toc::-webkit-scrollbar-button:end {
   height: 0;
-  background-color: #00f;
 }
 .cjs-panel::-webkit-scrollbar {
   width: 10px;
@@ -824,11 +823,27 @@ pre code {
 #cjs-src code .c * {
   color: #75715e;
 }
-::-moz-selection {
+#cjs-src::-moz-selection {
   background: rgba(69,69,69,0.99);
   color: inherit;
 }
-::selection {
+#cjs-src::selection {
+  background: rgba(69,69,69,0.99);
+  color: inherit;
+}
+#cjs-src code::-moz-selection {
+  background: rgba(69,69,69,0.99);
+  color: inherit;
+}
+#cjs-src code::selection {
+  background: rgba(69,69,69,0.99);
+  color: inherit;
+}
+#cjs-src code *::-moz-selection {
+  background: rgba(69,69,69,0.99);
+  color: inherit;
+}
+#cjs-src code *::selection {
   background: rgba(69,69,69,0.99);
   color: inherit;
 }
