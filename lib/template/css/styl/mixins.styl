@@ -1,0 +1,54 @@
+prefix(prop, val)
+  -webkit-{prop} val
+  -moz-{prop} val
+  -ms-{prop} val
+  -o-{prop} val
+  {prop} val
+
+box-shadow()
+  prefix('box-shadow', arguments)
+
+box-sizing()
+  prefix('box-sizing', arguments)
+
+border-radius()
+  prefix('border-radius', arguments)
+
+transition()
+  prefix('transition', arguments)
+
+opacity(val)
+  opacity val
+  filter unquote('alpha(opacity=' + val * 100 + ')')
+
+selection(bgColor, txtColor, selector='')
+  {selector}::-moz-selection
+    background bgColor
+    color txtColor
+
+  {selector}::selection
+    background bgColor
+    color txtColor
+
+user-select()
+  prefix('user-select', arguments)
+
+// for object types
+object-color(color)
+  background-color color
+  border-color darken(color, 10)
+  color object-text-color(color)
+
+// getting text color for the type
+object-text-color(color)
+  darken(color, 60)
+
+.clear:before, .clear:after
+  content " "
+  display table
+
+.clear:after
+  clear both
+
+.clear
+  *zoom 1
