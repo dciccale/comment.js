@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "grunt-contrib-stylus": "0.3.x",
+    "grunt-contrib-mincss": "0.3.x",
     "grunt": "0.3.x"
   },
   "keywords": ["documentation", "javascript", "comment", "api"],
