@@ -475,7 +475,8 @@ dd.cjs-type,
   display: block;
   margin-bottom: 10px;
 }
-.cjs-param-desc code {
+.cjs-param-desc code,
+p code.prettyprint {
   padding: 0 6px;
   margin: 0 2px;
   background-color: #444;
