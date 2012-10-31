@@ -271,10 +271,10 @@ table {
   *zoom: 1;
 }
 .com {
-  color: #75715e;
+  color: #7c7c7c;
 }
 .lit {
-  color: #ae81ff;
+  color: #b190ec;
 }
 .pun,
 .opn,
@@ -283,11 +283,11 @@ table {
 }
 .str,
 .atv {
-  color: #e6db74;
+  color: #e4ff9b;
 }
 .kwd,
 .prettyprint .tag {
-  color: #f92672;
+  color: #e3584d;
 }
 .pln {
   color: #f8f8f2;
@@ -299,7 +299,7 @@ table {
 .atn,
 .dec,
 .var {
-  color: #a6e22e;
+  color: #bbde57;
 }
 .prettyprint {
   padding: 10px 10px 10px 0;
@@ -342,11 +342,11 @@ a:hover {
   color: #084501;
 }
 ::-moz-selection {
-  background: rgba(8,70,1,0.7);
+  background: rgba(0,46,19,0.7);
   color: #fff;
 }
 ::selection {
-  background: rgba(8,70,1,0.7);
+  background: rgba(0,46,19,0.7);
   color: #fff;
 }
 #header {
@@ -431,7 +431,7 @@ h5 .cjs-sourceline,
 h6 .cjs-sourceline {
   line-height: 22px;
 }
-p.cjs-header {
+.cjs-header {
   font-weight: bold;
   color: #495241;
 }
@@ -445,7 +445,6 @@ dl.cjs-arguments,
 dt.cjs-param,
 .cjs-json-key {
   margin-right: 10px;
-  min-width: 120px;
   float: left;
 }
 dd.cjs-type,
@@ -462,7 +461,6 @@ dd.cjs-type,
   -o-border-radius: 3px;
   border-radius: 3px;
   font-size: 0.8em;
-  min-width: 80px;
   padding: 2px 5px;
   text-align: center;
   border: 1px solid #ccc;
@@ -527,10 +525,9 @@ em.cjs-type-array {
 .cjs-return em {
   float: left;
 }
-.cjs-return .cjs-title {
+.cjs-return .cjs-header {
   float: left;
   margin-right: 10px;
-  width: 130px;
 }
 .cjs-json {
   list-style-type: none;
@@ -723,11 +720,11 @@ pre code {
   font-size: 14px;
 }
 .prettyprint code span::-moz-selection {
-  background: rgba(69,69,69,0.99);
+  background: rgba(0,0,0,0.3);
   color: inherit;
 }
 .prettyprint code span::selection {
-  background: rgba(69,69,69,0.99);
+  background: rgba(0,0,0,0.3);
   color: inherit;
 }
 ::-webkit-scrollbar-button:vertical {
