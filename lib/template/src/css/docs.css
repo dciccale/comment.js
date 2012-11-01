@@ -381,7 +381,8 @@ a:hover {
 .cjs-section {
   border-bottom: 1px solid #ddd;
   margin-top: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
+  padding-bottom: 30px;
 }
 .cjs-method {
   color: #531124;
@@ -470,8 +471,10 @@ dd.cjs-type,
   cursor: default;
 }
 .cjs-param-desc {
-  display: block;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 0.8em;
+  font-family: arial;
+  margin-top: 5px;
 }
 .cjs-param-desc code,
 p code.prettyprint {
@@ -517,13 +520,16 @@ em.cjs-type-array {
   color: #5b2b00;
 }
 .cjs-return {
-  border-top: 1px solid #bababa;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   padding-top: 10px;
+  padding-bottom: 10px;
+  overflow: hidden;
   margin: 15px 0;
 }
 .cjs-return em {
-  float: left;
+  font-family: arial;
+  font-size: 0.7em;
 }
 .cjs-return .cjs-header {
   float: left;
@@ -606,7 +612,7 @@ em.cjs-type-array {
 #cjs-nav form {
   position: relative;
 }
-#cjs-nav input {
+#cjs-nav form input {
   height: 13px;
   padding: 5px 8px 5px 27px;
   border: 1px solid #ababab;
@@ -629,7 +635,7 @@ em.cjs-type-array {
   box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
   width: 228px;
 }
-#cjs-nav input:focus {
+#cjs-nav form input:focus {
   outline: 0;
   background-color: #fff;
   color: #000;
@@ -774,8 +780,6 @@ pre code {
   -ms-user-select: text;
   -o-user-select: text;
   user-select: text;
-}
-#cjs-src code {
   background: #222;
   display: block;
   color: #f8f8f2;
@@ -787,9 +791,8 @@ pre code {
 #cjs-src code:hover {
   background: #444;
 }
-#cjs-src code:hover .ln {
-  color: #fff;
-}
+#cjs-src code:hover .ln,
+#cjs-src code color #fff,
 #cjs-src code .ln {
   position: absolute;
   left: 0;
