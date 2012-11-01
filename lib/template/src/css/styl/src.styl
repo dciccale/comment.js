@@ -3,58 +3,44 @@
 // ==========================================================================
 #cjs-src
   user-select none
-
-#cjs-src code
-  user-select text
-
-#cjs-src code
-  background #222
-  display block
-  color #F8F8F2
-  font-family Menlo, Consolas, Monaco, "Lucida Console", monospace
-  white-space pre
-  padding-left 80px
-  line-height 1.2
-
-#cjs-src code:hover
-  background #444
-
-#cjs-src code:hover .ln
-  color #fff
-
-// linenum
-#cjs-src code .ln
-  position absolute
-  left 0
-  color #797976
-  width 50px
-  text-align right
-  user-select none
-
-// keyword
-#cjs-src code b
-  color #f92672
-  font-weight normal
-
-// string
-#cjs-src code i,
-#cjs-src code i *,
-#cjs-src code i .d
-  color #e6db74
-  font-style normal
-
-// operator
-#cjs-src code .s
-  color #f92672
-
-// number
-#cjs-src code .d
-  color #ae81ff
-
-// comment
-#cjs-src code .c,
-#cjs-src code .c *
-  color #75715e
+  code
+    user-select text
+    background #222
+    display block
+    color #F8F8F2
+    font-family Menlo, Consolas, Monaco, "Lucida Console", monospace
+    white-space pre
+    padding-left 80px
+    line-height 1.2
+    &:hover
+      background #444
+    &:hover .ln
+    color #fff
+    // linenum
+    .ln
+      position absolute
+      left 0
+      color #797976
+      width 50px
+      text-align right
+      user-select none
+    // keyword
+    b
+      color #f92672
+      font-weight normal
+    // string
+    i, i *, i .d
+      color #e6db74
+      font-style normal
+    // operator
+    .s
+      color #f92672
+    // number
+    .d
+      color #ae81ff
+    // comment
+    .c, .c *
+      color #75715e
 
 // selection color
 selection(rgba(69, 69, 69, 0.99), inherit, '#cjs-src')
