@@ -92,6 +92,7 @@ body
 a
   text-decoration none
   color $nav-link-color
+  transition color 200ms
 
 a:hover
   color $nav-link-color-hover
@@ -146,7 +147,7 @@ selection(hsla(145, 100%, 9%, .7), #fff)
 a.cjs-hash
   font-family sans-serif
   opacity 0
-  transition opacity 200ms linear
+  transition-property opacity, color
   margin-left 5px
 
 .cjs-title:hover a.cjs-hash
@@ -194,25 +195,26 @@ dl.cjs-arguments,
 .cjs-json .cjs-json
   padding-left 10px
 
-dt.cjs-param,
-.cjs-json-key
+dt.cjs-param, .cjs-json-key
   margin-right 10px
   float left
 
-dd.cjs-type,
-.cjs-json .cjs-type
+dd.cjs-type, .cjs-json .cjs-type
   float left
 
 .cjs-type em, .cjs-return em
+  font-style normal
+  font-family arial
+  font-size 0.7em
   margin-right 10px
   display inline-block
   border-radius 3px
-  font-size 0.8em
   padding 2px 5px
   text-align center
   border 1px solid #ccc
   object-color(#ccc)
   cursor default
+  box-shadow inset 0px 1px 0px rgba(255, 255, 255, 0.4)
 
 .cjs-param-desc
   margin-bottom 20px
@@ -226,7 +228,7 @@ dd.cjs-type,
   background-color #444
   border 1px solid #222
   border-radius 3px
-  font-size 0.8em
+  font-size 0.9em
 
 // types
 em.cjs-type-string
@@ -374,6 +376,7 @@ h1, h2, h3, h4, h5, h6
   line-height 1
   color inherit
   text-rendering optimizelegibility
+  text-shadow 0px 1px white
 
 h1
   font-size 38px
