@@ -337,6 +337,11 @@ body {
 a {
   text-decoration: none;
   color: #4c9242;
+  -webkit-transition: color 200ms;
+  -moz-transition: color 200ms;
+  -ms-transition: color 200ms;
+  -o-transition: color 200ms;
+  transition: color 200ms;
 }
 a:hover {
   color: #084501;
@@ -394,11 +399,11 @@ a.cjs-hash {
   font-family: sans-serif;
   opacity: 0;
   filter: alpha(opacity=0);
-  -webkit-transition: opacity 200ms linear;
-  -moz-transition: opacity 200ms linear;
-  -ms-transition: opacity 200ms linear;
-  -o-transition: opacity 200ms linear;
-  transition: opacity 200ms linear;
+  -webkit-transition-property: opacity, color;
+  -moz-transition-property: opacity, color;
+  -ms-transition-property: opacity, color;
+  -o-transition-property: opacity, color;
+  transition-property: opacity, color;
   margin-left: 5px;
 }
 .cjs-title:hover a.cjs-hash {
@@ -454,6 +459,9 @@ dd.cjs-type,
 }
 .cjs-type em,
 .cjs-return em {
+  font-style: normal;
+  font-family: arial;
+  font-size: 0.7em;
   margin-right: 10px;
   display: inline-block;
   -webkit-border-radius: 3px;
@@ -461,7 +469,6 @@ dd.cjs-type,
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  font-size: 0.8em;
   padding: 2px 5px;
   text-align: center;
   border: 1px solid #ccc;
@@ -469,6 +476,11 @@ dd.cjs-type,
   border-color: #b3b3b3;
   color: #333;
   cursor: default;
+  -webkit-box-shadow: inset 0px 1px 0px rgba(255,255,255,0.4);
+  -moz-box-shadow: inset 0px 1px 0px rgba(255,255,255,0.4);
+  -ms-box-shadow: inset 0px 1px 0px rgba(255,255,255,0.4);
+  -o-box-shadow: inset 0px 1px 0px rgba(255,255,255,0.4);
+  box-shadow: inset 0px 1px 0px rgba(255,255,255,0.4);
 }
 .cjs-param-desc {
   margin-bottom: 20px;
@@ -487,7 +499,7 @@ p code.prettyprint {
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  font-size: 0.8em;
+  font-size: 0.9em;
 }
 em.cjs-type-string {
   background-color: #eaea8a;
@@ -674,6 +686,7 @@ h6 {
   line-height: 1;
   color: inherit;
   text-rendering: optimizelegibility;
+  text-shadow: 0px 1px #fff;
 }
 h1 {
   font-size: 38px;
