@@ -7,7 +7,8 @@ $global-sep = 10px
 // body bg
 $body-bg = #f8f8f8 url('../img/subtlenet2.png')
 
-//--------------
+
+//---------------------------------------------------------------------------
 // nav
 $nav-width = 275px
 // nav links
@@ -21,36 +22,42 @@ $nav-link-color-selected = #fff
 $nav-link-bg-color-selected-ie = #4e7949
 $nav-link-bg-color-selected = rgba(8, 69, 1, 0.7)
 
-//--------------
+
+//---------------------------------------------------------------------------
 // header
 $header-height = 60px
 $header-bg = #4c9242 url('../img/diamond_upholstery_green.png') 0 31px
 
-//--------------
+
+//---------------------------------------------------------------------------
 // toc
 $toc-width = $nav-width - $global-sep
 $toc-item-width = $toc-width - $global-sep
 
-//--------------
+
+//---------------------------------------------------------------------------
 // nav header
 $nav-header-border-bottom-color = #BABABA
 $nav-header-height = 25px + $global-sep
 
-//--------------
+
+//---------------------------------------------------------------------------
 // filter input
 $input-search-bg = #EDEDED url('../img/search.png') no-repeat 7px 5px
 $input-search-bg-focus = #fff
 
-//--------------
+
+//---------------------------------------------------------------------------
 // object types
-$type-string-color = #EAEA8A
+$type-string-color = #F1E2A3
 $type-boolean-color = #A6CAA9
 $type-number-color = #A9C5EB
 $type-function-color = #EDA9BC
 $type-object-color = #CFB1ED
 $type-array-color = #FFC48E
 
-//--------------
+
+//---------------------------------------------------------------------------
 // scrollbar
 
 // size
@@ -97,7 +104,7 @@ a
 a:hover
   color $nav-link-color-hover
 
-selection(hsla(145, 100%, 9%, .7), #fff)
+selection(rgba(154, 163, 135, .5), #444)
 
 #header
   padding 7px 10px 0 10px
@@ -137,6 +144,9 @@ selection(hsla(145, 100%, 9%, .7), #fff)
   margin-top 20px
   margin-bottom 35px
   padding-bottom 30px
+
+.cjs-object
+  color object-text-color($type-object-color)
 
 .cjs-method
   color object-text-color($type-function-color)
@@ -202,6 +212,9 @@ dt.cjs-param, .cjs-json-key
 dd.cjs-type, .cjs-json .cjs-type
   float left
 
+.cjs-json li
+  margin-bottom 10px
+
 .cjs-type em, .cjs-return em
   font-style normal
   font-family arial
@@ -220,7 +233,7 @@ dd.cjs-type, .cjs-json .cjs-type
   margin-bottom 20px
   font-size 0.8em
   font-family arial
-  margin-top 5px
+  padding-top 1px
 
 .cjs-param-desc code, p code.prettyprint
   padding 0 6px
@@ -249,13 +262,22 @@ em.cjs-type-object
 em.cjs-type-array
   object-color($type-array-color)
 
+em.cjs-param-optional
+  background rgba(255, 255, 255, 0.4)
+  border-color #ccc
+  color #888
+
 .cjs-return
   border-top 1px solid #DDD
   border-bottom 1px solid #DDD
   padding-top 10px
   padding-bottom 10px
   overflow hidden
-  margin 15px 0
+  margin 20px 0 30px 0
+  & + &
+    border-top 0
+    margin-top -20px
+    padding-top 0
   em
     font-family arial
     font-size 0.7em
@@ -370,13 +392,16 @@ for i in lvls
 // CONTENT
 // ==========================================================================
 h1, h2, h3, h4, h5, h6
-  margin 10px 0
+  margin 10px 0 20px 0
   font-family inherit
   font-weight bold
   line-height 1
   color inherit
   text-rendering optimizelegibility
   text-shadow 0px 1px white
+  // description
+  & + p
+    margin-bottom 20px
 
 h1
   font-size 38px
@@ -410,13 +435,14 @@ p
 pre
   user-select none
   font-size 0.9em
+  margin-bottom 30px
   code
     user-select text
     padding-left 5px
     font-size 14px
 
 // code selection
-selection(rgba(0, 0, 0, 0.3), inherit, '.prettyprint code span')
+selection(rgba(130, 120, 130, .3), inherit, '.prettyprint code span')
 
 
 // ==========================================================================

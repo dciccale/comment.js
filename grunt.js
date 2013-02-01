@@ -1,44 +1,49 @@
 module.exports = function (grunt) {
 
-  // css paths
-  var cssOutputPath = 'lib/template/css/';
-  var cssSrcPath = 'lib/template/src/css/';
-  var cssDebugOutput = cssSrcPath + 'docs.css';
-  var cssMinOutput = cssOutputPath + cssDebugOutput.replace(/.*(\/.*)(\.css)/, '$1.min$2');
-  var stylusInput = cssSrcPath + 'styl/docs.styl';
-  var stylusOutput = {};
-  stylusOutput[cssDebugOutput] = [stylusInput];
-
-  // js paths
-  var jsOutputPath = 'lib/template/js/docs.min.js';
-  var jsSrcPath = 'lib/template/src/js/';
-
   grunt.initConfig({
-    pkg: '<json:package.json>',
-    lint: {
-      files: ['grunt.js', 'lib/comment.js', jsSrcPath + 'tocfilter.js']
+    paths: {
+      cssSrc: 'lib/template/src/css/',
+      cssDebugOutput: '<%= paths.cssSrc %>docs.css',
+      cssMinOutput: 'lib/template/css/docs.min.css',
+      jsSrc: 'lib/template/src/js/',
+      jsOutput: 'lib/template/js/docs.min.js'
     },
+
+    stylusOutput: {
+      '<%= paths.cssDebugOutput %>': '<%= paths.cssSrc %>styl/docs.styl'
+    },
+
+    pkg: '<json:package.json>',
+
+    lint: {
+      files: ['grunt.js', 'lib/comment.js', '<%= paths.jsSrc %>tocfilter.js']
+    },
+
     stylus: {
       compile: {
-        files: stylusOutput
+        files: '<config:stylusOutput>'
       }
     },
+
     min: {
       dist: {
-        src: [jsSrcPath + 'prettify.js', jsSrcPath + 'tocfilter.js'],
-        dest: jsOutputPath
+        src: ['<%= paths.jsSrc %>prettify.js', '<%= paths.jsSrc %>tocfilter.js'],
+        dest: '<%= paths.jsOutput %>'
       }
     },
+
     mincss: {
       dist: {
-        src: [cssDebugOutput],
-        dest: cssMinOutput
+        src: ['<%= paths.cssDebugOutput %>'],
+        dest: '<%= paths.cssMinOutput %>'
       }
     },
+
     watch: {
-      files: ['<config:lint.files>', cssSrcPath + 'styl/comment.styl', cssSrcPath + 'styl/src.styl'],
+      files: ['<config:lint.files>', '<%= paths.cssSrc %>styl/comment.styl', '<%= paths.cssSrc %>styl/src.styl'],
       tasks: 'lint min stylus mincss'
     },
+
     jshint: {
       options: {
         curly: true,
@@ -48,7 +53,8 @@ module.exports = function (grunt) {
         sub: true,
         undef: true,
         eqnull: true,
-        node: true
+        node: true,
+        strict: false
       },
       globals: {
         window: true
