@@ -1,15 +1,13 @@
 {
-  "name": "comment-js",
+  "name": "commentjs",
   "description": "API Documentation builder",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "author": "Denis Ciccale (@tdecs)",
   "homepage": "http://github.com/dciccale/comment.js",
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/dciccale/comment.js.git"
-    }
-  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dciccale/comment.js.git"
+  },
   "bugs": {
     "url": "http://github.com/dciccale/comment.js/issues"
   },
@@ -21,19 +19,22 @@
   ],
   "main": "./lib/comment",
   "bin": {
-    "comment-js": "./bin/comment-js"
+    "commentjs": "./bin/commentjs"
   },
   "dependencies": {
     "eve": "0.x.x",
-    "handlebars": "1.x.x"
+    "handlebars": "1.0.12"
   },
   "devDependencies": {
-    "grunt-contrib-stylus": "0.3.x",
-    "grunt-contrib-mincss": "0.3.x",
-    "grunt": "0.3.x"
+    "grunt": "0.4.1",
+    "grunt-contrib-jshint": "0.6.4",
+    "grunt-contrib-stylus": "0.8.0",
+    "grunt-contrib-cssmin": "0.6.2",
+    "grunt-contrib-uglify": "0.2.4",
+    "grunt-contrib-watch": "0.5.3"
   },
   "keywords": ["documentation", "javascript", "comment", "api"],
   "engines": [
-    "node >= 0.6.0"
+    "node >= 0.8.0"
   ]
 }
