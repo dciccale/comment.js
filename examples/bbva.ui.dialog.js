@@ -724,11 +724,11 @@
      > Arguments
      - options (object) object of name/value pairs
      o {
-     o    el (string) selector for the element to act as a dialog (optional)
+     o    el (string) #optional selector for the element to act as a dialog
      o    id (string) unique id for the dialog
      o    content (string) string content for de dialog (could be the inner html of a div `$('#myDiv').html())`
      o    afterLoad (callback) callback function to execute after loading dialog content via ajax
-     o    button (object, string) jQuery object or selector for the button that triggers the dialog
+     o    button (object|string) jQuery object or selector for the button that triggers the dialog
      o    url (string, function) url string or function that returns a url string
      o    urlParams (object, function) object or function that returns an object with params for the url
      o    tagName (string) the tagName for creating the dialog if no element was provided (div by default)

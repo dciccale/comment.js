@@ -34,6 +34,7 @@
     > Arguments
     - channel (string) the channel to subscribe to
     - handler (function) the function to execute when it's channel is published recieving the @publish data
+    = (array) [channel, handler]
     > Usage
     | var handle = subscribe('some/channel', function (name, lastName) {
     |   console.log(name + ' ' + lastName);

@@ -22,7 +22,7 @@
     "commentjs": "./bin/commentjs"
   },
   "dependencies": {
-    "eve": "0.x.x",
+    "eve": "0.4.1",
     "handlebars": "1.0.12"
   },
   "devDependencies": {

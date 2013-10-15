@@ -1,8 +1,8 @@
-module.exports = ->
+module.exports = (grunt) ->
 
   @initConfig
     CSS_DIR: 'lib/template/src/css/'
-    CSS_DEBUG_FILE: '<%= CSS_FILE %>docs.css',
+    CSS_DEBUG_FILE: '<%= CSS_DIR %>docs.css',
     CSS_MIN_FILE: 'lib/template/css/docs.min.css',
     JS_DIR: 'lib/template/src/js/',
     JS_FILE: 'lib/template/js/docs.min.js'
@@ -30,6 +30,11 @@ module.exports = ->
           '<%= CSS_MIN_FILE %>': ['<%= CSS_DEBUG_FILE %>']
 
     watch:
+      test:
+        files: ['lib/**/*.js']
+        tasks: ['link']
+
+      ###
       jshint:
         files: ['<%= jshint.lib.src %>']
         tasks: ['jshint', 'uglify']
@@ -37,6 +42,15 @@ module.exports = ->
       stylus:
         files: ['<%= CSS_DIR %>styl/comment.styl', '<%= CSS_DIR %>styl/src.styl'],
         tasks: ['stylus', 'cssmin']
+      ###
+
+  @task.registerTask('link', 'Update module', ->
+    grunt.util.spawn({
+      cmd: 'npm',
+      args: ['link']
+    })
+    grunt.log.write('Linked!').ok()
+  )
 
   @loadNpmTasks 'grunt-contrib-jshint'
   @loadNpmTasks 'grunt-contrib-stylus'
