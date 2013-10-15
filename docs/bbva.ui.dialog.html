@@ -44,13 +44,7 @@ $B.ui.dialog.open('MyID', {
   height: 300
 });
 </code></pre></div><div class="cjs-section $B-ui-dialog-set-section"><h5 id="$B.ui.dialog.set" class="cjs-title cjs-method">$B.ui.dialog.set(id, options)<a href="#$B.ui.dialog.set" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 445 in the source" href="/Users/Denis/git/comment.js/docs/src/bbva.ui.dialog-src.html#L445">bbva.ui.dialog.js:445</a></span></h5><p>Set an option to an existing dialog</p><p class="cjs-header">Arguments</p><dl class="cjs-arguments"><dt class="cjs-param">id</dt><dd class="cjs-type"><em class="cjs-type-string">string</em></dd><dd class="cjs-param-desc">id of the dialog</dd><dt class="cjs-param">options</dt><dd class="cjs-type"><em class="cjs-type-object">object</em></dd><dd class="cjs-param-desc">object setting the ui dialog options</dd></dl><p class="cjs-return"><strong class="cjs-header">Returns</strong> <em class="cjs-type-object">object</em> <span class="cjs-param-desc">jQuery object of the dialog content</span></p><p class="cjs-header">Usage</p><pre class="prettyprint linenums"><code>$B.ui.dialog('id', {zIndex: 0, modal: false});
-</code></pre></div><div class="cjs-section $B-ui-dialogSecureHeight-section"><h4 id="$B.ui.dialogSecureHeight" class="cjs-title cjs-property">$B.ui.dialogSecureHeight<a href="#$B.ui.dialogSecureHeight" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 65 in the source" href="/Users/Denis/git/comment.js/docs/src/bbva.ui.dialog-src.html#L65">bbva.ui.dialog.js:65</a></span></h4><p>Secure and nice separation from top and bottom of the window</p></div><div class="cjs-section publish-section"><h2 id="publish" class="cjs-title cjs-method">publish(channel, data)<a href="#publish" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 20 in the source" href="/Users/Denis/git/comment.js/docs/src/doc-src.html#L20">doc.js:20</a></span></h2><p>Publish data to a specified channel</p><p class="cjs-header">Arguments</p><dl class="cjs-arguments"><dt class="cjs-param">channel</dt><dd class="cjs-type"><em class="cjs-type-string">string</em></dd><dd class="cjs-param-desc">&#160;</dd><dt class="cjs-param">data</dt><dd class="cjs-type"><em class="cjs-type-array">array</em></dd><dd class="cjs-param-desc">&#160;</dd></dl><p class="cjs-header">Usage</p><pre class="prettyprint linenums"><code>publish('some/channel', ['Denis', 'Ciccale']);
-</code></pre></div><div class="cjs-section subscribe-section"><h2 id="subscribe" class="cjs-title cjs-method">subscribe(channel, handler)<a href="#subscribe" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 42 in the source" href="/Users/Denis/git/comment.js/docs/src/doc-src.html#L42">doc.js:42</a></span></h2><p>Subscribe a handler to a specified channel</p><p class="cjs-header">Arguments</p><dl class="cjs-arguments"><dt class="cjs-param">channel</dt><dd class="cjs-type"><em class="cjs-type-string">string</em></dd><dd class="cjs-param-desc">the channel to subscribe to</dd><dt class="cjs-param">handler</dt><dd class="cjs-type"><em class="cjs-type-function">function</em></dd><dd class="cjs-param-desc">the function to execute when it's channel is published recieving the <a href="#publish" class="cjs-link">publish</a> data</dd></dl><p class="cjs-return"><strong class="cjs-header">Returns</strong> <em class="cjs-type-array">array</em> <span class="cjs-param-desc">[channel, handler]</span></p><p class="cjs-header">Usage</p><pre class="prettyprint linenums"><code>var handle = subscribe('some/channel', function (name, lastName) {
-  console.log(name + ' ' + lastName);
-});
-</code></pre></div><div class="cjs-section unsubscribe-section"><h2 id="unsubscribe" class="cjs-title cjs-method">unsubscribe(handle)<a href="#unsubscribe" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 57 in the source" href="/Users/Denis/git/comment.js/docs/src/doc-src.html#L57">doc.js:57</a></span></h2><p>Unsubscribe a handler from a specified channel</p><p class="cjs-header">Arguments</p><dl class="cjs-arguments"><dt class="cjs-param">handle</dt><dd class="cjs-type"><em class="cjs-type-array">array</em></dd><dd class="cjs-param-desc">the array that is returned from the <a href="#subscribe" class="cjs-link">subscribe</a> function</dd></dl><p class="cjs-header">Usage</p><pre class="prettyprint linenums"><code>// the handle variable is defined on the subscribe example
-unsubscribe(handle);
-</code></pre></div>
+</code></pre></div><div class="cjs-section $B-ui-dialogSecureHeight-section"><h4 id="$B.ui.dialogSecureHeight" class="cjs-title cjs-property">$B.ui.dialogSecureHeight<a href="#$B.ui.dialogSecureHeight" title="Link to this section" class="cjs-hash">#</a><span class="cjs-sourceline">Defined in: <a title="Go to line 65 in the source" href="/Users/Denis/git/comment.js/docs/src/bbva.ui.dialog-src.html#L65">bbva.ui.dialog.js:65</a></span></h4><p>Secure and nice separation from top and bottom of the window</p></div>
 </div>
 
 <div id="cjs-nav">
@@ -116,18 +110,6 @@ unsubscribe(handle);
     
     <li class="cjs-lvl-2">
       <a href="#$B.ui.dialogSecureHeight">$B.ui.dialogSecureHeight</a>
-    </li>
-    
-    <li class="cjs-lvl-0">
-      <a href="#publish">publish()</a>
-    </li>
-    
-    <li class="cjs-lvl-0">
-      <a href="#subscribe">subscribe()</a>
-    </li>
-    
-    <li class="cjs-lvl-0">
-      <a href="#unsubscribe">unsubscribe()</a>
     </li>
     
   </ul>
