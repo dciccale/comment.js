@@ -1,14 +1,12 @@
 {
     "title": "Comment.js API Documentation",
     "description": "My documentation",
-    "options": {
-      "output": "documentation/docs.html",
-      "scripts": ["reference.js"],
-      "regex": "^c_",
-      "source": [{
-          "path": "src\\c_example.js"
-      }, {
-          "path": "src\\example2.js"
-      }]
-    }
+    "output": "documentation/docs.html",
+    "scripts": ["reference.js"],
+    "regex": "^c_",
+    "source": [{
+        "path": "src\\c_example.js"
+    }, {
+        "path": "src\\example2.js"
+    }]
 }

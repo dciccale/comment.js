@@ -12,7 +12,7 @@ module.exports = (grunt) ->
         jshintrc: '.jshintrc'
 
       lib:
-        src: ['lib/comment.js', 'lib/doc.js', '<%= JS_DIR %>tocfilter.js']
+        src: ['lib/comment.js', 'lib/comment_process.js', '<%= JS_DIR %>tocfilter.js']
 
     stylus:
       compile:
