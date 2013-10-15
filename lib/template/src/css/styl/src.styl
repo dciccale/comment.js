@@ -16,6 +16,7 @@
       background #333
     &:hover .ln
       color $hi-line-number-color-hover
+
     // linenum
     .ln
       position absolute
@@ -25,22 +26,25 @@
       text-align right
       user-select none
       transition: none
+
     // keyword
-    b
+    .kwd
       color $hi-keyword
-      font-weight normal
+
     // string
-    i, i *, i .d
+    .str, .str *, .str .lit
       color $hi-string
-      font-style normal
+
     // operator
-    .s
+    .op
       color $hi-operator
+
     // number
-    .d
+    .lit
       color $hi-number
+
     // comment
-    .c, .c *
+    .com, .com *
       color $hi-comment
 
 // selection color
