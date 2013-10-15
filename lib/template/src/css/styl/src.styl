@@ -5,7 +5,7 @@
   user-select none
   code
     user-select text
-    background #222
+    background-color $hi-bg-color
     display block
     color #F8F8F2
     font-family Menlo, Consolas, Monaco, "Lucida Console", monospace
@@ -13,17 +13,18 @@
     padding-left 80px
     line-height 1.2
     &:hover
-      background #444
+      background #333
     &:hover .ln
-    color #fff
+      color $hi-line-number-color-hover
     // linenum
     .ln
       position absolute
       left 0
-      color $hi-line-text-color
+      color $hi-line-number-color
       width 50px
       text-align right
       user-select none
+      transition: none
     // keyword
     b
       color $hi-keyword
@@ -43,6 +44,6 @@
       color $hi-comment
 
 // selection color
-selection(rgba(69, 69, 69, 0.99), inherit, '#cjs-src')
-selection(rgba(69, 69, 69, 0.99), inherit, '#cjs-src code')
-selection(rgba(69, 69, 69, 0.99), inherit, '#cjs-src code *')
+selection($hi-selection-color, inherit, '#cjs-src')
+selection($hi-selection-color, inherit, '#cjs-src code')
+selection($hi-selection-color, inherit, '#cjs-src code *')

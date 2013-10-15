@@ -1,6 +1,6 @@
 .prettyprint
   padding 10px 10px 10px 0
-  background-color #272822
+  background-color $hi-bg-color
   border 1px solid black
 
 pre
@@ -9,7 +9,9 @@ pre
 ol.linenums
   margin-left 50px
   li
-    color $hi-line-text-color
+    color $hi-line-number-color
+    &:hover
+      color $hi-line-number-color-hover
 
 .com
   color $hi-comment

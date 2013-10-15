@@ -131,7 +131,8 @@ pre code{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;-o-
 .prettyprint{padding:10px 10px 10px 0;background-color:#272822;border:1px solid #000}
 pre{-webkit-border-radius:6px;-moz-border-radius:6px;-ms-border-radius:6px;-o-border-radius:6px;border-radius:6px}
 ol.linenums{margin-left:50px;}
-ol.linenums li{color:#797976}
+ol.linenums li{color:#797976;}
+ol.linenums li:hover{color:#fff}
 .com{color:#7c7c7c}
 .lit{color:#e4ff9b}
 .pun,.opn,.clo{color:#f8f8f2}
@@ -142,17 +143,18 @@ ol.linenums li{color:#797976}
 .fun{color:#f00}
 .typ,.atn,.dec,.var{color:#bbde57}
 #cjs-src{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;}
-#cjs-src code{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;-o-user-select:text;user-select:text;background:#222;display:block;color:#f8f8f2;font-family:Menlo,Consolas,Monaco,"Lucida Console",monospace;white-space:pre;padding-left:80px;line-height:1.2;}
-#cjs-src code:hover{background:#444}
-#cjs-src code:hover .ln,#cjs-src code color #fff,#cjs-src code .ln{position:absolute;left:0;color:#797976;width:50px;text-align:right;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}
+#cjs-src code{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;-o-user-select:text;user-select:text;background-color:#272822;display:block;color:#f8f8f2;font-family:Menlo,Consolas,Monaco,"Lucida Console",monospace;white-space:pre;padding-left:80px;line-height:1.2;}
+#cjs-src code:hover{background:#333}
+#cjs-src code:hover .ln{color:#fff}
+#cjs-src code .ln{position:absolute;left:0;color:#797976;width:50px;text-align:right;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;-webkit-transition:none;-moz-transition:none;-ms-transition:none;-o-transition:none;transition:none}
 #cjs-src code b{color:#e3584d;font-weight:normal}
 #cjs-src code i,#cjs-src code i *,#cjs-src code i .d{color:#e4ff9b;font-style:normal}
 #cjs-src code .s{color:#e3584d}
 #cjs-src code .d{color:#b190ec}
 #cjs-src code .c,#cjs-src code .c *{color:#7c7c7c}
-#cjs-src::-moz-selection{background:rgba(69,69,69,0.99);color:inherit}
-#cjs-src::selection{background:rgba(69,69,69,0.99);color:inherit}
-#cjs-src code::-moz-selection{background:rgba(69,69,69,0.99);color:inherit}
-#cjs-src code::selection{background:rgba(69,69,69,0.99);color:inherit}
-#cjs-src code *::-moz-selection{background:rgba(69,69,69,0.99);color:inherit}
-#cjs-src code *::selection{background:rgba(69,69,69,0.99);color:inherit}
+#cjs-src::-moz-selection{background:rgba(130,120,130,0.3);color:inherit}
+#cjs-src::selection{background:rgba(130,120,130,0.3);color:inherit}
+#cjs-src code::-moz-selection{background:rgba(130,120,130,0.3);color:inherit}
+#cjs-src code::selection{background:rgba(130,120,130,0.3);color:inherit}
+#cjs-src code *::-moz-selection{background:rgba(130,120,130,0.3);color:inherit}
+#cjs-src code *::selection{background:rgba(130,120,130,0.3);color:inherit}
