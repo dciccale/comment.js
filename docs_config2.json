@@ -1,0 +1,7 @@
+{
+  "title": "My API Docs",
+  "options": {
+    "output": "documentation",
+    "source": "examples/"
+  }
+}

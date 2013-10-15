@@ -1,2 +1,21 @@
 #!/usr/bin/env node
-require('../lib/comment')(process.argv.slice(2));
+var commentjs = require('../lib/comment')
+var options = {};
+var args = process.argv.slice(2);
+var getOption = function (opt) {
+  var index = args.indexOf(opt);
+  var value;
+  if (index >= 0) {
+    value = args[index + 1];
+    args.splice(index, 2);
+  }
+  return value;
+}
+
+var outputOption = getOption('-o');
+
+if (outputOption) {
+  options.output = outputOption;
+}
+
+commentjs(args, options);
