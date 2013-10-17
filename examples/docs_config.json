@@ -1,12 +1,10 @@
 {
   "title": "My API Docs",
-  "options": {
-    "output": "documentation",
-    "source": [
-      {
-        "path": "doc.js",
-        "link": "https://github.com/dciccale/xxspubsub/blob/master/xxspubsub.js"
-      }
-    ]
-  }
+  "output": "documentation",
+  "source": [
+    {
+      "path": "doc.js",
+      "link": "https://github.com/dciccale/xxspubsub/blob/master/xxspubsub.js"
+    }
+  ]
 }

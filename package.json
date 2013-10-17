@@ -25,6 +25,7 @@
     "eve": "0.4.1",
     "handlebars": "1.0.12"
   },
+  "preferGlobal": true,
   "devDependencies": {
     "grunt": "0.4.1",
     "grunt-contrib-jshint": "0.6.4",

@@ -32,7 +32,7 @@ module.exports = (grunt) ->
     watch:
       link:
         files: ['lib/**/*.js']
-        tasks: ['link']
+        tasks: ['link', 'jshint']
 
       jshint:
         files: ['<%= jshint.lib.src %>']
