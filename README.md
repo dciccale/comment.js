@@ -8,16 +8,15 @@ Using Handlebars for templating, Stylus for CSS and JavaScript for coding :)
 
 ```js
 /*\
- * itemname
- [ itemtype ]
- **
+ * Name
+ [ type ]
  * Description: use # to write raw html which be rendered as is
  # <ul>
  #  <li>list</li>
  # </ul>
  > Arguments
  - arg1 (string) The first argument (make a link to another section of the doc: @itemname2)
- - arg2 (object) The third argument is an object of `key/value` pairs (the text key/value will appear between <code></code>)
+ - arg2 (object) The third argument is an object of `key/value` pairs
  o {
  o  key1 (string) The first key/value
  o  key2 (boolean) The second key/value
@@ -71,6 +70,27 @@ Use the pipe `|` to render code examples inside a `<pre>` tag that will be highl
 ```
 
 `\*/` End comment.js block.
+
+## Examples
+
+```javascript
+/*\
+ * subscribe
+ [ method ]
+ * Subscribe a handler to a specified channel
+ > Arguments
+ - channel (string) the channel to subscribe to
+ - handler (function) the function to execute when it's channel is published recieving the @publish data
+ > Usage
+ | var handle = subscribe('some/channel', function (name, lastName) {
+ |   console.log(name + ' ' + lastName);
+ | });
+\*/
+var subscribe = function (channel, handler) {
+  (channels[channel] = channels[channel] || []).push(handler);
+  return [channel, handler];
+};
+```
 
 ## Author
 Denis Ciccale ([@tdecs](http://twitter.com/tdecs))
