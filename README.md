@@ -2,7 +2,10 @@
 
 Fast and Simple API Documentation builder.
 
-Using Handlebars for templating, Stylus for CSS and JavaScript for coding :)
+Inspired by one of the firsts versions of dr.js by Dmitry Baranovskiy.
+
+At that moment dr.js was not as powerful or flexible enough for me and I made some PRs but there was little people concerned so I decided making this fork with the idea to keep improving it as a different library.
+I hope no remorse for taking the awesome and fun syntax for writing the comments :)
 
 ## Example comment.js blocks
 
