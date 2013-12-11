@@ -44,7 +44,7 @@ Using Handlebars for templating, Stylus for CSS and JavaScript for coding :)
 
 `>` Renders a heading.
 
-`-` paramName `(type)` `#optional` Param description see `@section2`. Words between \`backticks` will be rendered inside a \<code> tag.
+`-` `param` `(type)` `#optional` Param description see `@section2`. Words between \`backticks` will be rendered inside a \<code> tag.
 
 \`backticks` Use backticks to highlight code inside paragraphs.
 
