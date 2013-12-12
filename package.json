@@ -1,7 +1,7 @@
 {
   "name": "commentjs",
-  "description": "API Documentation builder",
-  "version": "0.2.0",
+  "description": "Simple API Documentation Generator",
+  "version": "0.2.1",
   "author": "Denis Ciccale (@tdecs)",
   "homepage": "http://github.com/dciccale/comment.js",
   "repository": {
