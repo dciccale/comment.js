@@ -1,6 +1,6 @@
 # comment.js
 
-Fast and Simple API Documentation builder.
+Simple API Documentation Generator.
 
 Inspired by one of the firsts versions of dr.js by Dmitry Baranovskiy.
 
