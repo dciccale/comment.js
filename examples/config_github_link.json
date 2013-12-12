@@ -1,0 +1,8 @@
+{
+  "title": "XXSPubSub API Docs",
+  "output": "docs_github_link/index.html",
+  "source": [{
+    "path": "xxspubsub.js",
+    "link": "https://github.com/dciccale/xxspubsub/blob/master/xxspubsub.js"
+  }]
+}
