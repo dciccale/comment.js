@@ -1,5 +1,0 @@
-{
-  "title": "Documentation",
-  "output": "documentation/index.html",
-  "source": ["jslibraryboilerplate.js", "xxspubsub.js"]
-}

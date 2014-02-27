@@ -1,7 +1,0 @@
-{
-  "title": "Comment.js API Documentation",
-  "output": "documentation/docs.html",
-  "scripts": ["c_greet.js", "greet_demo.js"],
-  "regex": "^c_",
-  "source": "./"
-}

@@ -1,0 +1,22 @@
+{{#if json}}
+<ul class="cjs-json">
+  <li>{
+    <ul class="cjs-json">
+      {{#each json}}
+      <li>
+        <span class="cjs-json-key">{{key}}</span>
+        <span class="cjs-type">
+        {{#each types}}
+          <em class="cjs-type-{{this}}">{{this}}</em>
+        {{/each}}
+        {{#if optional}}
+          <em class="cjs-param-optional">optional</em>
+        {{/if}}
+        </span>
+        <span class="cjs-param-desc">{{{desc}}}</span>
+      </li>
+      {{/each}}
+    </ul>
+  }</li>
+</ul>
+{{/if}}

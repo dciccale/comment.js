@@ -1,0 +1,35 @@
+<!doctype html>
+
+<!-- Generated with comment.js -->
+
+<!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+<meta charset="utf-8">
+<title>{{title}}</title>
+<meta name="viewport" content="width=device-width">
+<link rel="stylesheet" href="css/docs.min.css">
+
+<div id="cjs-documentation" class="cjs-panel">
+  <h1>{{title}}</h1>
+  {{{content}}}
+</div>
+
+<div id="cjs-nav">
+  <div class="cjs-nav-header">
+    <form>
+      <input type="text" id="cjs-filter">
+      <span role="button" id="cjs-search-reset">×</span>
+    </form>
+  </div>
+  <ul id="cjs-toc" class="cjs-panel">
+    {{#toc}}
+    <li class="cjs-lvl-{{indent}}">
+      <a href="#{{name}}">{{name}}{{brackets}}</a>
+    </li>
+    {{/toc}}
+  </ul>
+</div>
+
+<script src="js/docs.min.js"></script>

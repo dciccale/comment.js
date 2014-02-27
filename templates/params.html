@@ -1,0 +1,11 @@
+{{#each params}}
+<dl class="cjs-arguments">
+  <dt class="cjs-param">{{name}}</dt>
+  <dd class="cjs-type">
+    {{#each types}}
+    <em class="cjs-type-{{this}}">{{this}}</em>
+    {{/each}}
+  </dd>
+  <dd class="cjs-param-desc">{{{desc}}}</dd>
+</dl>
+{{/each}}
