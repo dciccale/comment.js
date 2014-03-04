@@ -1,0 +1,1 @@
+<p class="cjs-text">{{=line.text}}</p>

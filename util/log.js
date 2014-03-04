@@ -3,15 +3,33 @@
  * Copyright (c) 2012 Denis Ciccale (@tdecs)
  * Released under the MIT license
  * https://github.com/dciccale/comment.js/blob/master/LICENSE.txt
+ * Much of this module was taken from grunt.log but simplified (http://gruntjs.com)
  */
 
 'use strict';
 
-// much of this module was taken from grunt.log but simplified
 var log = module.exports = {};
 var util = require('util');
 
 var colors = require('colors');
+
+// Log types defaults
+var types = {
+  ok: {
+    msg: 'OK',
+    color: 'green'
+  },
+  warn: {
+    msg: 'WARNING',
+    color: 'yellow'
+  },
+  error: {
+    msg: 'ERROR',
+    color: 'red'
+  }
+};
+
+log.muted = false;
 
 function format(args) {
   // Args is a argument array so copy it in order to avoid wonky behavior.
@@ -24,13 +42,27 @@ function format(args) {
 
 function write(msg) {
   msg = msg || '';
-  process.stdout.write(msg);
+
+  if (!log.muted) {
+    process.stdout.write(msg);
+  }
 }
 
 function writeln(msg) {
   // Write blank line if no msg is passed in.
   msg = msg || '';
   write(msg + '\n');
+}
+
+// Logs a message of the specified type
+function _log() {
+  var msg = format(arguments);
+
+  if (arguments.length > 0) {
+    writeln('>> '[this.color] + msg.trim().replace(/\n/g, '\n>> '[this.color]));
+  } else {
+    writeln(this.msg[this.color]);
+  }
 }
 
 log.write = function () {
@@ -44,32 +76,17 @@ log.writeln = function () {
 };
 
 log.ok = function () {
-  var msg = format(arguments);
-  if (arguments.length > 0) {
-    writeln('>> '.green + msg.trim().replace(/\n/g, '\n>> '.green));
-  } else {
-    writeln('OK'.green);
-  }
+  _log.apply(types.ok, arguments);
   return log;
 }
 
 log.warn = function () {
-  var msg = format(arguments);
-  if (arguments.length > 0) {
-    writeln('>> '.yellow + msg.trim().replace(/\n/g, '\n>> '.yellow));
-  } else {
-    writeln('WARNING'.yellow);
-  }
+  _log.apply(types.warn, arguments);
   return log;
 }
 
 log.error = function () {
-  var msg = format(arguments);
-  if (arguments.length > 0) {
-    writeln('>> '.red + msg.trim().replace(/\n/g, '\n>> '.red));
-  } else {
-    writeln('ERROR'.red);
-  }
+  _log.apply(types.error, arguments);
   return log;
 }
 

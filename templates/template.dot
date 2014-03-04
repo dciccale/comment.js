@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{=it.title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/docs.min.css">
+  </head>
+  <body>
+
+    <!-- Generated with comment.js -->
+
+    <div id="header">
+      <a href="http://kimbojs.com">
+        <img src="img/kimbojs_logo_white.png" width="138" height="38" alt="Kimbo.js" />
+      </a>
+    </div>
+
+    <div id="cjs-documentation" class="cjs-panel">
+      <h1>{{=it.title}}</h1>
+
+      {{~it.sections :section}}
+
+      <div class="cjs-section {{=section[0].title}}-section">
+        {{#def.section}}
+
+        {{~section :line:i}}
+          {{ if (i > 0) { }}
+            {{ if (line.text) { }} {{#def.text}} {{ } }}
+
+            {{ if (line.params) { }} {{#def.params}} {{ } }}
+
+            {{ if (line.html) { }} {{=line.html}} {{ } }}
+
+            {{ if (line.head) { }} {{#def.head}} {{ } }}
+
+            {{ if (line.code) { }} {{#def.code}} {{ } }}
+
+            {{ if (line.return) { }} {{#def.return}} {{ } }}
+
+            {{ if (line.json) { }} {{#def.json}} {{ } }}
+          {{ } }}
+        {{~}}
+      </div>
+      {{~}}
+    </div>
+
+    <div id="cjs-nav">
+      <div class="cjs-nav-header">
+        <form>
+          <input type="text" id="cjs-filter">
+          <span role="button" id="cjs-search-reset">×</span>
+        </form>
+      </div>
+      {{#def.toc}}
+    </div>
+
+    <script src="js/docs.min.js"></script>
+
+    {{~it.scripts :src}}
+      <script src="{{=src}}"></script>
+    {{~}}
+
+    {{if (it.trackingID) { }}
+    <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','{{=it.trackingID}}');ga('send','pageview');
+    </script>
+    {{ } }}
+
+  </body>
+</html>

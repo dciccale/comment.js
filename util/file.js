@@ -21,7 +21,7 @@ file.isDir = function(path) {
 
 file.isFile = function (filepath) {
   return filepath && file.exists(filepath) && fs.statSync(filepath).isFile();
-}
+};
 
 // cortesy of grunt
 file.mkdir = function(dirpath, mode) {
@@ -35,7 +35,7 @@ file.mkdir = function(dirpath, mode) {
     if (!file.exists(subpath)) {
       try {
         fs.mkdirSync(subpath, mode);
-      } catch(e) {
+      } catch (e) {
         throw util.error('Unable to create directory "' + subpath + '" (Error code: ' + e.code + ').', e);
       }
     }
@@ -66,11 +66,11 @@ file.readJSON = function (filepath) {
   } catch (e) {
     throw util.error('Unable to parse "' + filepath + '" file (' + e.message + ').', e);
   }
-}
+};
 
-file.expand = function (pattern) {
-  return file.glob.sync(pattern);
-}
+file.expand = function (pattern, options) {
+  return file.glob.sync(pattern, options);
+};
 
 file.exists = function (filepath) {
   return filepath && fs.existsSync(filepath);
@@ -78,7 +78,7 @@ file.exists = function (filepath) {
 
 file.copy = function (srcpath, destpath) {
   var destBase = destpath;
-  destpath = path.join(destBase, path.basename(srcpath));
   var content = file.read(srcpath, null);
+  destpath = path.join(destBase, path.basename(srcpath));
   file.write(destpath, content);
 };

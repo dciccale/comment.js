@@ -46,7 +46,7 @@ var TOC = [];
 var utoc = {};
 var lvl = [];
 var chunks = {};
-var pointer, namespace, target;
+var pointer, namespace;
 
 var DocParser = function (filename) {
   this.filename = filename;
@@ -56,7 +56,7 @@ var DocParser = function (filename) {
 DocParser.prototype.parse = function () {
   var filename = this.filename;
 
-  var code = fs.readFileSync(filename, 'utf-8');
+  var code = fs.readFileSync(filename, 'utf-8').toString();
 
   // normalize line breaks
   code = code.replace(/\r\n/gm, '\n');
@@ -81,10 +81,8 @@ DocParser.prototype.extract = function (code, filename) {
         commentlines.push(line);
         i++;
         line = lines[i];
-        linenum = i + 2;
+        linenum = i + 1;
       }
-
-      // we can look ahead here if we need to guess the name/type
 
       // remove /*\
       commentlines.shift();
@@ -112,22 +110,32 @@ DocParser.prototype.processblock = function (block, filename) {
   var block_lines = block.comment.split(REGEX_LINES);
   var firstline = false;
   var lastline = false;
-  // var itemData = {};
-  // var current = [];
   var target = {};
-  var str = '';
-  var tagObj, prevObj;
+  var tagObj, prevObj, prevRet = {};
+  var itemData = {};
 
-  var render2 = function (obj, target, mode) {
-    var data = {};
-    data[mode] = target[mode];
+  // Pushes the current extracted data into the pointer object.
+  // the pointer object is made of each found namespace.
+  // an array is pushed to each namespace inside another array hanging from a "data" property.
+  // the array that is pushed contains the template and data to render [template, data]
+  // since the order of the found comment data needs to be preserved
+  var render = function (obj, data, mode) {
+    // var data = {};
+    // data[mode] = target[mode];
+
+    pointer.data = pointer.data || [];
 
     if (obj.template && data) {
-      str += obj.template(data);
+      // concat the rendered content for the current section
+      itemData.section.content += obj.template(data);
+
+      // TODO:
+      // could also push something like this {template: template, data: data}
       pointer.data.push([obj.template, data]);
 
+      delete prevRet[mode];
       // clear the tag data after render
-      delete target[target.mode];
+      delete target[mode];
     }
   };
 
@@ -158,57 +166,58 @@ DocParser.prototype.processblock = function (block, filename) {
           namespace = namespace[tit] = namespace[tit] || {};
         });
 
-        target.name = value;
-
         value = {
           name: value,
-          linenum: block.line,
-          filename: filename
+          filename: filename,
+          level: ++title.length,
+          content: ''
         };
 
         tag = 'section';
-        var renderSection = true;
-      }
+        tagObj = tags[tag];
+        target = tagObj.callback(tag, value, target, block, itemData);
+        // itemData = value;
+        itemData[tag] = target[tag];
+        itemData.template = tagObj.template;
+        itemData.name = value.name;
 
-      tagObj = tags[tag];
-      ret = tagObj.callback(tag, value, target, block);
+      } else {
+        tagObj = tags[tag];
+        ret = tagObj.callback(tag, value, target, block, itemData);
 
-      if ((target.mode !== tagObj.name) || lastline) {
+        // when the mode changes, render the previous
+        shouldRender = (target.mode !== tagObj.name);
 
-        // should save the section to render and concat all its child rendered info to render the
-        // section at the end of the loop so to be inside the main template and not outside
-
-        if (renderSection || lastline) {
-          // when its the last line, make sure to set the target to the current one
-          target.mode = tags[tag].name;
-
-          // render the current tagObj
-          prevObj = tagObj;
-
-          // clear the current tag object so to prevent render it again
-          tagObj = null;
+        if (prevObj && prevObj.single) {
+          shouldRender = true;
         }
 
         // TODO: the render should be outside
-        if (prevObj) {
-          pointer.data = pointer.data || [];
-          render2(prevObj, ret, target.mode || tags[tag].name);
+        if (shouldRender) {
+          if (prevObj) {
+            render(prevObj, prevRet, target.mode);
+          }
         }
+
+        // lastline, render the current tag
+        if (lastline) {
+          render(tagObj, ret, tagObj.name);
+        }
+
+        // save current mode
+        target.mode = tags[tag].name;
+
+        // save the previous tag object for rendering when needed
+        prevObj = tagObj;
+        prevRet[target.mode] = ret[target.mode];
       }
-
-      // save current mode
-      target.mode = tags[tag].name;
-
-      // save the previous tag object for saving when it's done
-      prevObj = tagObj;
     }
   });
 
-  debugger;
-  target.line = block.line;
-  chunks[target.name] = str;
+  itemData.line = block.line;
+  chunks[itemData.name] = itemData;
 
-  return str;
+  return itemData.section.content;
 };
 
 DocParser.prototype.writeOutput = function (file, content) {
@@ -271,22 +280,21 @@ DocParser.prototype.transform = function (commentmap) {
       total.push(res);
     });
 
-    this.runner(root_namespace, 2);
+    this.runner(root_namespace);
 
-    var content = this.render(root);
+    // var content = this.render(root);
     var content = html;
     this.writeOutput(file, content);
     // this.writeOutput(file, total);
   }
 
   // console.log(Date.now() -d);
-
 };
 
 
 var html = '';
 // creates the toc
-DocParser.prototype.runner = function (pointer, hx) {
+DocParser.prototype.runner = function (pointer) {
 
   var that = this;
   var level = [], node;
@@ -299,8 +307,10 @@ DocParser.prototype.runner = function (pointer, hx) {
   level.sort().forEach(function (_level) {
     lvl.push(_level);
     var name = lvl.join('.');
+    var itemData = chunks[name];
 
-    html += chunks[name];
+    html += itemData.template(itemData)
+    // html += chunks[name];
     // var isMethod = itemData.type && itemData.type.indexOf('method') + 1;
     // if (isMethod) {
     //   if (itemData.params) {
@@ -329,7 +339,7 @@ DocParser.prototype.runner = function (pointer, hx) {
         utoc[name] = 1;
       }
 
-    that.runner(pointer[_level], hx + 1);
+    that.runner(pointer[_level]);
     lvl.pop();
   });
 };

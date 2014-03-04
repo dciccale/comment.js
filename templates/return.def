@@ -1,0 +1,7 @@
+<p class="cjs-return">
+  <strong class="cjs-header">Returns</strong>
+  {{~line.return.types :type:k}}
+  <em class="cjs-type-{{=type}}">{{=type}}</em>
+  {{~}}
+  <span class="cjs-param-desc">{{=line.return.desc}}</span>
+</p>

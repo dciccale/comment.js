@@ -1,0 +1,1029 @@
+<!doctype html><meta charset="utf-8"><title>$B.ui.dialog</title><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="css/docs.min.css"><body id="cjs-src"> <!-- Generated with comment.js --> <pre><code><span class="cm-comment">/*\</span>
+<span class="cm-comment"> * $B</span>
+<span class="cm-comment"> * Global namespace for BBVA</span>
+<span class="cm-comment">\*/</span>
+<span class="cm-comment">/*\</span>
+<span class="cm-comment"> * $B.ui</span>
+<span class="cm-comment"> * Global namespace for BBVA UI components</span>
+<span class="cm-comment">\*/</span>
+
+<span class="cm-comment">// &quot;$B.ui.dialog&quot;</span>
+<span class="cm-comment">/*\</span>
+<span class="cm-comment"> * $B.ui.dialog</span>
+<span class="cm-comment"> * Object to perform any operations related to dialogs</span>
+<span class="cm-comment">\*/</span>
+(<span class="cm-keyword">function</span> (<span class="cm-def">$</span>, <span class="cm-def">window</span>) {
+
+  <span class="cm-variable">$B</span>.<span class="cm-property">provide</span>(<span class="cm-variable">$B</span>, <span class="cm-string">&#39;ui.dialog&#39;</span>);
+
+  <span class="cm-comment">// we need to disable resize on overlay</span>
+  <span class="cm-comment">// original overlay create function</span>
+  <span class="cm-keyword">var</span> <span class="cm-def">overlayCreate</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialog</span>.<span class="cm-property">overlay</span>.<span class="cm-property">create</span>,
+    <span class="cm-def">document</span> <span class="cm-operator">=</span> <span class="cm-variable-2">window</span>.<span class="cm-property">document</span>;
+
+  <span class="cm-comment">// prevent jQuery ui from changing the overlay size (we use css)</span>
+  <span class="cm-variable-2">$</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialog</span>.<span class="cm-property">overlay</span>.<span class="cm-property">resize</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {};
+
+  <span class="cm-comment">// overlay create function wrapper</span>
+  <span class="cm-variable-2">$</span>.<span class="cm-property">extend</span>(<span class="cm-variable-2">$</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialog</span>.<span class="cm-property">overlay</span>, {
+    <span class="cm-property">create</span>: <span class="cm-keyword">function</span> (<span class="cm-def">dialog</span>) {
+      <span class="cm-comment">// save reference to return</span>
+      <span class="cm-keyword">var</span> <span class="cm-def">$el</span> <span class="cm-operator">=</span> <span class="cm-variable-2">overlayCreate</span>.<span class="cm-property">call</span>(<span class="cm-keyword">this</span>, <span class="cm-variable-2">dialog</span>);
+
+      <span class="cm-comment">// unbind resize event</span>
+      <span class="cm-variable-2">$</span>(<span class="cm-variable-2">window</span>).<span class="cm-property">off</span>(<span class="cm-string">&#39;resize.dialog-overlay&#39;</span>);
+
+      <span class="cm-comment">// restore size</span>
+      <span class="cm-variable-2">$el</span>.<span class="cm-property">css</span>({
+        <span class="cm-property">width</span>: <span class="cm-string">&#39;100%&#39;</span>,
+        <span class="cm-property">height</span>: <span class="cm-string">&#39;100%&#39;</span>
+      });
+
+      <span class="cm-comment">// allow scrolling by dragging the scrollbar</span>
+      <span class="cm-comment">// remove (as now we are disabling the entire page scrollbar)</span>
+      <span class="cm-variable">setTimeout</span>(<span class="cm-keyword">function</span> () {
+        <span class="cm-variable-2">$</span>(<span class="cm-variable-2">document</span>).<span class="cm-property">off</span>(<span class="cm-string">&#39;mousedown.dialog-overlay&#39;</span>);
+      }, <span class="cm-number">1</span>);
+
+      <span class="cm-comment">// return original element</span>
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">$el</span>;
+    }
+  });
+
+  <span class="cm-comment">// evento para redimensionar y posicionar ventanas modales</span>
+  <span class="cm-variable-2">$</span>(<span class="cm-variable-2">window</span>).<span class="cm-property">resize</span>(<span class="cm-keyword">function</span> (<span class="cm-def">ev</span>) {
+    <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenter</span>();
+  });
+
+  <span class="cm-comment">// funcion que se encarga de centrar, redimensionar y aplicar scroll a ventanas modales</span>
+
+
+  <span class="cm-comment">/*\</span>
+<span class="cm-comment">   * $B.ui.dialogSecureHeight</span>
+<span class="cm-comment">   [ property ]</span>
+<span class="cm-comment">   * Secure and nice separation from top and bottom of the window</span>
+<span class="cm-comment">  \*/</span>
+  <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogSecureHeight</span> <span class="cm-operator">=</span> <span class="cm-number">100</span>;
+
+
+  <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenter</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$uiDialog</span>) {
+    <span class="cm-variable-2">$uiDialog</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-string">&#39;.contenidoModal:visible:last&#39;</span>).<span class="cm-property">closest</span>(<span class="cm-string">&#39;.ui-dialog&#39;</span>);
+
+    <span class="cm-comment">// dont do anything if no modal found</span>
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">length</span>) {
+      <span class="cm-keyword">return</span>;
+    }
+
+    <span class="cm-keyword">var</span> <span class="cm-def">$window</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-variable-2">window</span>),
+      <span class="cm-def">windowHeightSecure</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$window</span>.<span class="cm-property">height</span>() <span class="cm-operator">-</span> <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogSecureHeight</span>, <span class="cm-comment">// 100 is the secure margin</span>
+      <span class="cm-def">$buttonsLayer</span>,
+      <span class="cm-def">$cuerpoModal</span>,
+      <span class="cm-def">$contentScroll</span>,
+      <span class="cm-def">$divViewport</span>,
+      <span class="cm-def">$divOverview</span>,
+      <span class="cm-def">$divScrollbar</span>,
+      <span class="cm-def">$divScrollable</span>,
+      <span class="cm-def">$elementToScroll</span>,
+      <span class="cm-def">stepsButtonsHeight</span>,
+      <span class="cm-def">contentMarginTop</span>,
+      <span class="cm-def">$contenidoModal</span>,
+      <span class="cm-def">$buttonsMirrored</span>,
+      <span class="cm-def">needsToInitScroll</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>,
+      <span class="cm-comment">// if fixed height, do not resize</span>
+      <span class="cm-def">needsResize</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;[data-fixed-height]&#39;</span>).<span class="cm-property">length</span> <span class="cm-operator">?</span> <span class="cm-atom">false</span> : <span class="cm-atom">true</span>,
+      <span class="cm-def">buttonAreaCopied</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>,
+      <span class="cm-def">buttonAreaClasses</span>,
+      <span class="cm-def">divScrollableHeight</span>,
+      <span class="cm-comment">// flag to know if its &quot;modalDetalle&quot; type</span>
+      <span class="cm-def">isModalDetalle</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">hasClass</span>(<span class="cm-string">&#39;c-contenedores-modalDetalle&#39;</span>),
+      <span class="cm-def">altoCalculado</span>,
+
+      <span class="cm-comment">// centers the modal on the window</span>
+      <span class="cm-def">centerModal</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-keyword">var</span> <span class="cm-def">top</span> <span class="cm-operator">=</span> (<span class="cm-variable-2">$window</span>.<span class="cm-property">height</span>() <span class="cm-operator">-</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">outerHeight</span>()) <span class="cm-operator">/</span> <span class="cm-number">2</span>;
+        <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">css</span>({
+          <span class="cm-property">position</span>: <span class="cm-string">&#39;fixed&#39;</span>,
+          <span class="cm-property">left</span>: (<span class="cm-variable-2">$window</span>.<span class="cm-property">width</span>() <span class="cm-operator">-</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">width</span>()) <span class="cm-operator">/</span> <span class="cm-number">2</span> <span class="cm-operator">+</span> <span class="cm-variable-2">$window</span>.<span class="cm-property">scrollLeft</span>(),
+          <span class="cm-property">top</span>: (<span class="cm-variable-2">top</span> <span class="cm-operator">&lt;</span> <span class="cm-number">0</span>) <span class="cm-operator">?</span> <span class="cm-number">0</span> : <span class="cm-variable-2">top</span>
+        });
+      },
+
+      <span class="cm-comment">// initializes the custom scroll on the corresponding container</span>
+      <span class="cm-def">initCustomScroll</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-comment">// fix some style problems if modal is modalDetalle</span>
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">isModalDetalle</span>) {
+          <span class="cm-comment">// change scrollbar position</span>
+          <span class="cm-variable-2">$divScrollbar</span>.<span class="cm-property">css</span>({
+            <span class="cm-property">right</span>: <span class="cm-operator">-</span><span class="cm-number">16</span>
+          });
+          <span class="cm-comment">// add padding to viewport</span>
+          <span class="cm-variable-2">$divViewport</span>.<span class="cm-property">css</span>({
+            <span class="cm-property">paddingRight</span>: <span class="cm-number">16</span>
+          });
+        }
+
+        <span class="cm-comment">// get the element to make it scrollable</span>
+        <span class="cm-variable-2">$elementToScroll</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">children</span>(<span class="cm-string">&#39;:first&#39;</span>).<span class="cm-property">hasClass</span>(<span class="cm-string">&#39;scrollbar&#39;</span>) <span class="cm-operator">?</span> <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.scrollable&#39;</span>).<span class="cm-property">first</span>() : <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">children</span>(<span class="cm-string">&#39;:first&#39;</span>);
+        <span class="cm-comment">// destroy any previous reference tu customscroll plugin</span>
+        <span class="cm-variable-2">$elementToScroll</span>.<span class="cm-property">parent</span>().<span class="cm-property">customScrollbar</span>(<span class="cm-string">&#39;destroy&#39;</span>);
+
+        <span class="cm-comment">// init plugin if the scrollable content is higher than its container</span>
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">$elementToScroll</span>.<span class="cm-property">height</span>() <span class="cm-operator">+</span> <span class="cm-number">10</span> <span class="cm-operator">&gt;</span> <span class="cm-variable-2">$elementToScroll</span>.<span class="cm-property">parent</span>().<span class="cm-property">height</span>()) {
+          <span class="cm-comment">// show scrollbar (initially is hidden)</span>
+          <span class="cm-variable-2">$divScrollbar</span>.<span class="cm-property">show</span>();
+          <span class="cm-variable-2">$elementToScroll</span>.<span class="cm-property">parent</span>().<span class="cm-property">customScrollbar</span>({ <span class="cm-property">resizeContent</span> : <span class="cm-atom">false</span> });
+          <span class="cm-variable-2">$divScrollable</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;margin-top&#39;</span>, <span class="cm-variable-2">contentMarginTop</span>);
+        }
+
+        <span class="cm-comment">//set contentScroll margin-top on init</span>
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">data</span>(<span class="cm-string">&#39;tsb&#39;</span>)) {
+          <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">data</span>(<span class="cm-string">&#39;tsb&#39;</span>).<span class="cm-property">thumbSetPos</span>();
+        }
+      },
+
+      <span class="cm-comment">// removes the scroll and reset styles of the elements</span>
+      <span class="cm-def">removeCustomScroll</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-keyword">var</span> <span class="cm-def">defaultStyles</span> <span class="cm-operator">=</span> { <span class="cm-property">height</span>: <span class="cm-string">&#39;auto&#39;</span> };
+        <span class="cm-variable-2">$divScrollbar</span>.<span class="cm-property">hide</span>();
+        <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenedorScroll&#39;</span>).<span class="cm-property">css</span>(<span class="cm-variable-2">defaultStyles</span>).<span class="cm-property">customScrollbar</span>(<span class="cm-string">&#39;destroy&#39;</span>);
+        <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">css</span>(<span class="cm-variable-2">defaultStyles</span>);
+        <span class="cm-variable-2">$contenidoModal</span>.<span class="cm-property">css</span>(<span class="cm-variable-2">defaultStyles</span>);
+        <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">css</span>(<span class="cm-variable-2">defaultStyles</span>);
+        <span class="cm-variable-2">$divOverview</span>.<span class="cm-property">css</span>(<span class="cm-variable-2">$</span>.<span class="cm-property">extend</span>({}, <span class="cm-variable-2">defaultStyles</span>, { <span class="cm-property">position</span>: <span class="cm-string">&#39;static&#39;</span> }));
+        <span class="cm-variable-2">$divViewport</span>.<span class="cm-property">css</span>(<span class="cm-variable-2">$</span>.<span class="cm-property">extend</span>({}, <span class="cm-variable-2">defaultStyles</span>, { <span class="cm-property">overflow</span>: <span class="cm-string">&#39;visible&#39;</span> }));
+        <span class="cm-comment">// do not need scrollbars, mark to false</span>
+        <span class="cm-variable-2">needsToInitScroll</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+      },
+
+      <span class="cm-def">getCalculatedHeight</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-keyword">var</span> <span class="cm-def">maxHeight</span>, <span class="cm-def">resultHeight</span>;
+
+        <span class="cm-comment">// reset overview position because if not, as its absolute</span>
+        <span class="cm-comment">// doesnt stretches to the width of the content and makes the content div be too tall</span>
+        <span class="cm-variable-2">$divOverview</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;position&#39;</span>, <span class="cm-string">&#39;static&#39;</span>);
+
+        <span class="cm-variable">_</span>.<span class="cm-property">find</span>(<span class="cm-variable-2">$</span>(<span class="cm-string">&#39;.scrollable&#39;</span>), <span class="cm-keyword">function</span> (<span class="cm-def">item</span>) {
+          <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">$</span>(<span class="cm-variable-2">item</span>).<span class="cm-property">closest</span>(<span class="cm-string">&#39;.scrollable&#39;</span>).<span class="cm-property">length</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">$</span>(<span class="cm-variable-2">item</span>).<span class="cm-property">height</span>() <span class="cm-operator">&gt;</span> <span class="cm-number">0</span>) {
+            <span class="cm-variable-2">maxHeight</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-variable-2">item</span>).<span class="cm-property">height</span>();
+          }
+        });
+
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">maxHeight</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">height</span>() <span class="cm-operator">||</span> <span class="cm-variable-2">maxHeight</span> <span class="cm-operator">&gt;</span> <span class="cm-variable-2">$divOverview</span>.<span class="cm-property">height</span>()) {
+          <span class="cm-variable-2">resultHeight</span> <span class="cm-operator">=</span> <span class="cm-variable-2">maxHeight</span>;
+        } <span class="cm-keyword">else</span> {
+          <span class="cm-variable-2">resultHeight</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">max</span>(<span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">height</span>(), <span class="cm-variable-2">$divOverview</span>.<span class="cm-property">height</span>());
+        }
+
+        <span class="cm-comment">// restore overview position</span>
+        <span class="cm-variable-2">$divOverview</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;position&#39;</span>, <span class="cm-string">&#39;absolute&#39;</span>);
+
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">resultHeight</span>;
+      },
+
+      <span class="cm-def">recalculateContainersHeight</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">altoContenido</span>) {
+        <span class="cm-keyword">var</span> <span class="cm-def">variationContenidoModal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">isModalDetalle</span> <span class="cm-operator">?</span> <span class="cm-number">0</span> : <span class="cm-number">39</span>,
+          <span class="cm-def">variationCuerpoModal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">isModalDetalle</span> <span class="cm-operator">?</span> <span class="cm-number">47</span> : <span class="cm-number">0</span>,
+          <span class="cm-def">uiDialogHeight</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">height</span>();
+
+        <span class="cm-comment">// si la modal no necesita scroll se lo quitamos</span>
+        <span class="cm-keyword">if</span> ((<span class="cm-variable-2">altoContenido</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">uiDialogHeight</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">uiDialogHeight</span> <span class="cm-operator">&lt;=</span> <span class="cm-variable-2">windowHeightSecure</span>) <span class="cm-operator">||</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;[data-modal-no-scroll]&#39;</span>).<span class="cm-property">length</span>) {
+          <span class="cm-variable-2">removeCustomScroll</span>();
+
+        <span class="cm-comment">// caso en que la ventana modal es mas grande que la ventana</span>
+        } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">height</span>() <span class="cm-operator">&lt;</span> <span class="cm-variable-2">$divScrollable</span>.<span class="cm-property">height</span>() <span class="cm-operator">||</span>
+            <span class="cm-variable-2">uiDialogHeight</span> <span class="cm-operator">&gt;</span> <span class="cm-variable-2">windowHeightSecure</span> <span class="cm-operator">||</span>
+            (<span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">outerHeight</span>() <span class="cm-operator">&gt;</span> <span class="cm-variable-2">uiDialogHeight</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.scrollable&#39;</span>).<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-number">2</span>)) {
+
+          <span class="cm-variable-2">$divOverview</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;position&#39;</span>, <span class="cm-string">&#39;absolute&#39;</span>);
+          <span class="cm-variable-2">$divViewport</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;overflow&#39;</span>, <span class="cm-string">&#39;hidden&#39;</span>);
+          <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;height&#39;</span>, <span class="cm-variable-2">windowHeightSecure</span>);
+          <span class="cm-variable-2">$contenidoModal</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;height&#39;</span>, <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">height</span>() <span class="cm-operator">-</span> <span class="cm-variable-2">variationContenidoModal</span>);
+          <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;height&#39;</span>, <span class="cm-variable-2">$contenidoModal</span>.<span class="cm-property">height</span>() <span class="cm-operator">-</span> <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenterGetHeaderModalHeight</span>(<span class="cm-variable-2">$contenidoModal</span>) <span class="cm-operator">-</span> <span class="cm-variable-2">stepsButtonsHeight</span> <span class="cm-operator">-</span> <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenterGetContentScrollHeight</span>(<span class="cm-variable-2">$contentScroll</span>) <span class="cm-operator">-</span> <span class="cm-variable-2">variationCuerpoModal</span>);
+
+          <span class="cm-keyword">if</span> (<span class="cm-variable-2">needsToInitScroll</span>) {
+            <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;height&#39;</span>, <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">height</span>());
+          }
+
+        } <span class="cm-keyword">else</span> {
+          <span class="cm-variable-2">needsToInitScroll</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+        }
+      },
+
+      <span class="cm-comment">// get containers</span>
+      <span class="cm-def">getContainers</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-variable-2">$contenidoModal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenidoModal&#39;</span>).<span class="cm-property">first</span>().<span class="cm-property">css</span>(<span class="cm-string">&#39;height&#39;</span>, <span class="cm-string">&#39;auto&#39;</span>);
+        <span class="cm-variable-2">$contentScroll</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenedorScrollModal&#39;</span>).<span class="cm-property">removeAttr</span>(<span class="cm-string">&#39;style&#39;</span>);
+        <span class="cm-variable-2">$divViewport</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.viewportModal&#39;</span>).<span class="cm-property">removeAttr</span>(<span class="cm-string">&#39;style&#39;</span>);
+        <span class="cm-variable-2">$divOverview</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.overviewModal&#39;</span>).<span class="cm-property">removeAttr</span>(<span class="cm-string">&#39;style&#39;</span>);
+        <span class="cm-variable-2">$divScrollable</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.scrollableModal&#39;</span>).<span class="cm-property">removeAttr</span>(<span class="cm-string">&#39;style&#39;</span>);
+        <span class="cm-variable-2">$divScrollbar</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.scrollbarModal&#39;</span>).<span class="cm-property">removeAttr</span>(<span class="cm-string">&#39;style&#39;</span>).<span class="cm-property">css</span>(<span class="cm-string">&#39;display&#39;</span>, <span class="cm-string">&#39;none&#39;</span>);
+      },
+
+      <span class="cm-def">checkIframe</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-comment">// if there is only an iframe in the modal deactivate custom scroll</span>
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">children</span>().<span class="cm-property">length</span> <span class="cm-operator">===</span> <span class="cm-number">1</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;iframe&#39;</span>).<span class="cm-property">length</span>) {
+          <span class="cm-variable-2">needsToInitScroll</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+          <span class="cm-comment">// resize the iframe to occupy the whole content</span>
+          <span class="cm-keyword">if</span> (<span class="cm-variable-2">needsResize</span>) {
+            <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;iframe&#39;</span>).<span class="cm-property">css</span>({ <span class="cm-property">height</span>: <span class="cm-string">&#39;100%&#39;</span>, <span class="cm-property">width</span>: <span class="cm-string">&#39;100%&#39;</span> });
+          } <span class="cm-keyword">else</span> {
+            <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.overviewModal&#39;</span>).<span class="cm-property">css</span>({ <span class="cm-property">position</span>: <span class="cm-string">&#39;static&#39;</span> });
+          }
+        }
+      };
+
+    <span class="cm-variable-2">$cuerpoModal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.cuerpoModal&#39;</span>).<span class="cm-property">first</span>();
+    <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenterAddWrapperScroll</span>(<span class="cm-variable-2">$cuerpoModal</span>);
+
+    <span class="cm-comment">// check if there is an iframe and disabled needsToInitScroll</span>
+    <span class="cm-variable-2">checkIframe</span>();
+
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">needsToInitScroll</span>) {
+      <span class="cm-variable-2">getContainers</span>();
+      <span class="cm-variable-2">contentMarginTop</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$divScrollable</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;margin-top&#39;</span>); <span class="cm-comment">//guardamos margin-top para al iniciar el scroll dejarlo en la misma posicion</span>
+
+      <span class="cm-comment">// height of the bottom menu if any</span>
+      <span class="cm-variable-2">stepsButtonsHeight</span> <span class="cm-operator">=</span> (<span class="cm-variable-2">$buttonsMirrored</span>) <span class="cm-operator">?</span> <span class="cm-variable-2">$buttonsMirrored</span>.<span class="cm-property">outerHeight</span>(<span class="cm-atom">true</span>) : <span class="cm-number">0</span>;
+
+      <span class="cm-variable-2">altoCalculado</span> <span class="cm-operator">=</span> <span class="cm-variable-2">getCalculatedHeight</span>();
+
+      <span class="cm-comment">// set sizes for both viewport and overview containers</span>
+      <span class="cm-variable-2">$divViewport</span>.<span class="cm-property">add</span>(<span class="cm-variable-2">$divOverview</span>).<span class="cm-property">css</span>({
+        <span class="cm-property">height</span>: <span class="cm-variable-2">altoCalculado</span>,
+        <span class="cm-property">width</span>: <span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">width</span>()
+      });
+
+      <span class="cm-comment">// resize or reset modal dimensions</span>
+      <span class="cm-variable-2">recalculateContainersHeight</span>(<span class="cm-variable-2">altoCalculado</span>);
+
+      <span class="cm-comment">// init scroll if needed</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">needsToInitScroll</span>) {
+        <span class="cm-variable-2">initCustomScroll</span>();
+      }
+    }
+
+    <span class="cm-comment">// center the modal now that al dimensions are &quot;properly&quot; set</span>
+    <span class="cm-variable">setTimeout</span>(<span class="cm-keyword">function</span> () {
+      <span class="cm-variable-2">centerModal</span>();
+    }, <span class="cm-number">0</span>);
+
+    <span class="cm-comment">// init timer to check modal content changes</span>
+    <span class="cm-variable">$B</span>.<span class="cm-property">checkContentHeightDialogs</span>.<span class="cm-property">init</span>();
+  };
+
+  <span class="cm-comment">// if scrollable wrappers are not present, add them (e.g. modalDetalle)</span>
+  <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenterAddWrapperScroll</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$cuerpoModal</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">children</span>(<span class="cm-string">&#39;.contenedorScroll&#39;</span>).<span class="cm-property">length</span>) {
+      <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">children</span>().<span class="cm-property">wrapAll</span>(<span class="cm-string">&#39;&lt;div class=&quot;contenedorScroll contenedorScrollModal&quot;&gt;&lt;div class=&quot;viewport viewportModal&quot;&gt;&lt;div class=&quot;overview overviewModal&quot;&gt;&lt;div class=&quot;scrollable scrollableModal&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&#39;</span>);
+      <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.scrollableModal&#39;</span>).<span class="cm-property">before</span>(<span class="cm-string">&#39;&lt;div class=&quot;scrollbar scrollbarModal&quot; style=&quot;display:none;&quot;&gt;&lt;div class=&quot;boxScroll&quot;&gt;&lt;div class=&quot;track&quot;&gt;&lt;div class=&quot;thumb&quot;&gt;&lt;div class=&quot;end&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;span class=&quot;jspArrow jspArrowUp jspDisabled&quot;&gt;&lt;/span&gt;&lt;span class=&quot;jspArrow jspArrowDown&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&#39;</span>);
+    }
+  };
+
+  <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenterGetHeaderModalHeight</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$contenidoModal</span>) {
+    <span class="cm-keyword">return</span> (<span class="cm-variable-2">$contenidoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.headerModal&#39;</span>).<span class="cm-property">length</span> <span class="cm-operator">&gt;</span> <span class="cm-number">0</span>) <span class="cm-operator">?</span> <span class="cm-variable-2">$contenidoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.headerModal&#39;</span>).<span class="cm-property">outerHeight</span>(<span class="cm-atom">true</span>) : <span class="cm-number">0</span>;
+  };
+
+  <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenterGetContentScrollHeight</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$contentScroll</span>) {
+    <span class="cm-keyword">return</span> (<span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">length</span>) <span class="cm-operator">?</span> <span class="cm-variable">parseInt</span>(<span class="cm-variable-2">$contentScroll</span>.<span class="cm-property">css</span>(<span class="cm-string">&#39;paddingTop&#39;</span>), <span class="cm-number">10</span>) : <span class="cm-number">0</span>;
+  };
+
+  <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogHasSecureHeight</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+    <span class="cm-keyword">var</span> <span class="cm-def">$uiDialog</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-string">&#39;.contenidoModal:visible:last&#39;</span>).<span class="cm-property">closest</span>(<span class="cm-string">&#39;.ui-dialog&#39;</span>);
+    <span class="cm-keyword">return</span> (<span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;[data-modal-no-scroll]&#39;</span>).<span class="cm-property">length</span> <span class="cm-operator">===</span> <span class="cm-number">1</span> <span class="cm-operator">||</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;[data-fixed-height]&#39;</span>).<span class="cm-property">length</span> <span class="cm-operator">||</span>
+      <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">height</span>() <span class="cm-operator">&lt;=</span> <span class="cm-variable-2">$</span>(<span class="cm-variable-2">window</span>).<span class="cm-property">height</span>() <span class="cm-operator">-</span> <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogSecureHeight</span>);
+  };
+
+  <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialog</span> <span class="cm-operator">=</span> (<span class="cm-keyword">function</span> () {
+    <span class="cm-keyword">var</span> <span class="cm-def">self</span> <span class="cm-operator">=</span> {},
+      <span class="cm-def">privates</span> <span class="cm-operator">=</span> {},
+      <span class="cm-def">helpers</span> <span class="cm-operator">=</span> {},
+      <span class="cm-def">coreDialogs</span> <span class="cm-operator">=</span> {},
+      <span class="cm-def">dialogs</span> <span class="cm-operator">=</span> {},
+      <span class="cm-def">toString</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">prototype</span>.<span class="cm-property">toString</span>;
+
+    <span class="cm-comment">// Helper methods</span>
+
+    <span class="cm-comment">// Check if obj is an object</span>
+    <span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">obj</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">toString</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">obj</span>) <span class="cm-operator">===</span> <span class="cm-string">&#39;[object Function]&#39;</span>;
+    };
+
+    <span class="cm-variable-2">helpers</span>.<span class="cm-property">isObject</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">obj</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">toString</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">obj</span>) <span class="cm-operator">===</span> <span class="cm-string">&#39;[object Object]&#39;</span>;
+    };
+
+    <span class="cm-comment">// Check if obj is a string</span>
+    <span class="cm-variable-2">helpers</span>.<span class="cm-property">isString</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">obj</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">toString</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">obj</span>) <span class="cm-operator">===</span> <span class="cm-string">&#39;[object String]&#39;</span>;
+    };
+
+
+    <span class="cm-comment">// Private methods</span>
+
+    <span class="cm-comment">// add dialog to dialogs array</span>
+    <span class="cm-variable-2">privates</span>.<span class="cm-property">add</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>, <span class="cm-def">$dialog</span>, <span class="cm-def">isCore</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">isCore</span>) {
+        <span class="cm-variable-2">coreDialogs</span>[<span class="cm-variable-2">id</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>;
+      } <span class="cm-keyword">else</span> {
+        <span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>;
+      }
+    };
+
+    <span class="cm-comment">// delete dialog from dialogs array</span>
+    <span class="cm-variable-2">privates</span>.<span class="cm-property">del</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>, <span class="cm-def">isCore</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">isCore</span>) {
+        <span class="cm-keyword">delete</span> <span class="cm-variable-2">coreDialogs</span>[<span class="cm-variable-2">id</span>];
+      } <span class="cm-keyword">else</span> {
+        <span class="cm-keyword">delete</span> <span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>];
+      }
+    };
+
+    <span class="cm-variable-2">privates</span>.<span class="cm-property">undelegateEvent</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>, <span class="cm-def">isCore</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">button</span>,
+        <span class="cm-def">$dialog</span> <span class="cm-operator">=</span> <span class="cm-variable-2">isCore</span> <span class="cm-operator">?</span> <span class="cm-variable-2">coreDialogs</span>[<span class="cm-variable-2">id</span>] : <span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>];
+
+      <span class="cm-variable-2">button</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>(<span class="cm-string">&#39;option&#39;</span>, <span class="cm-string">&#39;trigger&#39;</span>);
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">button</span>) {
+        <span class="cm-variable-2">$</span>(<span class="cm-variable-2">document</span>).<span class="cm-property">off</span>(<span class="cm-string">&#39;click.b-dialog-open&#39;</span>, <span class="cm-variable-2">button</span>.<span class="cm-property">selector</span>);
+      }
+    };
+
+    <span class="cm-comment">// make the dialog always tabbable when open</span>
+    <span class="cm-variable-2">privates</span>.<span class="cm-property">fixDialogTabbing</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$dialog</span>, <span class="cm-def">$uiDialog</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">firstTabbable</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-string">&#39;body&#39;</span>).<span class="cm-property">find</span>(<span class="cm-string">&#39;:tabbable:first&#39;</span>),
+        <span class="cm-def">lastTabbable</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-string">&#39;body&#39;</span>).<span class="cm-property">find</span>(<span class="cm-string">&#39;:tabbable:last&#39;</span>),
+        <span class="cm-def">dialogFirstTabbable</span>,
+        <span class="cm-def">focusDialogFirstTabbable</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+          <span class="cm-variable-2">dialogFirstTabbable</span>.<span class="cm-property">focus</span>();
+        },
+        <span class="cm-def">focusEvent</span> <span class="cm-operator">=</span> <span class="cm-string">&#39;focus.fixTabToDialog&#39;</span>,
+        <span class="cm-def">dialogTrigger</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>(<span class="cm-string">&#39;trigger&#39;</span>);
+
+      <span class="cm-variable-2">$dialog</span>
+        .<span class="cm-property">on</span>(<span class="cm-string">&#39;dialogopen&#39;</span>, <span class="cm-keyword">function</span> () {
+          <span class="cm-variable-2">dialogFirstTabbable</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;:tabbable:first&#39;</span>);
+          <span class="cm-variable-2">firstTabbable</span>.<span class="cm-property">on</span>(<span class="cm-variable-2">focusEvent</span>, <span class="cm-variable-2">focusDialogFirstTabbable</span>);
+          <span class="cm-variable-2">lastTabbable</span>.<span class="cm-property">on</span>(<span class="cm-variable-2">focusEvent</span>, <span class="cm-variable-2">focusDialogFirstTabbable</span>);
+        })
+        .<span class="cm-property">on</span>(<span class="cm-string">&#39;dialogclose&#39;</span>, <span class="cm-keyword">function</span> (<span class="cm-def">event</span>) {
+          <span class="cm-variable-2">firstTabbable</span>.<span class="cm-property">off</span>(<span class="cm-variable-2">focusEvent</span>);
+          <span class="cm-variable-2">lastTabbable</span>.<span class="cm-property">off</span>(<span class="cm-variable-2">focusEvent</span>);
+          <span class="cm-comment">// return focus to the trigger</span>
+          <span class="cm-keyword">if</span> (<span class="cm-variable-2">dialogTrigger</span>) {
+            <span class="cm-variable-2">dialogTrigger</span>.<span class="cm-property">focus</span>();
+          }
+        });
+    };
+
+    <span class="cm-variable-2">privates</span>.<span class="cm-property">reset</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$dialog</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">form</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;form&#39;</span>)[<span class="cm-number">0</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">form</span>) {
+        <span class="cm-variable-2">$dialog</span>.<span class="cm-property">on</span>(<span class="cm-string">&#39;dialogclose&#39;</span>, <span class="cm-keyword">function</span> (<span class="cm-def">ev</span>) {
+          <span class="cm-variable-2">form</span>.<span class="cm-property">reset</span>();
+        });
+      }
+    };
+
+    <span class="cm-variable-2">privates</span>.<span class="cm-property">setWidth</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$dialog</span>, <span class="cm-def">$uiDialog</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">widthClass</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">data</span>(<span class="cm-string">&#39;dialog-width&#39;</span>);
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">widthClass</span>) {
+        <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">addClass</span>(<span class="cm-variable-2">widthClass</span>);
+      }
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.get</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Get an existing dialog with the given id or any of its ui dialog options</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog</span>
+<span class="cm-comment">     - option (string) #optional get the value of ui dialog option (for setting a value see @$B.ui.dialog.set)</span>
+<span class="cm-comment">     = (object) jQuery object of the dialog content if only the id is pass</span>
+<span class="cm-comment">     * or if an option is passed</span>
+<span class="cm-comment">     = (any) Value of the specified option</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.get(&#39;id&#39;)</span>
+<span class="cm-comment">     | $B.ui.dialog.get(&#39;id&#39;, &#39;zIndex&#39;)</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">get</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>, <span class="cm-def">option</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">id</span> <span class="cm-operator">||</span> <span class="cm-operator">!</span><span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>]) {
+        <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+      } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">option</span>) {
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>];
+      } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">option</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isString</span>(<span class="cm-variable-2">option</span>)) { <span class="cm-comment">// assume options is a string containing 1 option to get</span>
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>].<span class="cm-property">dialog</span>(<span class="cm-string">&#39;option&#39;</span>, <span class="cm-variable-2">option</span>);
+      }
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.exists</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Tells if a specific dialog exists on the stack</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog</span>
+<span class="cm-comment">     = (boolean) True if the dialog exists</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.exists(&#39;myDialogID&#39;)</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">exists</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>) {
+      <span class="cm-keyword">return</span> (<span class="cm-variable-2">id</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>]);
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.set</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Set an option to an existing dialog</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog</span>
+<span class="cm-comment">     - options (object) object setting the ui dialog options</span>
+<span class="cm-comment">     = (object) jQuery object of the dialog content</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog(&#39;id&#39;, {zIndex: 0, modal: false});</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">set</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>, <span class="cm-def">options</span>) {
+      <span class="cm-comment">// assume options is an object to set multiple options</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">options</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isObject</span>(<span class="cm-variable-2">options</span>)) {
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>).<span class="cm-property">dialog</span>(<span class="cm-variable-2">options</span>);
+      } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">options</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isString</span>(<span class="cm-variable-2">options</span>)) { <span class="cm-comment">// if is a string return 1 option</span>
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>, <span class="cm-variable-2">options</span>);
+      }
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.isOpen</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Return a boolean indicating wether the specified dialog is open</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog</span>
+<span class="cm-comment">     = (boolean) Returns true or false</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.isOpen(&#39;id&#39;);</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">isOpen</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">$dialog</span> <span class="cm-operator">=</span> <span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>);
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">$dialog</span>) {
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>(<span class="cm-string">&#39;isOpen&#39;</span>);
+      }
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.moveToTop</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Move a dialog to the top of the stack</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog</span>
+<span class="cm-comment">     = (object) jQuery object of the dialog content</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.moveToTop(&#39;id&#39;);</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">moveToTop</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>).<span class="cm-property">dialog</span>(<span class="cm-string">&#39;moveToTop&#39;</span>);
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.destroy</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Destroy an existing dialog with the given id (to destroy all dialogs see @$B.ui.dialog.destroyAll)</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog to destroy</span>
+<span class="cm-comment">     = (boolean) returns true if success, false if no dialog to delete</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.destroy(&#39;id&#39;);</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">destroy</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">dialogToDestroy</span> <span class="cm-operator">=</span> <span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>],
+        <span class="cm-def">isCore</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">id</span>]) {
+        <span class="cm-variable-2">dialogToDestroy</span> <span class="cm-operator">=</span> <span class="cm-variable-2">coreDialogs</span>[<span class="cm-variable-2">id</span>];
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">dialogToDestroy</span>) {
+          <span class="cm-variable-2">isCore</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>;
+        }
+      }
+
+
+      <span class="cm-comment">/*</span>
+<span class="cm-comment">      Esta condicion anula el metodo. Asi sirve solo para destruir la modal de loading.</span>
+<span class="cm-comment">      Si lo comento, no funcionan modales en varios sitios. Me imagino que se esta llamando el metodo de</span>
+<span class="cm-comment">      destrotAll en demasiados sitios. Metodo que por cierto no va hacer nada mas que quitar la modal del loading</span>
+<span class="cm-comment">      -----------------------------------------------------------------------------------</span>
+<span class="cm-comment">      */</span>
+      <span class="cm-keyword">if</span> ((<span class="cm-variable-2">self</span>.<span class="cm-property">isOpen</span>(<span class="cm-variable-2">id</span>)) <span class="cm-operator">&amp;&amp;</span> (<span class="cm-variable-2">id</span> <span class="cm-operator">!==</span> <span class="cm-string">&#39;loading-app&#39;</span>)) {
+        <span class="cm-keyword">return</span>;
+      }
+
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">dialogToDestroy</span>) {
+        <span class="cm-comment">// undelegate click event that opens the dialog</span>
+        <span class="cm-variable-2">privates</span>.<span class="cm-property">undelegateEvent</span>(<span class="cm-variable-2">id</span>, <span class="cm-variable-2">isCore</span>);
+        <span class="cm-comment">// destroy ui dialog</span>
+        <span class="cm-variable-2">dialogToDestroy</span>.<span class="cm-property">dialog</span>(<span class="cm-string">&#39;destroy&#39;</span>).<span class="cm-property">remove</span>();
+        <span class="cm-comment">// delete from dialogs stack</span>
+        <span class="cm-variable-2">privates</span>.<span class="cm-property">del</span>(<span class="cm-variable-2">id</span>, <span class="cm-variable-2">isCore</span>);
+
+        <span class="cm-variable-2">self</span>.<span class="cm-property">disableBodyScroll</span>(<span class="cm-atom">false</span>);
+        <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+      }
+      <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.destroyAll</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Destroy all dialogs that were created (to destroy a specific dialog see @$B.ui.dialog.destroy)</span>
+<span class="cm-comment">     = (boolean) returns true if success, false if no dialogs to delete</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.destroyAll();</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">destroyAll</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+      <span class="cm-keyword">var</span> <span class="cm-def">id</span>;
+      <span class="cm-comment">// return if there are no dialogs</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">$</span>.<span class="cm-property">isEmptyObject</span>(<span class="cm-variable-2">dialogs</span>)) {
+        <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+      }
+
+      <span class="cm-comment">// delete all dialogs from stack</span>
+      <span class="cm-keyword">for</span> (<span class="cm-variable-2">id</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">dialogs</span>) {
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">dialogs</span>.<span class="cm-property">hasOwnProperty</span>(<span class="cm-variable-2">id</span>)) {
+          <span class="cm-variable-2">self</span>.<span class="cm-property">destroy</span>(<span class="cm-variable-2">id</span>);
+        }
+      }
+      <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.open</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Open an existing dialog with the given id</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog to open</span>
+<span class="cm-comment">     - options (object) #optional object containing options to create a dialog</span>
+<span class="cm-comment">     = (object) jQuery object of the dialog content</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.open(&#39;id&#39;);</span>
+<span class="cm-comment">     | // if an options object is passed it will be created and opened</span>
+<span class="cm-comment">     | $B.ui.dialog.open(&#39;MyID&#39;, {</span>
+<span class="cm-comment">     |   modal: true,</span>
+<span class="cm-comment">     |   width: 500,</span>
+<span class="cm-comment">     |   height: 300</span>
+<span class="cm-comment">     | });</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">open</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>, <span class="cm-def">options</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>) <span class="cm-operator">&amp;&amp;</span> <span class="cm-operator">!</span><span class="cm-variable-2">options</span>) {
+        <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">no_dialog_with_id</span> <span class="cm-operator">+</span> <span class="cm-variable-2">id</span> <span class="cm-operator">+</span> <span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">no_options_for_dialog</span>);
+
+      <span class="cm-comment">// if there is a dialog with that id open it</span>
+      } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>)) {
+        <span class="cm-comment">// call jQuery ui open</span>
+        <span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>).<span class="cm-property">dialog</span>(<span class="cm-string">&#39;open&#39;</span>);
+
+        <span class="cm-comment">// return dialog itself to allow chain</span>
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>);
+
+      <span class="cm-comment">// if options are provided the dialog will be created and opened</span>
+      } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">options</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isObject</span>(<span class="cm-variable-2">options</span>)) {
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">id</span>) {
+          <span class="cm-variable-2">options</span>.<span class="cm-property">id</span> <span class="cm-operator">=</span> <span class="cm-variable-2">id</span>;
+        }
+        <span class="cm-comment">// create the dialog</span>
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">create</span>(<span class="cm-variable-2">options</span>).<span class="cm-property">dialog</span>(<span class="cm-string">&#39;open&#39;</span>);
+      }
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.close</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Close an existing dialog with the given id</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - id (string) id of the dialog to open</span>
+<span class="cm-comment">     = (object) jQuery object of the dialog content</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     | $B.ui.dialog.close(&#39;id&#39;);</span>
+<span class="cm-comment">     * pasdosd</span>
+<span class="cm-comment">     * ejoir</span>
+<span class="cm-comment">     &gt; titit</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">close</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">id</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>)) {
+        <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">no_dialog_with_id</span>  <span class="cm-operator">+</span> <span class="cm-variable-2">id</span> <span class="cm-operator">+</span> <span class="cm-string">&quot;&#39;&quot;</span>);
+      } <span class="cm-keyword">else</span> { <span class="cm-comment">// if there is a dialog with that id close it</span>
+        <span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">id</span>).<span class="cm-property">dialog</span>(<span class="cm-string">&#39;close&#39;</span>); <span class="cm-comment">// allow chain returning jQuery obj</span>
+      }
+    };
+
+    <span class="cm-variable-2">self</span>.<span class="cm-property">closeActive</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+      <span class="cm-keyword">var</span> <span class="cm-def">id</span>;
+      <span class="cm-comment">// return if there are no dialogs</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">$</span>.<span class="cm-property">isEmptyObject</span>(<span class="cm-variable-2">dialogs</span>)) {
+        <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+      }
+
+      <span class="cm-comment">// delete all dialogs from stack</span>
+      <span class="cm-keyword">for</span> (<span class="cm-variable-2">id</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">dialogs</span>) {
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">dialogs</span>.<span class="cm-property">hasOwnProperty</span>(<span class="cm-variable-2">id</span>)) {
+          <span class="cm-keyword">if</span> (<span class="cm-variable-2">self</span>.<span class="cm-property">isOpen</span>(<span class="cm-variable-2">id</span>)) {
+            <span class="cm-variable-2">self</span>.<span class="cm-property">close</span>(<span class="cm-variable-2">id</span>);
+          }
+        }
+      }
+      <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+    };
+
+    <span class="cm-variable-2">self</span>.<span class="cm-property">showLoading</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$dialog</span>, <span class="cm-def">autofit</span>) {
+      <span class="cm-comment">// show loading for closing</span>
+      <span class="cm-keyword">var</span> <span class="cm-def">text</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenidoModal&#39;</span>).<span class="cm-property">attr</span>(<span class="cm-string">&#39;data-loading-text&#39;</span>),
+        <span class="cm-def">modalAutoFit</span> <span class="cm-operator">=</span> (<span class="cm-variable-2">autofit</span> <span class="cm-operator">===</span> <span class="cm-atom">true</span>) <span class="cm-operator">?</span> <span class="cm-atom">true</span> : <span class="cm-atom">false</span>,
+        <span class="cm-def">closingMsg</span> <span class="cm-operator">=</span> <span class="cm-variable">_</span>.<span class="cm-property">c_v06_mensajes_cargando</span>({ <span class="cm-property">text</span>: <span class="cm-variable-2">text</span> <span class="cm-operator">||</span> <span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">cargando</span> }),
+        <span class="cm-def">$closeButton</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.cerrarModal&#39;</span>).<span class="cm-property">hide</span>(),
+        <span class="cm-def">$cuerpoModal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenedorPaso&#39;</span>)[<span class="cm-number">0</span>] <span class="cm-operator">?</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenedorPaso&#39;</span>) : <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenidoModal&#39;</span>),
+        <span class="cm-def">cuerpoModalHeight</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">outerHeight</span>() <span class="cm-operator">-</span> <span class="cm-number">3</span>,
+        <span class="cm-def">cuerpoModalWidth</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">outerWidth</span>() <span class="cm-operator">-</span> <span class="cm-number">3</span>,
+        <span class="cm-def">$closingMsg</span>,
+        <span class="cm-def">idLoading</span>;
+     <span class="cm-comment">/* if ($dialog.hasClass(&#39;c-contenedores-modalDetalle&#39;)) {</span>
+<span class="cm-comment">        modalAutoFit = true;</span>
+<span class="cm-comment">      }*/</span>
+      <span class="cm-variable-2">modalAutoFit</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>;
+      <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.scrollbarModal&#39;</span>).<span class="cm-property">hide</span>();
+
+      <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">css</span>({
+        <span class="cm-property">position</span>: <span class="cm-string">&#39;relative&#39;</span>
+      });
+
+      <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">append</span>(<span class="cm-variable-2">closingMsg</span>).<span class="cm-property">css</span>({<span class="cm-property">position</span>: <span class="cm-string">&#39;relative&#39;</span>});
+      <span class="cm-variable-2">$closingMsg</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.c-mensajes-cargando&#39;</span>).<span class="cm-property">wrap</span>(<span class="cm-string">&#39;&lt;div class=&quot;jsLoadingDiv&quot;&gt;&#39;</span>).<span class="cm-property">parent</span>().<span class="cm-property">css</span>({
+        <span class="cm-property">position</span>: <span class="cm-string">&#39;absolute&#39;</span>,
+        <span class="cm-comment">//width: $dialog.width() - 2,</span>
+        <span class="cm-property">width</span>: <span class="cm-variable-2">cuerpoModalWidth</span>,
+        <span class="cm-comment">//height: cuerpoModalHeight,</span>
+        <span class="cm-property">height</span>: <span class="cm-variable-2">modalAutoFit</span> <span class="cm-operator">?</span> <span class="cm-variable-2">cuerpoModalHeight</span> : <span class="cm-string">&#39;auto&#39;</span>,
+        <span class="cm-property">backgroundColor</span>: <span class="cm-string">&#39;#fff&#39;</span>,
+        <span class="cm-comment">//left: -9,</span>
+        <span class="cm-property">left</span>: <span class="cm-number">1</span>,
+        <span class="cm-comment">/*top: (function () {</span>
+<span class="cm-comment">          if (modalAutoFit) {</span>
+<span class="cm-comment">            return 1;</span>
+<span class="cm-comment">          } else {</span>
+<span class="cm-comment">            return Math.floor((cuerpoModalHeight - $dialog.find(&#39;.c-mensajes-cargando&#39;).parent().height()) / 2);</span>
+<span class="cm-comment">          }</span>
+<span class="cm-comment">        }())*/</span>
+        <span class="cm-property">top</span>: <span class="cm-number">1</span>
+      })
+        .<span class="cm-property">end</span>()
+        .<span class="cm-property">css</span>({
+          <span class="cm-comment">/*position: &#39;relative&#39;,</span>
+<span class="cm-comment">          top: &#39;50%&#39;*/</span>
+          <span class="cm-property">paddingTop</span>: <span class="cm-variable">Math</span>.<span class="cm-property">floor</span>((<span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.jsLoadingDiv&#39;</span>).<span class="cm-property">height</span>() <span class="cm-operator">-</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.c-mensajes-cargando&#39;</span>).<span class="cm-property">height</span>()) <span class="cm-operator">/</span> <span class="cm-number">2</span>)
+        });
+
+      <span class="cm-variable-2">idLoading</span> <span class="cm-operator">=</span> <span class="cm-variable">$B</span>.<span class="cm-property">utils</span>.<span class="cm-property">aria</span>.<span class="cm-property">loading</span>(<span class="cm-variable-2">$cuerpoModal</span>, <span class="cm-string">&#39;active&#39;</span>);
+      <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.c-mensajes-cargando&#39;</span>).<span class="cm-property">first</span>().<span class="cm-property">attr</span>(<span class="cm-string">&#39;id&#39;</span>, <span class="cm-variable-2">idLoading</span>);
+
+      <span class="cm-comment">// separate so we can get its actual height</span>
+      <span class="cm-variable-2">$closingMsg</span>.<span class="cm-property">css</span>({
+        <span class="cm-comment">//marginTop: -$closingMsg.height()</span>
+      });
+    };
+
+    <span class="cm-variable-2">self</span>.<span class="cm-property">removeLoading</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">$dialog</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">$cuerpoModal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenedorPaso&#39;</span>)[<span class="cm-number">0</span>] <span class="cm-operator">?</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.contenedorPaso&#39;</span>) : <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.cuerpoModal&#39;</span>);
+      <span class="cm-variable-2">$cuerpoModal</span>.<span class="cm-property">css</span>({
+        <span class="cm-property">position</span>: <span class="cm-string">&#39;&#39;</span>
+      });
+      <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.c-mensajes-cargando&#39;</span>).<span class="cm-property">parent</span>().<span class="cm-property">remove</span>();
+      <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.jsLoadingDiv&#39;</span>).<span class="cm-property">remove</span>();
+      <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.cerrarModal&#39;</span>).<span class="cm-property">show</span>();
+      <span class="cm-variable">$B</span>.<span class="cm-property">utils</span>.<span class="cm-property">aria</span>.<span class="cm-property">loading</span>(<span class="cm-variable-2">$cuerpoModal</span>, <span class="cm-string">&#39;inactive&#39;</span>);
+    };
+
+    <span class="cm-variable-2">self</span>.<span class="cm-property">disableBodyScroll</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">disable</span>) {
+      <span class="cm-variable-2">$</span>(<span class="cm-string">&#39;html&#39;</span>).<span class="cm-property">css</span>(<span class="cm-string">&#39;overflow&#39;</span>, <span class="cm-variable-2">disable</span> <span class="cm-operator">?</span> <span class="cm-string">&#39;hidden&#39;</span> : <span class="cm-string">&#39;visible&#39;</span>);
+      <span class="cm-variable-2">$</span>(<span class="cm-string">&#39;body&#39;</span>).<span class="cm-property">css</span>(<span class="cm-string">&#39;overflow&#39;</span>, <span class="cm-variable-2">disable</span> <span class="cm-operator">?</span> <span class="cm-string">&#39;scroll&#39;</span> : <span class="cm-string">&#39;auto&#39;</span>);
+    };
+
+    <span class="cm-variable-2">self</span>.<span class="cm-property">focusOutsideDialog</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">link</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">link</span>) {
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">link</span>.<span class="cm-property">is</span>(<span class="cm-string">&#39;[tabindex]&#39;</span>)) {
+          <span class="cm-variable-2">link</span>.<span class="cm-property">focus</span>();
+        } <span class="cm-keyword">else</span> {
+          <span class="cm-variable-2">link</span>.<span class="cm-property">closest</span>(<span class="cm-string">&#39;[tabindex]&#39;</span>).<span class="cm-property">focus</span>();
+        }
+      }
+    };
+
+
+    <span class="cm-comment">/*\</span>
+<span class="cm-comment">     * $B.ui.dialog.create</span>
+<span class="cm-comment">     [ method ]</span>
+<span class="cm-comment">     * Creates a ui dialog with given options</span>
+<span class="cm-comment">     &gt; Arguments</span>
+<span class="cm-comment">     - options (object) object of name/value pairs</span>
+<span class="cm-comment">     o {</span>
+<span class="cm-comment">     o    el (string) #optional selector for the element to act as a dialog</span>
+<span class="cm-comment">     o    id (string) unique id for the dialog</span>
+<span class="cm-comment">     o    content (string) string content for de dialog (could be the inner html of a div `$(&#39;#myDiv&#39;).html())`</span>
+<span class="cm-comment">     o    afterLoad (callback) callback function to execute after loading dialog content via ajax</span>
+<span class="cm-comment">     o    button (object|string) jQuery object or selector for the button that triggers the dialog</span>
+<span class="cm-comment">     o    url (string|function) url string or function that returns a url string</span>
+<span class="cm-comment">     o    urlParams (object, function) object or function that returns an object with params for the url</span>
+<span class="cm-comment">     o    tagName (string) the tagName for creating the dialog if no element was provided (div by default)</span>
+<span class="cm-comment">     o    dialogOptions (object) Any jQuery ui option (see jquery ui documentation)</span>
+<span class="cm-comment">     o    onCreate (function) callback that fires only once when the dialog is created</span>
+<span class="cm-comment">     o }</span>
+<span class="cm-comment">     = (object) jQuery object of the dialog content</span>
+<span class="cm-comment">     &gt; Usage</span>
+<span class="cm-comment">     * Another text yoh!</span>
+<span class="cm-comment">     | $B.ui.dialog.create({</span>
+<span class="cm-comment">     |   id: &#39;MyDialog&#39;,</span>
+<span class="cm-comment">     |   el: &#39;#DialogElement&#39;,</span>
+<span class="cm-comment">     |   button: &#39;#button&#39;,</span>
+<span class="cm-comment">     |   dialogOptions: {</span>
+<span class="cm-comment">     |     draggable: true,</span>
+<span class="cm-comment">     |     width: 640</span>
+<span class="cm-comment">     |   }</span>
+<span class="cm-comment">     |  });</span>
+<span class="cm-comment">     * Another Example</span>
+<span class="cm-comment">     | $B.ui.dialog.create({</span>
+<span class="cm-comment">     |   id: &#39;MyDialog&#39;,</span>
+<span class="cm-comment">     |   el: &#39;#DialogElement&#39;</span>
+<span class="cm-comment">     |  });</span>
+<span class="cm-comment">    \*/</span>
+    <span class="cm-variable-2">self</span>.<span class="cm-property">create</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">options</span>) {
+          <span class="cm-comment">// default dialog class</span>
+      <span class="cm-keyword">var</span> <span class="cm-def">settings</span>,
+        <span class="cm-def">$dialog</span>, <span class="cm-comment">// jQuery dialog content obj</span>
+        <span class="cm-def">$uiDialog</span>, <span class="cm-comment">// placeholder for ui dialog element</span>
+        <span class="cm-def">LOADING_IMG</span>,
+        <span class="cm-def">onClick</span>,
+
+        <span class="cm-comment">// default $B.ui.dialog options</span>
+        <span class="cm-def">defaults</span> <span class="cm-operator">=</span> {
+          <span class="cm-property">el</span>: <span class="cm-atom">null</span>,
+          <span class="cm-property">id</span>: <span class="cm-string">&quot;&quot;</span>,
+          <span class="cm-property">content</span>: <span class="cm-string">&quot;&quot;</span>,
+          <span class="cm-property">afterLoad</span>: <span class="cm-atom">null</span>,
+          <span class="cm-property">button</span>: <span class="cm-atom">null</span>,
+          <span class="cm-property">url</span>: <span class="cm-atom">null</span>,
+          <span class="cm-property">urlParams</span>: <span class="cm-atom">null</span>, <span class="cm-comment">// must return an object</span>
+          <span class="cm-property">tagName</span>: <span class="cm-string">&#39;div&#39;</span>,
+          <span class="cm-property">resetOnClose</span>: <span class="cm-atom">true</span>,
+          <span class="cm-property">onCreate</span>: <span class="cm-atom">null</span>,
+          <span class="cm-property">dialogClass</span>: <span class="cm-string">&#39;c-contenedores-ventanaModal&#39;</span>,
+          <span class="cm-property">small</span>: <span class="cm-atom">false</span>,
+          <span class="cm-property">closeOnClick</span>: <span class="cm-atom">true</span>,
+          <span class="cm-comment">// defaults for the jQuery UI dialog</span>
+          <span class="cm-property">dialogOptions</span>: {
+            <span class="cm-property">zIndex</span>: <span class="cm-number">99999</span>,
+            <span class="cm-property">autoOpen</span>: <span class="cm-atom">false</span>,
+            <span class="cm-property">modal</span>: <span class="cm-atom">true</span>,
+            <span class="cm-property">show</span>: <span class="cm-string">&#39;fade&#39;</span>,
+            <span class="cm-property">resizable</span>: <span class="cm-atom">false</span>,
+            <span class="cm-property">draggable</span>: <span class="cm-atom">false</span>,
+            <span class="cm-comment">// custom option, save button (init on false)</span>
+            <span class="cm-property">trigger</span>: <span class="cm-atom">false</span>
+          },
+          <span class="cm-property">link</span>: <span class="cm-atom">false</span>
+        },
+        <span class="cm-def">_open</span>,
+        <span class="cm-def">_close</span>;
+
+      <span class="cm-comment">// extend dialogOptions</span>
+      <span class="cm-variable-2">settings</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>.<span class="cm-property">extend</span>(<span class="cm-atom">true</span>, {}, <span class="cm-variable-2">defaults</span>, <span class="cm-variable-2">options</span>);
+
+      <span class="cm-comment">// not used for now</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">small</span>) {
+        <span class="cm-variable-2">settings</span>.<span class="cm-property">dialogClass</span> <span class="cm-operator">+=</span> <span class="cm-string">&#39; w640&#39;</span>;
+      }
+
+      <span class="cm-comment">// check mandatory params</span>
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">settings</span>.<span class="cm-property">id</span>) {
+        <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">provide_an_id</span>);
+      }
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">dialogs</span>[<span class="cm-variable-2">settings</span>.<span class="cm-property">id</span>]) {
+        <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">create_the_id</span> <span class="cm-operator">+</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">id</span> <span class="cm-operator">+</span> <span class="cm-string">&#39; &#39;</span> <span class="cm-operator">+</span> <span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">exists_choose_another</span>);
+      }
+
+      <span class="cm-comment">// dialog element could be a string selector or jQuery object</span>
+      <span class="cm-variable-2">$dialog</span> <span class="cm-operator">=</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">el</span> <span class="cm-keyword">instanceof</span> <span class="cm-variable">jQuery</span>) <span class="cm-operator">?</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">el</span> : <span class="cm-variable-2">$</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">el</span>);
+
+      <span class="cm-comment">// the dialog is not on the dom and there is content provided, create the element and set its content</span>
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">$dialog</span>[<span class="cm-number">0</span>] <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">content</span>) {
+        <span class="cm-variable-2">$dialog</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-variable-2">document</span>.<span class="cm-property">createElement</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">tagName</span>));
+
+        <span class="cm-comment">// insert provided content to the dialog must be string</span>
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">content</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isString</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">content</span>)) {
+          <span class="cm-variable-2">$dialog</span>.<span class="cm-property">html</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">content</span>);
+        } <span class="cm-keyword">else</span> {
+          <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">content_must_be_string</span>);
+        }
+      } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">$dialog</span>[<span class="cm-number">0</span>] <span class="cm-operator">&amp;&amp;</span> <span class="cm-operator">!</span><span class="cm-variable-2">settings</span>.<span class="cm-property">content</span>) {
+        <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">the_element</span> <span class="cm-operator">+</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">el</span> <span class="cm-operator">+</span> <span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">not_found_on_dom</span>);
+      }
+
+      <span class="cm-variable-2">_open</span> <span class="cm-operator">=</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">open</span>;
+      <span class="cm-variable-2">_close</span> <span class="cm-operator">=</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">close</span>;
+
+      <span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">close</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-variable-2">self</span>.<span class="cm-property">disableBodyScroll</span>(<span class="cm-atom">false</span>);
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span>(<span class="cm-variable-2">_close</span>)) {
+          <span class="cm-variable-2">_close</span>.<span class="cm-property">apply</span>(<span class="cm-variable-2">$dialog</span>[<span class="cm-number">0</span>], <span class="cm-variable-2">arguments</span>);
+        }
+        <span class="cm-variable-2">self</span>.<span class="cm-property">focusOutsideDialog</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">link</span>);
+      };
+      <span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">destroy</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-variable-2">self</span>.<span class="cm-property">focusOutsideDialog</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">link</span>);
+      };
+
+      <span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">open</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> () {
+        <span class="cm-variable-2">self</span>.<span class="cm-property">disableBodyScroll</span>(<span class="cm-atom">true</span>);
+        <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenter</span>();
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span>(<span class="cm-variable-2">_open</span>)) {
+          <span class="cm-variable-2">_open</span>.<span class="cm-property">apply</span>(<span class="cm-variable-2">$dialog</span>[<span class="cm-number">0</span>], <span class="cm-variable-2">arguments</span>);
+        }
+      };
+
+
+      <span class="cm-comment">// initialize jquery ui dialog with options provided</span>
+      <span class="cm-variable-2">$dialog</span>
+        .<span class="cm-property">dialog</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>)
+        .<span class="cm-property">on</span>(<span class="cm-string">&#39;click.dialog-accept&#39;</span>, <span class="cm-string">&#39;[data-dialog-accept]&#39;</span>, <span class="cm-keyword">function</span> (<span class="cm-def">event</span>) {
+          <span class="cm-keyword">if</span> (<span class="cm-variable-2">$</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">currentTarget</span>).<span class="cm-property">hasClass</span>(<span class="cm-string">&#39;inactivo&#39;</span>) <span class="cm-operator">||</span> <span class="cm-variable-2">$</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">currentTarget</span>).<span class="cm-property">hasClass</span>(<span class="cm-string">&#39;inactivoValidacion&#39;</span>)) {
+            <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+          }
+
+          <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>(<span class="cm-string">&#39;close&#39;</span>);
+          <span class="cm-comment">// if there is an accept function defined on the options, call it</span>
+          <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">accept</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">accept</span>)) {
+            <span class="cm-variable-2">settings</span>.<span class="cm-property">accept</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">event</span>);
+          }
+        })
+        .<span class="cm-property">on</span>(<span class="cm-string">&#39;click.dialog-close-error&#39;</span>, <span class="cm-string">&#39;[data-cidview-associated]&#39;</span>, <span class="cm-keyword">function</span> (<span class="cm-def">event</span>) {
+          <span class="cm-comment">// call the same function of appView that closes error msg</span>
+          <span class="cm-variable">$B</span>.<span class="cm-property">router</span>.<span class="cm-property">appView</span>.<span class="cm-property">reloadView</span>(<span class="cm-variable-2">event</span>);
+        });
+
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">closeOnClick</span>) {
+        <span class="cm-variable-2">$dialog</span>.<span class="cm-property">on</span>(<span class="cm-string">&#39;click.dialog-close&#39;</span>, <span class="cm-string">&#39;[data-dialog-close], [data-dialog-cancel]&#39;</span>, <span class="cm-keyword">function</span> () {
+          <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>(<span class="cm-string">&#39;close&#39;</span>);
+        });
+      }
+
+      <span class="cm-comment">// External stuff</span>
+      <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">initFormComponents</span>(<span class="cm-variable-2">$dialog</span>);
+      <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">c_buscadores_predictivoLiquido</span>(<span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.c-buscadores-predictivo-liquido&#39;</span>));
+      <span class="cm-comment">// end External stuff</span>
+
+      <span class="cm-comment">// get ui dialog element</span>
+      <span class="cm-variable-2">$uiDialog</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-variable-2">$dialog</span>.<span class="cm-property">data</span>(<span class="cm-string">&#39;dialog&#39;</span>).<span class="cm-property">uiDialog</span>).<span class="cm-property">attr</span>(<span class="cm-string">&#39;id&#39;</span>, <span class="cm-string">&#39;ui-dialog-&#39;</span> <span class="cm-operator">+</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">id</span>).<span class="cm-property">addClass</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">dialogClass</span>);
+
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">height</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">_</span>.<span class="cm-property">isNumber</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">height</span>)) {
+        <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">attr</span>(<span class="cm-string">&#39;data-fixed-height&#39;</span>, <span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">height</span>);
+      }
+
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">dialogClass</span> <span class="cm-operator">!==</span> <span class="cm-string">&#39;c-contenedores-modalDetalle&#39;</span>) {
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">dialogOptions</span>.<span class="cm-property">width</span> <span class="cm-operator">&lt;</span> <span class="cm-number">700</span>) {
+          <span class="cm-comment">// pequenyo</span>
+          <span class="cm-variable-2">$uiDialog</span>.<span class="cm-property">addClass</span>(<span class="cm-string">&#39;w640&#39;</span>);
+          <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.cuerpoModal&#39;</span>).<span class="cm-property">addClass</span>(<span class="cm-string">&#39;container_8&#39;</span>);
+        } <span class="cm-keyword">else</span> {
+          <span class="cm-comment">// grande</span>
+          <span class="cm-variable-2">$dialog</span>.<span class="cm-property">find</span>(<span class="cm-string">&#39;.cuerpoModal&#39;</span>).<span class="cm-property">addClass</span>(<span class="cm-string">&#39;container_12&#39;</span>);
+        }
+      }
+
+      <span class="cm-comment">// set dialog width from its data-dialog-width attribute</span>
+      <span class="cm-comment">// must be a class e.i. data-dialog-width=&quot;w640&quot;</span>
+      <span class="cm-variable-2">privates</span>.<span class="cm-property">setWidth</span>(<span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">$uiDialog</span>);
+
+      <span class="cm-comment">// attach event handler to fix tab to the dialog when opened</span>
+      <span class="cm-variable-2">privates</span>.<span class="cm-property">fixDialogTabbing</span>(<span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">$uiDialog</span>);
+
+      <span class="cm-comment">// add to dialogs stack</span>
+      <span class="cm-variable-2">privates</span>.<span class="cm-property">add</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">id</span>, <span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">settings</span>.<span class="cm-property">isCore</span>);
+
+      <span class="cm-comment">// if resetOnClose is true (by default it is), resets the form inside the dialog</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">resetOnClose</span>) {
+        <span class="cm-variable-2">privates</span>.<span class="cm-property">reset</span>(<span class="cm-variable-2">$dialog</span>);
+      }
+
+      <span class="cm-comment">// call onCreate callback (run once when modal is created)</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">onCreate</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">onCreate</span>)) {
+        <span class="cm-variable-2">settings</span>.<span class="cm-property">onCreate</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">$dialog</span>);
+      }
+
+      <span class="cm-comment">// TODO:</span>
+      <span class="cm-comment">// loading image/element</span>
+      <span class="cm-variable-2">LOADING_IMG</span> <span class="cm-operator">=</span> <span class="cm-string">&#39;&#39;</span>;<span class="cm-comment">// $(&#39;&lt;div class=&quot;ui-helper-hidden&quot;&gt;Cargando...&lt;/div&gt;&#39;).insertBefore($dialog);</span>
+
+      <span class="cm-comment">// if there is an element defined to open the dialog, attach click event</span>
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">button</span>) {
+        <span class="cm-comment">// if is not a jQuery obj but a string selector wrap it with jQuery</span>
+
+        <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">helpers</span>.<span class="cm-property">isString</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">button</span>)) {
+          <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">button_must_be_string</span>);
+        }
+
+        <span class="cm-comment">// default click function for opening the dialog</span>
+        <span class="cm-variable-2">onClick</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">ev</span>) {
+          <span class="cm-variable-2">ev</span>.<span class="cm-property">preventDefault</span>();
+
+          <span class="cm-keyword">var</span> <span class="cm-def">$trigger</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$</span>(<span class="cm-keyword">this</span>);
+
+          <span class="cm-comment">// open the dialog</span>
+          <span class="cm-comment">// save a referece of the element that triggered this dialog</span>
+          <span class="cm-variable-2">$dialog</span>
+            .<span class="cm-property">dialog</span>({<span class="cm-property">trigger</span>: { <span class="cm-property">btn</span>: <span class="cm-variable-2">$trigger</span>, <span class="cm-property">selector</span>: <span class="cm-variable-2">settings</span>.<span class="cm-property">button</span> }})
+            .<span class="cm-property">dialog</span>(<span class="cm-string">&#39;open&#39;</span>);
+
+          <span class="cm-comment">// if there is a url provided load the dialog content from there</span>
+          <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">url</span>) {
+            <span class="cm-comment">// allow the url be a function</span>
+            <span class="cm-keyword">if</span> (<span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">url</span>)) {
+              <span class="cm-variable-2">settings</span>.<span class="cm-property">url</span> <span class="cm-operator">=</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">url</span>.<span class="cm-property">call</span>(<span class="cm-keyword">this</span>);
+              <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">helpers</span>.<span class="cm-property">isString</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">url</span>)) {
+                <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">url_must_be_string</span>);
+              }
+            }
+            <span class="cm-variable-2">self</span>.<span class="cm-property">load</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">settings</span>);
+          } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">ajax</span>) { <span class="cm-comment">// if ajax is true get the url from the href attribute or from data-dialog-url</span>
+            <span class="cm-variable-2">settings</span>.<span class="cm-property">url</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$trigger</span>.<span class="cm-property">attr</span>(<span class="cm-string">&quot;href&quot;</span>) <span class="cm-operator">||</span> <span class="cm-variable-2">$trigger</span>.<span class="cm-property">data</span>(<span class="cm-string">&quot;dialog-url&quot;</span>);
+            <span class="cm-comment">// if we couldn&#39;t get the url from href</span>
+            <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">settings</span>.<span class="cm-property">url</span>) {
+              <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">specify_a_url</span>);
+            }
+            <span class="cm-variable-2">self</span>.<span class="cm-property">load</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">settings</span>);
+          }
+        };
+
+        <span class="cm-comment">// save a referece of the element that triggered this dialog (as a string if not opened yet)</span>
+        <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>({<span class="cm-property">trigger</span>: { <span class="cm-property">btn</span>: <span class="cm-variable-2">$</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">button</span>), <span class="cm-property">selector</span>: <span class="cm-variable-2">settings</span>.<span class="cm-property">button</span> }});
+
+        <span class="cm-comment">// delegate click event from document</span>
+        <span class="cm-variable-2">$</span>(<span class="cm-variable-2">document</span>).<span class="cm-property">on</span>(<span class="cm-string">&#39;click.b-dialog-open&#39;</span>, <span class="cm-variable-2">settings</span>.<span class="cm-property">button</span>, <span class="cm-variable-2">onClick</span>);
+
+      <span class="cm-comment">// no button provided</span>
+      } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">ajax</span> <span class="cm-operator">||</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">url</span>) {
+        <span class="cm-comment">// load content on open</span>
+        <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>({
+          <span class="cm-property">open</span>: <span class="cm-keyword">function</span> (<span class="cm-def">ev</span>, <span class="cm-def">ui</span>) {
+            <span class="cm-variable-2">self</span>.<span class="cm-property">load</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">settings</span>);
+          }
+        });
+
+      <span class="cm-comment">// no ajax or url</span>
+      } <span class="cm-keyword">else</span> {
+        <span class="cm-variable-2">$dialog</span>.<span class="cm-property">dialog</span>();
+      }
+
+      <span class="cm-variable">$B</span>.<span class="cm-property">ui</span>.<span class="cm-property">dialogCenter</span>();
+
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">$dialog</span>;
+    };
+
+
+    <span class="cm-variable-2">self</span>.<span class="cm-property">load</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span> (<span class="cm-def">settings</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">$dialog</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>,
+        <span class="cm-def">loadingImg</span> <span class="cm-operator">=</span> <span class="cm-variable-2">$dialog</span>.<span class="cm-property">prev</span>().<span class="cm-property">show</span>(), <span class="cm-comment">// show loading img</span>
+        <span class="cm-comment">// allow params to be a function</span>
+        <span class="cm-def">_dataToSend</span> <span class="cm-operator">=</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">urlParams</span>) <span class="cm-operator">?</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">urlParams</span>) <span class="cm-operator">?</span> <span class="cm-variable-2">settings</span>.<span class="cm-property">urlParams</span>() : <span class="cm-variable-2">settings</span>.<span class="cm-property">urlParams</span> : {};
+
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">_dataToSend</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-operator">!</span><span class="cm-variable-2">helpers</span>.<span class="cm-property">isObject</span>(<span class="cm-variable-2">_dataToSend</span>)) {
+        <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">coreLiterals</span>.<span class="cm-property">urlParams_must_be_object</span>);
+      }
+
+      <span class="cm-comment">// prevent url caching adding a timestamp</span>
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">settings</span>.<span class="cm-property">cache</span>) {
+        <span class="cm-variable-2">_dataToSend</span>.<span class="cm-property">t</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Date</span>().<span class="cm-property">getTime</span>();
+      }
+
+      <span class="cm-comment">// empty any dialog content and load the new one</span>
+      <span class="cm-variable-2">$dialog</span>.<span class="cm-property">empty</span>().<span class="cm-property">load</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">url</span>, <span class="cm-variable-2">_dataToSend</span>, <span class="cm-keyword">function</span> (<span class="cm-def">response</span>, <span class="cm-def">status</span>, <span class="cm-def">xhr</span>) {
+        <span class="cm-comment">// hide loading img</span>
+        <span class="cm-variable-2">loadingImg</span>.<span class="cm-property">hide</span>();
+
+        <span class="cm-comment">// if status 401 redirect to login</span>
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">xhr</span>.<span class="cm-property">status</span> <span class="cm-operator">===</span> <span class="cm-number">401</span>) {
+          <span class="cm-variable">location</span>.<span class="cm-property">reload</span>();
+          <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+        } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">xhr</span>.<span class="cm-property">status</span> <span class="cm-operator">===</span> <span class="cm-number">500</span>) { <span class="cm-comment">// show error on 500</span>
+          <span class="cm-variable-2">$dialog</span>.<span class="cm-property">html</span>(<span class="cm-string">&#39;&lt;p&gt;&#39;</span> <span class="cm-operator">+</span> <span class="cm-variable">$B</span>.<span class="cm-property">app</span>.<span class="cm-property">literals</span>.<span class="cm-property">error_msg</span> <span class="cm-operator">+</span> <span class="cm-string">&#39;&lt;/p&gt;&#39;</span>);
+          <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+        } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">settings</span>.<span class="cm-property">afterLoad</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">helpers</span>.<span class="cm-property">isFunction</span>(<span class="cm-variable-2">settings</span>.<span class="cm-property">afterLoad</span>)) { <span class="cm-comment">// all ok call afterLoad fn if defined</span>
+          <span class="cm-comment">// pass the dialog elem as context</span>
+          <span class="cm-variable-2">settings</span>.<span class="cm-property">afterLoad</span>.<span class="cm-property">apply</span>(<span class="cm-variable-2">$dialog</span>, <span class="cm-variable-2">arguments</span>);
+        }
+      });
+    };
+
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>;
+  }());
+}(<span class="cm-variable">jQuery</span>, <span class="cm-variable">window</span>));
+</code></pre></body>

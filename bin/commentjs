@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+var utils = require('../utils');
+var Commentjs = require('../xomment');
+var View = require('../view');
+var args = process.argv.slice(2);
+var options = {};
+var getOption = function (opt) {
+  var index = args.indexOf(opt);
+  var value;
+  if (index >= 0) {
+    value = args[index + 1];
+    args.splice(index, 2);
+  }
+  return value;
+};
+
+var outputOption = getOption('-o');
+
+if (outputOption) {
+  options.output = outputOption;
+}
+
+if (!args.length) {
+  utils.log.writeln();
+  utils.log.writeln('Usage: commentjs <file1.js file2.js>, a <path/> or a <*.json config file> [options]');
+  utils.log.writeln();
+  utils.log.writeln('   -o    set the output directory for the docs files');
+  utils.log.writeln();
+  utils.log.writeln('Example usage:');
+  utils.log.writeln('   commentjs file1.js file2.js');
+  utils.log.writeln('   commentjs js/ -o docs/index.html');
+  utils.log.writeln('   commentjs config.json');
+  utils.log.writeln();
+  process.exit(1);
+
+// .json config file
+} else if (args.length === 1 && path.extname(args[0]) === '.json' && utils.file.isFile(args[0])) {
+  options = utils._.extend(options, utils.file.readJSON(args[0]));
+} else {
+  options.source = args;
+}
+
+var commentjs = Commentjs(options);
+var data = commentjs.run();
+var view = new View(commentjs.options, data);
+// view.render(function () {
+//   utils.log.ok('Rendered!');
+// });

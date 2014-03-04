@@ -1,0 +1,7 @@
+<h{{=section[0].level}} class="cjs-title{{ if (section[0].type ) { }} cjs-{{=section[0].type}} {{ } }}" id="{{=section[0].id}}">
+  {{=section[0].name}}
+  <a href="#{{=section[0].id}}" title="Link to this section" class="cjs-hash">#</a>
+  <span class="cjs-sourceline">
+    Defined in: <a title="Go to line {{=section[0].line}} in the source" href="src/{{=section[0].filename}}-src.html#L{{=section[0].line}}">{{=section[0].filename}}:{{=section[0].line}}</a>
+  </span>
+</h{{=section[0].level}}>

@@ -9,14 +9,12 @@
 
 var _ = module.exports = {};
 
+var slice = Array.prototype.slice;
+
 var REGEX_AMP = /&(?!\w+;|#\d+;|#x[\da-f]+;)/gi;
 var REGEX_CODE = /`([^`]+)`/g;
 var REGEX_LINK = /(^|\s)@([\w\.\_\$\(\)…]*[\w\_\$](\(\))?)/g;
 var REGEX_HREF = /(https?:\/\/[^\s"]+[\d\w_\-\/])/g;
-var REGEX_OPTIONAL_PARAM = /#optional\s*/g;
-var REGEX_TYPES = /\s*\|\s*/;
-
-var slice = Array.prototype.slice;
 
 _.extend = function(obj) {
   var objs = slice.call(arguments, 1);
@@ -40,5 +38,21 @@ _.format = function (value) {
     .replace(REGEX_HREF, '<a href="$1" rel="external">$1</a>');
 };
 
-_.REGEX_OPTIONAL_PARAM = REGEX_OPTIONAL_PARAM;
-_.REGEX_TYPES = REGEX_TYPES;
+_.in = function (obj, value) {
+  return Array.isArray(obj) ? obj.indexOf(value) > -1 : value in obj;
+};
+
+_.hash = function (keys, values) {
+  var hash = {};
+  var vlen = (values && values.length) || 0;
+  var len = keys.length;
+  var i;
+
+  for (i = 0; i < len; ++i) {
+    if (i in keys) {
+      hash[keys[i]] = vlen > i && i in values ? values[i] : true;
+    }
+  }
+
+  return hash;
+};

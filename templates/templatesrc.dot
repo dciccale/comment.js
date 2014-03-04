@@ -1,0 +1,12 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>{{=it.title}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/docs.min.css">
+
+<body id="cjs-src">
+  <!-- Generated with comment.js -->
+
+  <pre><code>{{=it.src}}</code></pre>
+</body>
