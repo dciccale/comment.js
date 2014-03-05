@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-var utils = require('../utils');
-var Commentjs = require('../xomment');
-var View = require('../view');
+var utils = require('../lib/utils');
+var Commentjs = require('../lib/xomment');
+var View = require('../lib/view');
 var args = process.argv.slice(2);
 var options = {};
 var getOption = function (opt) {
