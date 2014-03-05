@@ -12,7 +12,16 @@ module.exports = ->
         jshintrc: '.jshintrc'
 
       lib:
-        src: ['lib/comment.js', 'lib/comment_process.js', '<%= JS_DIR %>tocfilter.js']
+        src: [
+          'lib/comment.js',
+          'lib/parser.js',
+          'lib/view.js',
+          'lib/scanner.js',
+          'lib/tags/*.js',
+          'lib/util/*.js',
+          'lib/utils.js',
+          '<%= JS_DIR %>tocfilter.js'
+        ]
 
     stylus:
       compile:
