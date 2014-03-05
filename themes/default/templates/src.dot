@@ -6,15 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/docs.min.css">
     <style type="text/css">
-      #cjs-src ol {
-        position: absolute;
-        width: 100%;
-      }
-      #cjs-src ol li a {
-        display: block;
-        font-size: 0.9em;
-        margin: -2px 0;
-      }
     </style>
   </head>
   <body id="cjs-src" class="cm-s-monokai">
