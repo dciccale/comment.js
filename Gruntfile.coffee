@@ -1,11 +1,12 @@
 module.exports = ->
 
   @initConfig
-    CSS_DIR: 'lib/template/src/css/'
-    CSS_DEBUG_FILE: '<%= CSS_DIR %>docs.css',
-    CSS_MIN_FILE: 'lib/template/css/docs.min.css',
-    JS_DIR: 'lib/template/src/js/',
-    JS_FILE: 'lib/template/js/docs.min.js'
+    DEFAULT_THEME_DIR: 'themes/default/',
+    TEMPLATE_DIR: 'lib/template/',
+    CSS_DEBUG_FILE: '<%= CSS_DIR %>css/docs.css',
+    CSS_MIN_FILE: '<%= DEFAULT_THEME_DIR %>css/docs.min.css',
+    JS_DIR: '<%= TEMPLATE_DIR %>src/js/',
+    JS_FILE: '<%= DEFAULT_THEME_DIR %>js/docs.min.js'
 
     jshint:
       options:
@@ -26,7 +27,7 @@ module.exports = ->
     stylus:
       compile:
         files:
-          '<%= CSS_DEBUG_FILE %>': ['<%= CSS_DIR %>styl/docs.styl']
+          '<%= CSS_DEBUG_FILE %>': ['<%= TEMPLATE_DIR %>src/styl/docs.styl']
 
     uglify:
       target:
