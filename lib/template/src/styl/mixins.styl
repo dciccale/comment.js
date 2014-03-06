@@ -37,14 +37,14 @@ user-select()
   prefix('user-select', arguments)
 
 // for object types
-object-color(color)
+object-color(color, darkamount=10)
   background-color color
-  border-color darken(color, 10)
-  color object-text-color(color)
+  border-color darken(color, darkamount)
+  color object-text-color(color, darkamount*6)
 
 // getting text color for the type
-object-text-color(color)
-  darken(color, 60)
+object-text-color(color, darkamount=60)
+  darken(color, darkamount)
 
 .clear:before, .clear:after
   content " "

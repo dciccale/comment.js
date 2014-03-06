@@ -15,8 +15,8 @@
     <!-- Generated with comment.js -->
 
     <div id="header">
-      <a href="">
-        <img src="img/logo.png" width="138" height="38" alt="Logo" />
+      <a href="{{?it.homepage}}{{=it.homepage}}{{??}}{{?}}">
+        <img src="{{?it.logo}} {{=it.logo}} {{??}}img/logo.png{{?}}" alt="{{=it.title}}" />
       </a>
     </div>
 
@@ -25,26 +25,28 @@
 
       {{~it.sections :section}}
 
-      <div class="cjs-section {{=section[0].title}}-section">
-        {{#def.section}}
+      {{ var sectionData =section[0];}}
+      <div class="cjs-section {{=sectionData.title}}-section">
 
-        {{~section :line:i}}
-          {{ if (i > 0) { }}
-            {{ if (line.text) { }} {{#def.text}} {{ } }}
+      {{#def.section}}
 
-            {{ if (line.params) { }} {{#def.params}} {{ } }}
+      {{~section :line:i}}
+        {{ if (i > 0) { }}
+          {{?line.text}} {{#def.text}} {{?}}
 
-            {{ if (line.html) { }} {{=line.html}} {{ } }}
+          {{?line.params}} {{#def.params}} {{?}}
 
-            {{ if (line.head) { }} {{#def.head}} {{ } }}
+          {{?line.html}} {{=line.html}} {{?}}
 
-            {{ if (line.code) { }} {{#def.code}} {{ } }}
+          {{?line.head}} {{#def.head}} {{?}}
 
-            {{ if (line.return) { }} {{#def.return}} {{ } }}
+          {{?line.code}} {{#def.code}} {{?}}
 
-            {{ if (line.json) { }} {{#def.json}} {{ } }}
-          {{ } }}
-        {{~}}
+          {{?line.json}} {{#def.json}} {{?}}
+
+          {{?line.return}} {{#def.return}} {{?}}
+        {{ } }}
+      {{~}}
       </div>
       {{~}}
     </div>
@@ -59,13 +61,14 @@
       {{#def.toc}}
     </div>
 
-    <script src="js/docs.min.js"></script>
+    <script src="js/prettify.min.js"></script>
+    <script src="js/tocfilter.min.js"></script>
 
     {{~it.scripts :src}}
-      <script src="{{=src}}"></script>
+    <script src="{{=src}}"></script>
     {{~}}
 
-    {{if (it.trackingID) { }} {{#def.goog}} {{ } }}
+    {{?it.trackingID}} {{#def.goog}} {{?}}
 
   </body>
 </html>

@@ -1,3 +1,0 @@
-<pre class="prettyprint linenums cjs-pre">
-  <code class="cjs-code">{{=line.code.join("\n")}}</code>
-</pre>

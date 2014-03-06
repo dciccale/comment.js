@@ -3,15 +3,30 @@
   background-color $hi-bg-color
   border 1px solid black
 
+// code selection
+selection($hi-selection-color, inherit, '.prettyprint span')
+
 pre
   border-radius 6px
+
+#cjs-src pre
+  border 0
+  border-radius 0
 
 ol.linenums
   margin-left 50px
   li
-    color $hi-line-number-color
+    color: $hi-line-number-color
+    position relative
     &:hover
-      color $hi-line-number-color-hover
+      color $hi-line-number-color-hover !important
+
+  a
+    width 50px
+    height 16px
+    left -50px
+    position absolute
+    outline none
 
 .pun, .opn, .clo
   color $hi-plain
@@ -38,58 +53,9 @@ ol.linenums
 .pln
   color $hi-plain
 
+// not being used?
 .fun
   color red
 
 .typ, .atn, .dec, .var
   color $hi-attribute
-
-
-.cm-s-monokai
-  &.CodeMirror
-    background #272822
-    color #f8f8f2
-  div
-    &.CodeMirror-selected
-      background #49483E !important
-  .CodeMirror-gutters
-    background #272822
-    border-right 0px
-  .CodeMirror-linenumber
-    color #d0d0d0
-  .CodeMirror-cursor
-    border-left 1px solid #f8f8f0 !important
-  span
-    &.cm-comment
-      color #75715e
-    &.cm-atom
-      color #ae81ff
-    &.cm-number
-      color #ae81ff
-    &.cm-keyword
-      color #f92672
-    &.cm-string
-      color #e6db74
-    &.cm-variable
-      color #a6e22e
-    &.cm-variable-2
-      color #9effff
-    &.cm-def
-      color #fd971f
-    &.cm-bracket
-      color #f8f8f2
-    &.cm-tag
-      color #f92672
-    &.cm-link
-      color #ae81ff
-    &.cm-error
-      background #f92672
-      color #f8f8f0
-  .CodeMirror-activeline-background
-    background #373831 !important
-  .CodeMirror-matchingbracket
-    text-decoration underline
-    color white !important
-
-.cm-s-monokai span.cm-property, .cm-s-monokai span.cm-attribute
-  color #a6e22e

@@ -607,9 +607,6 @@
      = (object) jQuery object of the dialog content
      > Usage
      | $B.ui.dialog.close('id');
-     * pasdosd
-     * ejoir
-     > titit
     \*/
     self.close = function (id) {
       if (!self.get(id)) {
@@ -740,7 +737,6 @@
      o }
      = (object) jQuery object of the dialog content
      > Usage
-     * Another text yoh!
      | $B.ui.dialog.create({
      |   id: 'MyDialog',
      |   el: '#DialogElement',

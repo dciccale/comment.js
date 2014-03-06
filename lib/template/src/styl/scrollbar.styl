@@ -1,0 +1,28 @@
+// ==========================================================================
+// CUSTOM SCROLLBAR
+// ==========================================================================
+::-webkit-scrollbar-button:vertical
+  height 10px
+
+#cjs-toc::-webkit-scrollbar-button:end
+  height 0
+
+.cjs-panel::-webkit-scrollbar
+  width $scrollbar-size
+  height $scrollbar-size
+  background-color $scrollbar-bg
+  border-radius 4px
+
+.cjs-panel::-webkit-scrollbar-thumb
+  border-radius 4px
+  border 1px solid $scrollbar-thumb-border-color
+  height $scrollbar-thumb-min-height
+  background-color $scrollbar-thumb-bg
+
+.cjs-panel::-webkit-scrollbar-thumb:hover
+  border 1px solid $scrollbar-thumb-border-color-hover
+  background-color $scrollbar-thumb-bg-hover
+
+.cjs-panel::-webkit-scrollbar-thumb:active
+  border 1px solid $scrollbar-thumb-border-color-active
+  background-color $scrollbar-thumb-bg-active

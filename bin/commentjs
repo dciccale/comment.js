@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+var path = require('path');
 var utils = require('../lib/utils');
 var Commentjs = require('../lib/comment');
 var View = require('../lib/view');
@@ -40,9 +41,16 @@ if (!args.length) {
   options.source = args;
 }
 
-var commentjs = Commentjs(options);
+var commentjs = new Commentjs(options);
 var data = commentjs.run();
-var view = new View(commentjs.options, data);
-// view.render(function () {
-//   utils.log.ok('Rendered!');
-// });
+if (data) {
+  var view = new View({
+    filemap: commentjs.filemap,
+    prettify: true,
+    data: data
+  });
+
+  view.render(function () {
+    utils.log.ok('Rendered!');
+  });
+}

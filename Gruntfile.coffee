@@ -1,12 +1,13 @@
 module.exports = ->
 
   @initConfig
-    DEFAULT_THEME_DIR: 'themes/default/',
-    TEMPLATE_DIR: 'lib/template/',
-    CSS_DEBUG_FILE: '<%= CSS_DIR %>css/docs.css',
-    CSS_MIN_FILE: '<%= DEFAULT_THEME_DIR %>css/docs.min.css',
-    JS_DIR: '<%= TEMPLATE_DIR %>src/js/',
-    JS_FILE: '<%= DEFAULT_THEME_DIR %>js/docs.min.js'
+    DEFAULT_THEME_DIR: 'themes/default/'
+    TEMPLATE_DIR: 'lib/template/'
+    CSS_DEBUG_FILE: '<%= DEFAULT_THEME_DIR %>css/docs.css'
+    CSS_MIN_FILE: '<%= DEFAULT_THEME_DIR %>css/docs.min.css'
+    JS_DIR: '<%= TEMPLATE_DIR %>src/js/'
+    STYL_DIR: '<%= TEMPLATE_DIR %>src/styl/'
+    JS_DEST: '<%= DEFAULT_THEME_DIR %>js/'
 
     jshint:
       options:
@@ -14,14 +15,15 @@ module.exports = ->
 
       lib:
         src: [
-          'lib/comment.js',
-          'lib/parser.js',
-          'lib/view.js',
-          'lib/scanner.js',
-          'lib/tags/*.js',
-          'lib/util/*.js',
-          'lib/utils.js',
+          'lib/comment.js'
+          'lib/parser.js'
+          'lib/view.js'
+          'lib/scanner.js'
+          'lib/tags/*.js'
+          'lib/util/*.js'
+          'lib/utils.js'
           '<%= JS_DIR %>tocfilter.js'
+          '<%= JS_DIR %>src.js'
         ]
 
     stylus:
@@ -31,8 +33,13 @@ module.exports = ->
 
     uglify:
       target:
-        files:
-          '<%= JS_FILE %>': ['<%= JS_DIR %>prettify.js', '<%= JS_DIR %>tocfilter.js']
+        files: [
+          expand: true
+          cwd: '<%= JS_DIR %>'
+          src: ['*.js']
+          dest: '<%= JS_DEST %>'
+          ext: '.min.js'
+        ]
 
     cssmin:
       compress:
@@ -42,14 +49,14 @@ module.exports = ->
     watch:
       link:
         files: ['lib/**/*.js']
-        tasks: ['link', 'jshint']
+        tasks: ['jshint']
 
       jshint:
         files: ['<%= jshint.lib.src %>']
         tasks: ['jshint', 'uglify']
 
       stylus:
-        files: ['<%= CSS_DIR %>styl/comment.styl', '<%= CSS_DIR %>styl/src.styl'],
+        files: ['<%= STYL_DIR %>*.styl']
         tasks: ['stylus', 'cssmin']
 
   @loadNpmTasks 'grunt-contrib-jshint'

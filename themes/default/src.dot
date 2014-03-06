@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Source code of {{=it.filename}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/docs.min.css">
+  </head>
+  <body id="cjs-src">
+
+    <!-- Generated with comment.js -->
+
+    <pre class="prettyprint linenums cjs-pre"><code class="cjs-code">{{!it.src}}</code></pre>
+
+    <script src="js/prettify.min.js"></script>
+    <script src="js/src.min.js"></script>
+
+  </body>
+</html>

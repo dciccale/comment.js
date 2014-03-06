@@ -1,0 +1,120 @@
+// ==========================================================================
+// MAIN STYLES
+// ==========================================================================
+html
+ height 100%
+ min-height 100%
+
+.lt-ie8
+  overflow-y hidden
+
+body
+  height 100%
+  min-height 100%
+  background $body-bg
+  color $body-text-color
+
+a
+  text-decoration none
+  color $nav-link-color
+  transition color 200ms
+
+a:hover
+  color $nav-link-color-hover
+
+selection($text-selection-bg, $text-selection-fg)
+
+#header
+  padding 7px $global-sep 0 $global-sep
+  height $header-height - @padding[0]
+  background $header-bg
+  box-shadow rgba(0, 0, 0, 0.2) 0 2px 4px
+  position absolute
+  top 0
+  left 0
+  right 0
+
+#cjs-main
+  height 100%
+
+.cjs-panel
+  font-family "Myriad Pro", "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif
+
+
+// ==========================================================================
+// DOCUMENTATION CONTAINER
+// ==========================================================================
+#cjs-documentation
+  position absolute
+  top $header-height
+  right $nav-width + $global-sep
+  bottom 0
+  left 0
+  padding 0 30px
+  overflow auto
+
+
+// ==========================================================================
+// CONTENT
+// ==========================================================================
+h1, h2, h3, h4, h5, h6
+  margin $global-sep 0 20px 0
+  font-family inherit
+  font-weight bold
+  line-height 1
+  color inherit
+  text-rendering optimizelegibility
+  text-shadow 0px 1px white
+  // description
+  & + p
+    margin-bottom 20px
+
+h1
+  font-size 38px
+  margin-bottom 50px
+  margin-top 20px
+
+h2
+  font-size 36px
+
+h3
+  font-size 30px
+
+h4
+  font-size 22px
+
+h5
+  font-size 20px
+
+h6
+  font-size 18px
+
+h1, h2, h3
+  line-height 40px
+
+h4, h5, h6
+  line-height 20px
+
+p
+  margin 10px 0
+
+pre
+  user-select none
+  font-size 0.9em
+  margin-bottom $global-sep * 3
+  code
+    user-select text
+    padding-left 5px
+    font-size 14px
+
+pre, code
+  font-family $code-font
+
+// ==========================================================================
+// GENERATED SOURCE FILE
+// ==========================================================================
+#cjs-src
+  background $hi-bg-color
+
+  pre
+    margin-bottom 0
