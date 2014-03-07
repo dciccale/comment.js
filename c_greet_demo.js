@@ -3,7 +3,7 @@
 
   'use strict';
 
-  var input = document.getElementById('name');
+  var input = document.getElementById('c_name');
 
   document.getElementById('btn').addEventListener('click', function () {
     var name = input.value;

@@ -7,7 +7,7 @@
  > Usage
  | greet('Denis');
  > Try it
- # <input type="text" id="name" placeholder="Enter a name...">
+ # <input type="text" id="c_name" placeholder="Enter a name..." autocomplete="off">
  # <button id="btn">Say Hello</button>
 \*/
 function greet(name) {
