@@ -113,11 +113,6 @@ All script files in the `scripts` option will be appended with a `<script>` tag 
 "scripts": ["c_greet.js", "greet_demo.js"]
 ```
 
-
-#### Configuration file examples
-
-See the [examples](examples) directory and run `commentjs` passing one of the config files to see the results.
-
 ## comment.js block example
 
 ```js
@@ -190,7 +185,7 @@ The documentation will be generated following the order of the comments.
 
 ## Examples
 
-See in [examples](examples).
+See [examples](examples).
 
 ## Author
 Denis Ciccale ([@tdecs](http://twitter.com/tdecs))
