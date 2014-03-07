@@ -11,9 +11,9 @@ $global-sep = 10px
 //---------------------------------------------------------------------------
 
 $body-bg = #f8f8f8 url($img-path + 'body-bg.png')
-$body-text-color = #32392b
+$body-text-color = #4D4E53
 
-$text-selection-bg = rgba(154, 163, 135, .5)
+$text-selection-bg = rgba(#369, .3)
 $text-selection-fg = #444
 
 
@@ -24,14 +24,13 @@ $text-selection-fg = #444
 $nav-width = 275px
 
 // Nav links
-$nav-link-color = #4c9242
-$nav-link-color-hover = #084501
-$nav-link-bg-color-hover = rgba(8, 69, 1, 0.1)
-$nav-link-bg-color-hover-ie = #dfe6df
+$nav-link-color = #0095DD
+$nav-link-color-hover = #25A
+$nav-link-bg-color-hover = rgba($nav-link-color, 0.1)
+$nav-link-bg-color-hover-ie = lighten($nav-link-color, 70%)
 $nav-link-color-selected = #fff
-$nav-link-bg-color-selected-ie = #4e7949
-$nav-link-bg-color-selected = rgba(8, 69, 1, 0.7)
-$input-border-input-color = #ABABAB
+$nav-link-bg-color-selected-ie = #fff
+$nav-link-bg-color-selected = rgba($nav-link-color, 0.8)
 
 
 //---------------------------------------------------------------------------
@@ -39,7 +38,7 @@ $input-border-input-color = #ABABAB
 //---------------------------------------------------------------------------
 
 $header-height = 60px
-$header-bg = #4c9242 url($img-path + 'header-bg.png') 0 31px
+$header-bg = #84A2B4
 
 
 //---------------------------------------------------------------------------
@@ -76,7 +75,7 @@ $search-input-focus-color = black
 $section-border-color = #ddd
 $cjs-sourceline-color = #4E5745
 
-$cjs-header-color = #495241
+$cjs-header-color = #4D4E53
 
 $cjs-return-border-color = #DDD
 
@@ -85,12 +84,12 @@ $cjs-return-border-color = #DDD
 //---------------------------------------------------------------------------
 
 $cjs-default-type-color = #ccc
-$cjs-type-string-color = #F1E2A3
-$cjs-type-boolean-color = #A6CAA9
-$cjs-type-number-color = #A9C5EB
-$cjs-type-function-color = #EDA9BC
-$cjs-type-object-color = #CFB1ED
-$cjs-type-array-color = #FFC48E
+$cjs-type-string-color = #A6CAA9
+$cjs-type-boolean-color = #A9C5EB
+$cjs-type-number-color = #CFB1ED
+$cjs-type-function-color = #FFC48E
+$cjs-type-object-color = #F1E2A3
+$cjs-type-array-color = #EDA9BC
 $cjs-type-optional-color = rgba(255, 255, 255, 0.5)
 
 
@@ -117,22 +116,22 @@ $toc-item-width -= $scrollbar-size
 // General syntax highlight
 //---------------------------------------------------------------------------
 
-$hi-bg-color = #272822
-$hi-plain = #f8f8f2
-$hi-line-number-color = #797976
+$hi-bg-color = rgba(234, 239, 242, 0.25)
+$hi-plain = #000
+$hi-line-number-color = #999
 $hi-line-number-color-hover = #fff
-$hi-selection-color = rgba(130, 120, 130, .3)
+$hi-selection-color = rgba(#369, .3)
 $code-font = "Menlo", "Consolas", "Monaco", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace
 
 // javascript syntax highlight
-$hi-comment = #7C7C7C
-$hi-keyword = #E3584D
-$hi-string = #E4FF9B
-$hi-number = #B190EC
+$hi-comment = #708090
+$hi-keyword = #07A
+$hi-string = #690
+$hi-number = #905
 $hi-operator = $hi-keyword
 $hi-punctuation = $hi-plain
 
 // html syntax highlight
 $hi-tag = $hi-keyword
-$hi-attribute = #BBDE57
+$hi-attribute = #690
 $hi-attribute-value = $hi-string
