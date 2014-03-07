@@ -46,6 +46,9 @@ commentjs = new Commentjs(options);
 data = commentjs.run();
 
 if (data) {
+  if (options.scripts) {
+  data.scripts = options.scripts;
+  }
   viewoptions = {
     filemap: commentjs.filemap,
     data: data,

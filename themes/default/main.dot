@@ -25,27 +25,27 @@
 
       {{~it.sections :section}}
 
-      {{ var sectionData =section[0];}}
+      {{var sectionData = section[0];}}
       <div class="cjs-section {{=sectionData.title}}-section">
 
       {{#def.section}}
 
       {{~section :line:i}}
-        {{ if (i > 0) { }}
-          {{?line.text}} {{#def.text}} {{?}}
+      {{?i > 0}}
+      {{?line.text}} {{#def.text}} {{?}}
 
-          {{?line.params}} {{#def.params}} {{?}}
+      {{?line.params}} {{#def.params}} {{?}}
 
-          {{?line.html}} {{=line.html}} {{?}}
+      {{?line.html}} {{=line.html}} {{?}}
 
-          {{?line.head}} {{#def.head}} {{?}}
+      {{?line.head}} {{#def.head}} {{?}}
 
-          {{?line.code}} {{#def.code}} {{?}}
+      {{?line.code}} {{#def.code}} {{?}}
 
-          {{?line.json}} {{#def.json}} {{?}}
+      {{?line.json}} {{#def.json}} {{?}}
 
-          {{?line.return}} {{#def.return}} {{?}}
-        {{ } }}
+      {{?line.return}} {{#def.return}} {{?}}
+      {{?}}
       {{~}}
       </div>
       {{~}}

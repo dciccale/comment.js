@@ -1,23 +1,23 @@
 <ul class="cjs-json">
   {{~line.json :item}}
-  {{ if (item.key) { }}
+  {{?item.key}}
   <li>
     <span class="cjs-json-key">{{=item.key}}</span>
     <span class="cjs-type">
       {{~item.types :type}}<em class="cjs-type-{{=type}}">{{=type}}</em>{{~}}
-      {{ if (item.optional) { }}<em class="cjs-param-optional">optional</em>{{ } }}
+      {{? item.optional }}<em class="cjs-param-optional">optional</em>{{?}}
     </span>
     <span class="cjs-param-desc">{{=item.desc}}</span>
   </li>
-  {{ } else if (item.start) { }}
+  {{??item.start}}
   <li>{{=item.start}}
     <ul class="cjs-json">
-  {{ } else if (item.end) { }}
+  {{??item.end}}
     </ul>
   </li>
   <li>{{=item.end}}</li>
-  {{ } else { }}
+  {{??}}
   <li>{{=item}}</li>
-  {{ } }}
+  {{?}}
   {{~}}
 </ul>

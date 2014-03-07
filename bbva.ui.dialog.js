@@ -730,7 +730,7 @@
      o    afterLoad (callback) callback function to execute after loading dialog content via ajax
      o    button (object|string) jQuery object or selector for the button that triggers the dialog
      o    url (string|function) url string or function that returns a url string
-     o    urlParams (object, function) object or function that returns an object with params for the url
+     o    urlParams (object|function) object or function that returns an object with params for the url
      o    tagName (string) the tagName for creating the dialog if no element was provided (div by default)
      o    dialogOptions (object) Any jQuery ui option (see jquery ui documentation)
      o    onCreate (function) callback that fires only once when the dialog is created

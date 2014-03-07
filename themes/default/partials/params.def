@@ -3,9 +3,7 @@
   <dt class="cjs-param">{{=param.name}}</dt>
   <dd class="cjs-type">
     {{~param.types :type:k}}<em class="cjs-type-{{=type}}">{{=type}}</em>{{~}}
-    {{ if (param.optional) { }}
-    <em class="cjs-param-optional">optional</em>
-    {{ } }}
+    {{?param.optional}}<em class="cjs-param-optional">optional</em>{{?}}
   </dd>
   <dd class="cjs-param-desc">{{=param.desc}}</dd>
   {{~}}
