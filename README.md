@@ -158,7 +158,7 @@ All script files in the `scripts` option will be appended with a `<script>` tag 
 
 `>` Renders a heading.
 
-`-` `param` `(type)` `#optional` Param description see `@section2`. Words between \`backticks` will be rendered inside a \<code> tag.
+`-` Renders parameters `paramName` `(type)` `#optional` Param description. Link to other section `@section2`. Words between \`backticks` in the description will render inside a \<code> tag.
 
 \`backticks` Use backticks to highlight code inside paragraphs.
 
