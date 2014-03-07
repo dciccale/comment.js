@@ -15,17 +15,18 @@ var getOption = function (opt) {
   return value;
 };
 
-var outputOption = getOption('-o');
+var output = getOption('-o');
+var commentjs, data, viewoptions, view;
 
-if (outputOption) {
-  options.output = outputOption;
+if (output) {
+  options.output = output;
 }
 
 if (!args.length) {
   utils.log.writeln();
-  utils.log.writeln('Usage: commentjs <file1.js file2.js>, a <path/> or a <*.json config file> [options]');
+  utils.log.writeln('Usage: commentjs <file1.js file2.js> or <path/> or <.json config file> [options]');
   utils.log.writeln();
-  utils.log.writeln('   -o    set the output directory for the docs files');
+  utils.log.writeln('   -o    set the output directory for the doc files');
   utils.log.writeln();
   utils.log.writeln('Example usage:');
   utils.log.writeln('   commentjs file1.js file2.js');
@@ -41,14 +42,25 @@ if (!args.length) {
   options.source = args;
 }
 
-var commentjs = new Commentjs(options);
-var data = commentjs.run();
+commentjs = new Commentjs(options);
+data = commentjs.run();
+
 if (data) {
-  var view = new View({
+  viewoptions = {
     filemap: commentjs.filemap,
-    prettify: true,
-    data: data
-  });
+    data: data,
+    prettify: true
+  };
+
+  if (options.output) {
+    viewoptions.output = options.output;
+  }
+
+  if (options.title) {
+    viewoptions.title = options.title;
+  }
+
+  view = new View(viewoptions);
 
   view.render(function () {
     utils.log.ok('Rendered!');
