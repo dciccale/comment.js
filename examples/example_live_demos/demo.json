@@ -1,0 +1,5 @@
+{
+  "title": "Test docs",
+  "source": ["c_greet.js"],
+  "scripts": ["c_greet.js", "c_greet_demo.js"]
+}
