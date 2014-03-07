@@ -4,8 +4,7 @@ Simple API Documentation Generator.
 
 Inspired by one of the firsts versions of dr.js by Dmitry Baranovskiy.
 
-At that moment dr.js was not as powerful or flexible enough for me and I made some PRs but there was little people concerned so I decided making this fork with the idea to keep improving it as a different library.
-I hope no remorse for taking the awesome and fun syntax for writing the comments :)
+This is a complete re-write, (except for the toc generation which keeps some similarity). Also kept the awesome and fun syntax for writing the comments :)
 
 ## Installation
 
@@ -21,7 +20,7 @@ $ npm install -g commentjs
 $ commentjs file1.js file2.js
 ```
 
-This will generate 2 html files in the default output directory `docs/`. `docs/file1.html` and `docs/file2.html`.
+This will generate 1 html file in the default output directory `docs/`. `docs/file1.html` including the docs for both files.
 
 #### Custom output
 
