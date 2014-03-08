@@ -28,6 +28,8 @@ module.exports = ->
 
     stylus:
       compile:
+        options:
+          compress: false
         files:
           '<%= CSS_DEBUG_FILE %>': ['<%= ASSETS_DIR %>styl/docs.styl']
 
