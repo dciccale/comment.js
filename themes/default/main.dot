@@ -62,7 +62,7 @@
     </div>
 
     <script src="js/prettify.min.js"></script>
-    <script src="js/tocfilter.min.js"></script>
+    <script src="js/toc-filter.min.js"></script>
 
     {{~it.scripts :src}}
     <script src="{{=src}}"></script>
