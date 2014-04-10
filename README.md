@@ -4,19 +4,19 @@ Simple API Documentation Generator.
 
 Inspired by one of the firsts versions of dr.js by Dmitry Baranovskiy.
 
-This is a complete re-write, (except for the toc generation which keeps some similarity). Also kept the awesome and fun syntax for writing the comments :)
+This is a complete re-write, (except for the toc generation which keeps some similarity). Also kept the awesome and fun syntax for writing the comments.
 
 ### Why?
 dr.js was not going almost anywhere and I liked it's creativity on the syntax.
 
-There are many (and not so many) javascript documentation generators, which are pretty good but none of them is like comment.js or better, comment.js is different than the others, it is not based on jsdoc syntax (get over it) and adds a very flexible and creative way of writing your docs.
+There are some javascript documentation generators, but comment.js is different, it is not based on jsdoc syntax (get over it) and adds a very flexible and creative way of writing your docs.
 
-You can se a live example at http://api.kimbojs.com
+You can see a live example at http://api.kimbojs.com
 
 ## Installation
 
 ```bash
-$ npm install -g commentjs
+$ npm i -g commentjs
 ```
 
 ## Usage
