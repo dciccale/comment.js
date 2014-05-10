@@ -33,6 +33,7 @@ selection($text-selection-bg, $text-selection-fg)
   top 0
   left 0
   right 0
+  z-index 1
 
 #cjs-main
   height 100%
@@ -45,6 +46,8 @@ selection($text-selection-bg, $text-selection-fg)
 // DOCUMENTATION CONTAINER
 // ==========================================================================
 #cjs-documentation
+  background: $main-bg-color;
+  box-shadow rgba(0, 0, 0, 0.2) 0 2px 4px
   position absolute
   top $header-height
   right $nav-width + $global-sep
