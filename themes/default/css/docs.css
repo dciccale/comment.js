@@ -337,6 +337,7 @@ a:hover {
   top: 0;
   left: 0;
   right: 0;
+  z-index: 1;
 }
 #cjs-main {
   height: 100%;
@@ -345,6 +346,12 @@ a:hover {
   font-family: "Myriad Pro", "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
 }
 #cjs-documentation {
+  background: #fff;
+  -webkit-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
+  -moz-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
+  -ms-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
+  -o-box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
+  box-shadow: rgba(0,0,0,0.2) 0 2px 4px;
   position: absolute;
   top: 60px;
   right: 285px;
@@ -431,7 +438,7 @@ code {
   font-family: "Menlo", "Consolas", "Monaco", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
 }
 #cjs-src {
-  background: rgba(234,239,242,0.25);
+  background: rgba(234,239,242,0.5);
 }
 #cjs-src pre {
   margin-bottom: 0;
@@ -532,6 +539,7 @@ p code.prettyprint {
   -o-border-radius: 3px;
   border-radius: 3px;
   font-size: 0.9em;
+  border: 1px solid rgba(0,83,159,0.15);
 }
 .cjs-type em,
 .cjs-return em {
@@ -777,7 +785,7 @@ em.cjs-param-optional {
 }
 .prettyprint {
   padding: 10px 10px 10px 0;
-  background-color: rgba(234,239,242,0.25);
+  background-color: rgba(234,239,242,0.5);
 }
 .prettyprint span::-moz-selection {
   background: rgba(51,102,153,0.3);
@@ -788,7 +796,9 @@ em.cjs-param-optional {
   color: inherit;
 }
 pre.prettyprint {
-  border-left: 6px solid rgba(0,83,159,0.65);
+  border: 1px solid rgba(0,83,159,0.15);
+  border-left-width: 6px;
+  border-left-color: rgba(0,83,159,0.65);
 }
 pre {
   -webkit-border-radius: 6px;
