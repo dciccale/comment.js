@@ -1,10 +1,19 @@
 #!/usr/bin/env node
+
+/*!
+ * comment.js
+ * Copyright (c) 2014 Denis Ciccale (@tdecs)
+ * Released under the MIT license
+ * https://github.com/dciccale/comment.js/blob/master/LICENSE.txt
+ */
+
 var path = require('path');
+
 var utils = require('../lib/utils');
 var Commentjs = require('../lib/comment');
 var View = require('../lib/view');
+
 var args = process.argv.slice(2);
-var options = {};
 var getOption = function (opt) {
   var index = args.indexOf(opt);
   var value;
@@ -16,7 +25,8 @@ var getOption = function (opt) {
 };
 
 var output = getOption('-o');
-var commentjs, data, viewoptions, view;
+var options = {};
+var commentjs, data, viewOptions, view;
 
 if (output) {
   options.output = output;
@@ -24,7 +34,7 @@ if (output) {
 
 if (!args.length) {
   utils.log.writeln();
-  utils.log.writeln('Usage: commentjs <file1.js file2.js> or <path/> or <.json config file> [options]');
+  utils.log.writeln('Usage: commentjs <file1.js file2.js> or <dir> or <.json config file> [options]');
   utils.log.writeln();
   utils.log.writeln('   -o    set the output directory for the doc files');
   utils.log.writeln();
@@ -35,7 +45,7 @@ if (!args.length) {
   utils.log.writeln();
   process.exit(1);
 
-// .json config file
+// Check for .json config file
 } else if (args.length === 1 && path.extname(args[0]) === '.json' && utils.file.isFile(args[0])) {
   options = utils._.extend(options, utils.file.readJSON(args[0]));
 } else {
@@ -46,26 +56,25 @@ commentjs = new Commentjs(options);
 data = commentjs.run();
 
 if (data) {
-  if (options.scripts) {
-  data.scripts = options.scripts;
+  if (options.scripts && Array.isArray(options.scripts)) {
+    data.scripts = options.scripts;
   }
-  viewoptions = {
+
+  viewOptions = {
     filemap: commentjs.filemap,
     data: data,
     prettify: true
   };
 
   if (options.output) {
-    viewoptions.output = options.output;
+    viewOptions.output = options.output;
   }
 
   if (options.title) {
-    viewoptions.title = options.title;
+    viewOptions.title = options.title;
   }
 
-  view = new View(viewoptions);
+  view = new View(viewOptions);
 
-  view.render(function () {
-    utils.log.ok('Rendered!');
-  });
+  view.render();
 }

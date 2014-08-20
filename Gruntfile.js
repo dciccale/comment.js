@@ -5,9 +5,9 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     LIB_DIR: 'lib/',
+    ASSETS_DIR: '<%= LIB_DIR %>assets/',
     JS_DIR: '<%= ASSETS_DIR %>js/',
     STYL_DIR: '<%= ASSETS_DIR %>styl/',
-    ASSETS_DIR: '<%= LIB_DIR %>assets/',
     DEFAULT_THEME_DIR: 'themes/default/',
     CSS_DEBUG_FILE: '<%= DEFAULT_THEME_DIR %>css/docs.css',
     CSS_MIN_FILE: '<%= DEFAULT_THEME_DIR %>css/docs.min.css',
@@ -18,17 +18,7 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       },
       lib: {
-        src: [
-          '<%= LIB_DIR %>comment.js',
-          '<%= LIB_DIR %>parser.js',
-          '<%= LIB_DIR %>view.js',
-          '<%= LIB_DIR %>scanner.js',
-          '<%= LIB_DIR %>tags/*.js',
-          '<%= LIB_DIR %>util/*.js',
-          '<%= LIB_DIR %>utils.js',
-          '<%= JS_DIR %>toc-filter.js',
-          '<%= JS_DIR %>src.js'
-        ]
+        src: ['<%= LIB_DIR %>**/*.js', '!<%= JS_DIR %>prettify.js']
       }
     },
 
@@ -45,15 +35,13 @@ module.exports = function (grunt) {
 
     uglify: {
       target: {
-        files: [
-          {
-            expand: true,
-            cwd: '<%= JS_DIR %>',
-            src: ['*.js'],
-            dest: '<%= JS_DEST %>',
-            ext: '.min.js'
-          }
-        ]
+        files: [{
+          expand: true,
+          cwd: '<%= JS_DIR %>',
+          src: ['*.js'],
+          dest: '<%= JS_DEST %>',
+          ext: '.min.js'
+        }]
       }
     },
 
@@ -66,10 +54,6 @@ module.exports = function (grunt) {
     },
 
     watch: {
-      link: {
-        files: ['<%= LIB_DIR %>**/*.js'],
-        tasks: ['jshint']
-      },
       jshint: {
         files: ['<%= jshint.lib.src %>'],
         tasks: ['jshint', 'uglify']

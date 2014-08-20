@@ -816,19 +816,20 @@ pre {
   border-radius: 0;
 }
 ol.linenums {
-  margin-left: 50px;
+  margin-left: 10px;
+  list-style-position: inside;
 }
 ol.linenums li {
   color: #999;
   position: relative;
 }
 ol.linenums li:hover {
-  color: #fff !important;
+  color: #4d4d4d !important;
 }
 ol.linenums a {
   width: 50px;
   height: 16px;
-  left: -50px;
+  left: -10px;
   position: absolute;
   outline: none;
 }

@@ -17,8 +17,10 @@ pre
   border 0
   border-radius 0
 
+$ol-ml = 10px
 ol.linenums
-  margin-left 50px
+  margin-left $ol-ml
+  list-style-position inside
   li
     color: $hi-line-number-color
     position relative
@@ -28,7 +30,7 @@ ol.linenums
   a
     width 50px
     height 16px
-    left -50px
+    left -($ol-ml)
     position absolute
     outline none
 
