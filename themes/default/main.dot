@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{=it.title}}</title>
-    <link rel="stylesheet" href="css/docs.min.css">
+    <link rel="stylesheet" href="css/docs.css">
   </head>
   <body>
 
@@ -61,8 +61,8 @@
       {{#def.toc}}
     </div>
 
-    <script src="js/prettify.min.js"></script>
-    <script src="js/toc-filter.min.js"></script>
+    <script src="js/prettify.js"></script>
+    <script src="js/toc-filter.js"></script>
 
     {{~it.scripts :src}}
     <script src="{{=src}}"></script>
