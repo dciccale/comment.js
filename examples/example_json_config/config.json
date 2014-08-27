@@ -1,5 +1,6 @@
 {
   "title": "kimbo.js API Docs",
   "source": ["kimbo.js"],
-  "output": "apidocs/"
+  "output": "apidocs/",
+  "logo": "logo.png"
 }
