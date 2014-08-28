@@ -19,23 +19,35 @@ $ npm intall -g commentjs
 
 ## Usage
 
+### CLI
+
+Use the cli to see the options
+
+```bash
+$ commentjs -h
+```
+
 #### Basic example
 
 ```bash
-$ commentjs file1.js file2.js
+$ commentjs file1.js
 ```
 
-This will generate 1 html file in the default output directory `docs/`. `docs/file1.html` including the docs for both files.
+This will generate 1 html file in the default output directory `docs/`. `docs/file1.html`.
 
 #### Custom output
 
 ```bash
-$ commentjs file1.js file2.js -o api/
+$ commentjs -o api/ file1.js file2.js
 ```
 
 #### Configuration file
 
 A `.json` file can be provided for configuration.
+
+```bash
+$ commentjs docs.json
+```
 
 #### Options
 
@@ -44,6 +56,16 @@ A `.json` file can be provided for configuration.
 Type: `String`
 
 The main title for the documentation page, will be rendered in an `<h1>` tag.
+
+```
+"title": "My API Documentation"
+```
+
+##### logo
+
+Type: `String`
+
+The path of an image to use as the logo displayed in the header of your docs.
 
 ```
 "title": "My API Documentation"
@@ -84,7 +106,7 @@ As an array with objects:
 
 Using an array of objects there is an extra option called `link` which tells comment.js to what source link the definitions.
 
-If no link is provided `commentjs` will generate a beautiful view of the source code and will link definitions to this file.
+If no link is provided `commentjs` will generate a beautiful view of the source code and will link definitions to this file using prettify.
 
 ```
 "source": [{
@@ -135,6 +157,7 @@ All script files in the `scripts` option will be appended with a `<script>` tag 
  o  key2 (boolean) The second key/value
  o }
  - arg3 (boolean) #optional The second argument is optional and will be display as itemname(arg1, arg2, [arg3])
+ - arg4 (string|function) The third argument can be either a string or a function
  = (object) the return value for the function
  > Usage
  | itemname('example', {
