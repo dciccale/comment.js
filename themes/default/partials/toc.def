@@ -1,6 +1,6 @@
 <ul id="cjs-toc" class="cjs-panel">
   {{~it.toc :t:index}}
-  <li class="cjs-lvl-{{=t.indent}}">
+  <li class="cjs-lvl-{{=t.indent}}{{?t.type}} cjs-{{=t.type}}{{?}}">
     <a href="#{{=t.name}}">{{=t.name}}{{=t.brackets}}</a>
   </li>
   {{~}}

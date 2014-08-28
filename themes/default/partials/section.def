@@ -1,4 +1,4 @@
-<h{{=sectionData.level}} class="cjs-title{{?sectionData.type}} cjs-{{=sectionData.type}} {{?}}" id="{{=sectionData.name}}">
+<h{{=sectionData.level}} class="cjs-title{{?sectionData.type}} cjs-{{=sectionData.type}}{{?}}" id="{{=sectionData.name}}">
   {{=sectionData.name}}{{=sectionData.brackets}}
   <a href="#{{=sectionData.name}}" title="Link to this section" class="cjs-hash">#</a>
   <span class="cjs-sourceline">
