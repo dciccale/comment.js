@@ -68,7 +68,7 @@ Type: `String`
 The path of an image to use as the logo displayed in the header of your docs.
 
 ```
-"title": "My API Documentation"
+"logo": "path/to/your/logo.png"
 ```
 
 ##### output
