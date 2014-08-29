@@ -8,5 +8,5 @@ $ commentjs kimbo.js
 or specify the output directory
 
 ```bash
-$ commentjs kimbo.js -o documentation/
+$ commentjs -o documentation/ kimbo.js
 ```
