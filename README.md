@@ -2,9 +2,7 @@
 
 Simple API Documentation Generator.
 
-Inspired by one of the firsts versions of dr.js by Dmitry Baranovskiy.
-
-This is a complete re-write. The original syntax for writing the comments was kept.
+The syntax for writing the comments was inspired by one of the firsts versions of dr.js by Dmitry Baranovskiy.
 
 ### Why?
 There are some javascript documentation generators, but comment.js is different, it is not based on jsdoc syntax (get over it) and adds a very flexible and creative way of writing your docs.
