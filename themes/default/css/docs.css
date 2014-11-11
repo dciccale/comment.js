@@ -838,13 +838,13 @@ ol.linenums a {
 .prettyprint .tag {
   color: #07a;
 }
-.pln {
+.pln,
+.typ {
   color: #000;
 }
 .fun {
   color: #f00;
 }
-.typ,
 .atn,
 .dec,
 .var {
