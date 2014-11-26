@@ -171,7 +171,7 @@ All script files in the `scripts` option will be appended with a `<script>` tag 
 
 `*` Renders a paragraph.
 
-`[type]` Type of the object, could be one of `method` or `property`.
+`[ type ]` Type of the object, could be one of `method` or `property`.
 
 `#` Renders plain HTML.
 
