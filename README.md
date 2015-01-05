@@ -7,7 +7,10 @@ The syntax for writing the comments was inspired by one of the firsts versions o
 ### Why?
 There are some javascript documentation generators, but comment.js is different, it is not based on jsdoc syntax (get over it) and adds a very flexible and creative way of writing your docs.
 
+### Demo
 You can see a live example at http://api.kimbojs.com
+
+Or browse the [examples](examples) directory
 
 ## Installation
 
@@ -207,10 +210,6 @@ Use the pipe `|` to render code examples inside a `<pre>` tag that will be highl
 
 Add as many paragraphs, plain html blocks, headings, parameters, objects, returns and code examples as you want.
 The documentation will be generated following the order of the comments.
-
-## Examples
-
-See [examples](examples).
 
 ## Author
 Denis Ciccale ([@tdecs](http://twitter.com/tdecs))
