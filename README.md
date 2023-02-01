@@ -15,7 +15,7 @@ Or browse the [examples](examples) directory
 ## Installation
 
 ```bash
-$ npm intall -g commentjs
+$ npm install -g commentjs
 ```
 
 ## Usage
