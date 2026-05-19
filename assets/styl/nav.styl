@@ -1,0 +1,114 @@
+// Nav
+//---------------------------------------------------------------------------
+
+#cjs-nav
+  position fixed
+  top 64px
+  right 0
+  bottom 0
+  width 320px
+  overflow hidden
+  background var(--cjs-nav-bg)
+  border-left 1px solid var(--cjs-border)
+  backdrop-filter blur(14px)
+  user-select none
+
+#cjs-nav .cjs-nav-header
+  padding 18px 18px 14px
+  border-bottom 1px solid var(--cjs-border)
+
+#cjs-toc
+  position absolute
+  top 72px
+  right 0
+  bottom 0
+  left 0
+  overflow auto
+  padding 12px 10px 28px
+
+#cjs-nav li
+  list-style-type none
+
+#cjs-nav a
+  display block
+  border-radius 8px
+  padding 8px 12px
+  color var(--cjs-muted)
+  font-size 14px
+  line-height 1.3
+  overflow hidden
+  text-overflow ellipsis
+  white-space nowrap
+
+#cjs-nav a:hover
+  background var(--cjs-accent-soft)
+  color var(--cjs-accent-strong)
+
+#cjs-nav a.cjs-selected
+  background var(--cjs-accent)
+  color white
+
+#cjs-nav form
+  position relative
+
+#cjs-nav form input
+  width 100%
+  height 38px
+  padding 0 38px 0 36px
+  border 1px solid var(--cjs-border)
+  border-radius 999px
+  box-sizing border-box
+  color var(--cjs-text)
+  background var(--cjs-input-bg)
+  box-shadow 0 1px 2px rgba(15, 23, 42, 0.04)
+
+#cjs-nav form:before
+  content '⌕'
+  position absolute
+  top 8px
+  left 14px
+  color var(--cjs-muted)
+  font-size 16px
+  z-index 1
+
+#cjs-nav form input:focus
+  outline 2px solid var(--cjs-accent-soft)
+  border-color var(--cjs-accent)
+
+#cjs-search-reset
+  position absolute
+  top 6px
+  right 7px
+  width 26px
+  height 26px
+  padding 0
+  border 0
+  border-radius 999px
+  background transparent
+  color var(--cjs-muted)
+  cursor pointer
+  font-size 18px
+  line-height 24px
+
+#cjs-search-reset:hover
+  background var(--cjs-accent-soft)
+  color var(--cjs-accent-strong)
+
+for i in 0 1 2 3 4
+  {'#cjs-nav .cjs-lvl-' + i + ' a'}
+    padding-left unit(12 + (i * 16), 'px')
+
+@media (max-width: 900px)
+  #cjs-nav
+    position static
+    width auto
+    height auto
+    border-left 0
+    border-bottom 1px solid var(--cjs-border)
+
+  #cjs-toc
+    position static
+    max-height 280px
+
+  #cjs-nav .cjs-nav-header
+    padding 14px 18px

@@ -1,0 +1,73 @@
+.prettyprint
+  padding 16px 18px
+  border 1px solid var(--cjs-code-border)
+  border-radius 8px
+  background var(--cjs-code-bg)
+  color var(--cjs-text)
+  box-shadow inset 0 1px 0 rgba(255, 255, 255, 0.03)
+
+pre.prettyprint
+  border-left 4px solid var(--cjs-accent)
+
+#cjs-src pre
+  border-left 0
+
+ol.linenums
+  margin-left 0
+  padding-left 0
+  list-style-position inside
+
+ol.linenums li
+  color var(--cjs-muted)
+  position relative
+  padding-left 4px
+
+ol.linenums li:hover
+  color var(--cjs-text) !important
+
+ol.linenums a
+  width 48px
+  height 18px
+  left 0
+  position absolute
+  outline none
+
+.pun, .opn, .clo, .pln, .typ
+  color var(--cjs-text)
+
+.kwd, .prettyprint .tag
+  color #2563eb
+
+.str, .atv
+  color #15803d
+
+.lit
+  color #be123c
+
+.com
+  color var(--cjs-muted)
+
+.fun
+  color #dc2626
+
+.atn, .dec, .var
+  color #7c3aed
+
+:root[data-theme='dark'] .kwd,
+:root[data-theme='dark'] .prettyprint .tag
+  color #93c5fd
+
+:root[data-theme='dark'] .str,
+:root[data-theme='dark'] .atv
+  color #86efac
+
+:root[data-theme='dark'] .lit
+  color #fda4af
+
+:root[data-theme='dark'] .fun
+  color #fca5a5
+
+:root[data-theme='dark'] .atn,
+:root[data-theme='dark'] .dec,
+:root[data-theme='dark'] .var
+  color #c4b5fd

@@ -3,10 +3,10 @@
 Run the following command inside this directory
 
 ```bash
-$ commentjs kimbo.js
+$ commentjs kimbo.ts
 ```
 or specify the output directory
 
 ```bash
-$ commentjs -o documentation/ kimbo.js
+$ commentjs -o documentation/ kimbo.ts
 ```

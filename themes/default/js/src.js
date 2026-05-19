@@ -1,19 +1,37 @@
-/* global window:true */
-(function (window) {
-  'use strict';
-
-  // prettyfy code
-  window.prettyPrint();
-
-  var document = window.document;
-
-  // add links to each line
-  var lis = [].slice.call(document.querySelectorAll('ol.linenums li'));
-  var a = document.createElement('a');
-  lis.forEach(function (li, i) {
-    var a2 = a.cloneNode();
-    a2.id = 'L' + (i + 1);
-    a2.href = '#' + a2.id;
-    li.insertBefore(a2, li.firstChild);
+// src/browser/theme.ts
+var STORAGE_KEY = "commentjs-theme";
+function preferredTheme() {
+  const saved = window.localStorage.getItem(STORAGE_KEY);
+  if (saved === "light" || saved === "dark") {
+    return saved;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(theme, toggle) {
+  document.documentElement.dataset.theme = theme;
+  if (toggle) {
+    toggle.textContent = theme === "dark" ? "Light" : "Dark";
+    toggle.setAttribute("aria-pressed", String(theme === "dark"));
+  }
+}
+function initTheme() {
+  const toggle = document.getElementById("cjs-theme-toggle");
+  applyTheme(preferredTheme(), toggle);
+  toggle?.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    window.localStorage.setItem(STORAGE_KEY, next);
+    applyTheme(next, toggle);
   });
-}(window));
+}
+
+// src/browser/source-lines.ts
+initTheme();
+window.prettyPrint();
+var lineItems = Array.from(document.querySelectorAll("ol.linenums li"));
+var anchor = document.createElement("a");
+lineItems.forEach((li, index) => {
+  const lineAnchor = anchor.cloneNode();
+  lineAnchor.id = `L${index + 1}`;
+  lineAnchor.href = `#${lineAnchor.id}`;
+  li.insertBefore(lineAnchor, li.firstChild);
+});

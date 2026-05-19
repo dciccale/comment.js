@@ -1,0 +1,166 @@
+// Sections
+//---------------------------------------------------------------------------
+
+.cjs-section
+  max-width 980px
+  border-top 1px solid var(--cjs-border)
+  margin 0 0 40px
+  padding 34px 0 2px
+
+.cjs-title
+  scroll-margin-top 86px
+
+.cjs-object
+  color #6d5c12
+
+.cjs-method
+  color #9a4f00
+
+.cjs-property
+  color #6d3aa4
+
+:root[data-theme='dark'] .cjs-object
+  color #fde68a
+
+:root[data-theme='dark'] .cjs-method
+  color #fdba74
+
+:root[data-theme='dark'] .cjs-property
+  color #d8b4fe
+
+a.cjs-hash
+  opacity 0
+  margin-left 8px
+  font-size 0.8em
+  transition opacity 160ms ease, color 160ms ease
+
+.cjs-title:hover a.cjs-hash
+  opacity 1
+
+.cjs-sourceline
+  display block
+  margin-top 8px
+  color var(--cjs-muted)
+  font-size 13px
+  font-weight 500
+
+.cjs-header
+  color var(--cjs-text)
+  font-weight 700
+
+dl.cjs-arguments
+  display grid
+  grid-template-columns minmax(130px, max-content) minmax(120px, max-content) 1fr
+  gap 10px 14px
+  margin 18px 0 30px
+  padding 16px
+  border 1px solid var(--cjs-border)
+  border-radius 8px
+  background var(--cjs-surface-soft)
+
+dt.cjs-param
+  color var(--cjs-text)
+  font-family ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace
+  font-size 13px
+
+dd
+  margin 0
+
+.cjs-param-desc
+  color var(--cjs-muted)
+  font-size 14px
+  line-height 1.55
+
+.cjs-param-desc code, p code.prettyprint
+  padding 2px 6px
+  margin 0 2px
+  border-radius 5px
+  border 1px solid var(--cjs-code-border)
+  background var(--cjs-code-bg)
+  color var(--cjs-text)
+  font-size 0.9em
+
+.cjs-type em, .cjs-return em
+  display inline-block
+  margin-right 6px
+  margin-bottom 4px
+  border 1px solid transparent
+  border-radius 999px
+  padding 3px 8px
+  color #122033
+  font-size 11px
+  font-style normal
+  font-weight 700
+  line-height 1
+
+em.cjs-type-string
+  background #bbf7d0
+
+em.cjs-type-boolean
+  background #bfdbfe
+
+em.cjs-type-number
+  background #ddd6fe
+
+em.cjs-type-function
+  background #fed7aa
+
+em.cjs-type-object
+  background #fde68a
+
+em.cjs-type-array
+  background #fecdd3
+
+em.cjs-param-optional
+  background transparent
+  border-color var(--cjs-border)
+  color var(--cjs-muted)
+
+.cjs-return
+  display flex
+  flex-wrap wrap
+  gap 8px
+  align-items center
+  margin 22px 0 30px
+  padding 14px 16px
+  border 1px solid var(--cjs-border)
+  border-radius 8px
+  background var(--cjs-surface-soft)
+
+.cjs-return .cjs-header
+  margin-right 4px
+
+.cjs-json
+  list-style none
+  margin 16px 0 30px
+  padding 14px 16px
+  border 1px solid var(--cjs-border)
+  border-radius 8px
+  background var(--cjs-surface-soft)
+
+.cjs-json .cjs-json
+  margin 10px 0 6px
+  padding 10px 12px
+
+.cjs-json li
+  display flex
+  flex-wrap wrap
+  gap 8px
+  align-items baseline
+  margin 8px 0
+
+.cjs-json-key
+  min-width 90px
+  font-family ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace
+  font-size 13px
+  color var(--cjs-text)
+
+@media (max-width: 680px)
+  dl.cjs-arguments
+    display block
+
+  dt.cjs-param
+    margin-top 12px
+
+  .cjs-param-desc
+    margin-bottom 12px

@@ -1,0 +1,213 @@
+// Main styles
+//---------------------------------------------------------------------------
+
+:root
+  color-scheme light
+  --cjs-bg #eef2f7
+  --cjs-surface #ffffff
+  --cjs-surface-soft #f7f9fc
+  --cjs-text #253041
+  --cjs-muted #66758a
+  --cjs-border #d8e0ea
+  --cjs-accent #2563eb
+  --cjs-accent-strong #1d4ed8
+  --cjs-accent-soft #dbeafe
+  --cjs-shadow 0 18px 45px rgba(15, 23, 42, 0.10)
+  --cjs-code-bg #f4f7fb
+  --cjs-code-border #cbd8e7
+  --cjs-header-bg rgba(255, 255, 255, 0.92)
+  --cjs-nav-bg rgba(248, 250, 252, 0.78)
+  --cjs-input-bg #ffffff
+  --cjs-selection-bg rgba(37, 99, 235, 0.20)
+  --cjs-selection-fg #172033
+
+@media (prefers-color-scheme: dark)
+  :root:not([data-theme='light'])
+    color-scheme dark
+    --cjs-bg #111827
+    --cjs-surface #182235
+    --cjs-surface-soft #111827
+    --cjs-text #e5edf8
+    --cjs-muted #9fb0c7
+    --cjs-border #2b3a52
+    --cjs-accent #60a5fa
+    --cjs-accent-strong #93c5fd
+    --cjs-accent-soft rgba(96, 165, 250, 0.16)
+    --cjs-shadow 0 18px 45px rgba(0, 0, 0, 0.38)
+    --cjs-code-bg #0f172a
+    --cjs-code-border #334155
+    --cjs-header-bg rgba(17, 24, 39, 0.92)
+    --cjs-nav-bg rgba(15, 23, 42, 0.72)
+    --cjs-input-bg #0f172a
+    --cjs-selection-bg rgba(96, 165, 250, 0.28)
+    --cjs-selection-fg #f8fafc
+
+:root[data-theme='dark']
+  color-scheme dark
+  --cjs-bg #111827
+  --cjs-surface #182235
+  --cjs-surface-soft #111827
+  --cjs-text #e5edf8
+  --cjs-muted #9fb0c7
+  --cjs-border #2b3a52
+  --cjs-accent #60a5fa
+  --cjs-accent-strong #93c5fd
+  --cjs-accent-soft rgba(96, 165, 250, 0.16)
+  --cjs-shadow 0 18px 45px rgba(0, 0, 0, 0.38)
+  --cjs-code-bg #0f172a
+  --cjs-code-border #334155
+  --cjs-header-bg rgba(17, 24, 39, 0.92)
+  --cjs-nav-bg rgba(15, 23, 42, 0.72)
+  --cjs-input-bg #0f172a
+  --cjs-selection-bg rgba(96, 165, 250, 0.28)
+  --cjs-selection-fg #f8fafc
+
+html
+  min-height 100%
+  background var(--cjs-bg)
+
+body
+  min-height 100%
+  margin 0
+  background radial-gradient(circle at top left, var(--cjs-accent-soft), transparent 34rem), var(--cjs-bg)
+  color var(--cjs-text)
+
+a
+  text-decoration none
+  color var(--cjs-accent)
+  transition color 160ms ease, background-color 160ms ease
+
+a:hover
+  color var(--cjs-accent-strong)
+
+::selection
+  background var(--cjs-selection-bg)
+  color var(--cjs-selection-fg)
+
+#header
+  position sticky
+  top 0
+  z-index 5
+  height 64px
+  display flex
+  align-items center
+  justify-content space-between
+  gap 16px
+  padding 0 28px
+  background var(--cjs-header-bg)
+  border-bottom 1px solid var(--cjs-border)
+  backdrop-filter blur(16px)
+
+#header img
+  display block
+  max-height 38px
+  width auto
+
+#cjs-theme-toggle
+  border 1px solid var(--cjs-border)
+  border-radius 999px
+  background var(--cjs-surface)
+  color var(--cjs-text)
+  cursor pointer
+  font inherit
+  font-size 13px
+  line-height 1
+  padding 8px 12px
+  transition background-color 160ms ease, border-color 160ms ease, color 160ms ease
+
+#cjs-theme-toggle:hover
+  border-color var(--cjs-accent)
+  color var(--cjs-accent-strong)
+
+.cjs-panel
+  font-family Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+
+#cjs-documentation
+  position fixed
+  top 64px
+  right 320px
+  bottom 0
+  left 0
+  overflow auto
+  padding 34px clamp(24px, 5vw, 72px) 80px
+  background var(--cjs-surface)
+
+#cjs-documentation > h1
+  max-width 980px
+
+h1, h2, h3, h4, h5, h6
+  margin 0 0 18px
+  font-family inherit
+  font-weight 700
+  letter-spacing 0
+  color var(--cjs-text)
+  text-rendering optimizelegibility
+
+h1
+  font-size 36px
+  line-height 1.12
+  margin-bottom 36px
+
+h2
+  font-size 30px
+  line-height 1.2
+
+h3
+  font-size 25px
+  line-height 1.25
+
+h4
+  font-size 21px
+  line-height 1.3
+
+h5, h6
+  font-size 18px
+  line-height 1.35
+
+p
+  margin 10px 0
+  line-height 1.65
+
+pre, code
+  font-family ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace
+
+pre
+  overflow auto
+  font-size 14px
+  line-height 1.6
+  margin 16px 0 30px
+
+pre code
+  font-size inherit
+
+#cjs-src
+  background var(--cjs-bg)
+  padding 18px
+
+#cjs-src #cjs-theme-toggle
+  position fixed
+  top 14px
+  right 18px
+  z-index 2
+
+#cjs-src pre
+  min-height calc(100vh - 36px)
+  margin 0
+  padding 24px 18px
+
+@media (max-width: 900px)
+  #header
+    padding 0 18px
+
+  #cjs-documentation
+    position static
+    padding 26px 18px 56px
+
+  h1
+    font-size 30px
+
+  h2
+    font-size 25px
+
+  h3
+    font-size 22px

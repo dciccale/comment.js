@@ -1,6 +1,7 @@
 node_modules/
-examples/
-lib/template/src/
-Gruntfile.coffee
+test/
+src/
+assets/styl/
 .gitignore
-.jshintrc
+tsconfig.json
+tsconfig.test.json

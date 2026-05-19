@@ -1,39 +1,52 @@
-/* global window:true */
-(function (window) {
-  'use strict';
-
-  var document = window.document;
-  var toc = document.getElementById('cjs-toc');
-  var input = document.getElementById('cjs-filter');
-  var resetButton = document.getElementById('cjs-search-reset');
-  var nodes = [].slice.call(toc.getElementsByTagName('a'));
-  var filter, resetFilter;
-
-  nodes = nodes.map(function (a) {
-    var text = a.textContent ? a.textContent : a.innerText;
-    return {
-      text: text.toLowerCase(),
-      li: a.parentNode
-    };
+// src/browser/theme.ts
+var STORAGE_KEY = "commentjs-theme";
+function preferredTheme() {
+  const saved = window.localStorage.getItem(STORAGE_KEY);
+  if (saved === "light" || saved === "dark") {
+    return saved;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(theme, toggle) {
+  document.documentElement.dataset.theme = theme;
+  if (toggle) {
+    toggle.textContent = theme === "dark" ? "Light" : "Dark";
+    toggle.setAttribute("aria-pressed", String(theme === "dark"));
+  }
+}
+function initTheme() {
+  const toggle = document.getElementById("cjs-theme-toggle");
+  applyTheme(preferredTheme(), toggle);
+  toggle?.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    window.localStorage.setItem(STORAGE_KEY, next);
+    applyTheme(next, toggle);
   });
+}
 
-  filter = function () {
-    nodes.forEach(function (node) {
-      var value = input.value.toLowerCase().trim();
-      node.li.style.display = !value || node.text.indexOf(value) > -1 ? 'block' : 'none';
+// src/browser/toc-filter.ts
+var toc = document.getElementById("cjs-toc");
+var input = document.getElementById("cjs-filter");
+var resetButton = document.getElementById("cjs-search-reset");
+initTheme();
+if (toc && input && resetButton) {
+  const nodes = Array.from(toc.getElementsByTagName("a")).map((anchor) => ({
+    text: (anchor.textContent || anchor.innerText).toLowerCase(),
+    li: anchor.parentNode
+  }));
+  const filter = () => {
+    const value = input.value.toLowerCase().trim();
+    nodes.forEach((node) => {
+      node.li.style.display = !value || node.text.includes(value) ? "block" : "none";
     });
   };
-
-  resetFilter = function () {
+  const resetFilter = () => {
     if (input.value) {
-      input.value = '';
+      input.value = "";
       filter();
     }
   };
-
   input.onkeyup = filter;
-  resetButton.onclick = resetFilter;
-
-  // prettyfy code
-  window.prettyPrint();
-}(window));
+  resetButton.addEventListener("click", resetFilter);
+}
+window.prettyPrint();

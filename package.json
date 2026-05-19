@@ -2,6 +2,7 @@
   "name": "commentjs",
   "description": "Simple API Documentation Generator",
   "version": "0.0.7",
+  "type": "module",
   "author": "Denis Ciccale",
   "homepage": "http://github.com/dciccale/comment.js",
   "repository": {
@@ -11,27 +12,52 @@
   "bugs": {
     "url": "http://github.com/dciccale/comment.js/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/dciccale/comment.js/blob/master/LICENSE.txt"
+  "license": "MIT",
+  "main": "./dist/src/comment.js",
+  "types": "./dist/src/comment.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/comment.d.ts",
+      "default": "./dist/src/comment.js"
     }
-  ],
-  "main": "./lib/comment",
+  },
   "bin": {
-    "commentjs": "./bin/commentjs"
+    "commentjs": "./dist/src/cli.js"
+  },
+  "files": [
+    "dist",
+    "themes",
+    "LICENSE.txt",
+    "README.md"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "bun run clean && bun run build:css && bun run build:browser && tsc",
+    "build:browser": "bun build src/browser/toc-filter.ts --outfile themes/default/js/toc-filter.js --target browser && bun build src/browser/source-lines.ts --outfile themes/default/js/src.js --target browser",
+    "build:css": "stylus assets/styl/docs.styl --out themes/default/css --include-css",
+    "check": "tsc --noEmit && tsc -p tsconfig.test.json",
+    "coverage": "bun test --coverage",
+    "docs:example": "bun run build && node dist/src/cli.js -m -o docs/example-simple examples/example_simple/kimbo.ts",
+    "serve:docs": "bun scripts/serve-docs.ts docs/example-simple",
+    "test": "bun test",
+    "prepack": "bun run build",
+    "prepublishOnly": "bun run build && bun test"
   },
   "dependencies": {
-    "dot": "~1.0.2",
-    "chalk": "~0.4.0",
-    "glob": "~3.2.9",
-    "rimraf": "~2.2.6"
+    "chalk": "^5.6.2",
+    "glob": "^13.0.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "rimraf": "^6.1.3"
   },
   "devDependencies": {
-    "grunt": "0.4.1",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-stylus": "~0.19.0",
-    "grunt-contrib-watch": "~0.6.1"
+    "@types/bun": "^1.3.14",
+    "@types/glob": "^9.0.0",
+    "@types/node": "^25.9.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "stylus": "^0.64.0",
+    "typescript": "^6.0.3"
   },
   "keywords": [
     "documentation",
@@ -39,8 +65,10 @@
     "comment",
     "api"
   ],
-  "engines": [
-    "node >= 0.8.0"
-  ],
+  "engines": {
+    "node": ">=26",
+    "bun": ">=1.3.9"
+  },
+  "packageManager": "bun@1.3.9",
   "preferGlobal": true
 }

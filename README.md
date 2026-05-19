@@ -5,7 +5,7 @@ Simple API Documentation Generator.
 The syntax for writing the comments was inspired by one of the firsts versions of dr.js by Dmitry Baranovskiy.
 
 ### Why?
-There are some javascript documentation generators, but comment.js is different, it is not based on jsdoc syntax (get over it) and adds a very flexible and creative way of writing your docs.
+There are some JavaScript and TypeScript documentation generators, but comment.js is different: it is not based on jsdoc syntax and adds a flexible way of writing your docs.
 
 ### Demo
 You can see a live example at http://api.kimbojs.com
@@ -15,8 +15,10 @@ Or browse the [examples](examples) directory
 ## Installation
 
 ```bash
-$ npm install -g commentjs
+$ bun install -g commentjs
 ```
+
+comment.js is built with TypeScript, Bun, and React server rendering. It targets Node.js 26 or newer.
 
 ## Usage
 
@@ -31,15 +33,15 @@ $ commentjs -h
 #### Basic example
 
 ```bash
-$ commentjs file1.js
+$ commentjs file1.ts
 ```
 
-This will generate 1 html file in the default output directory `docs/`. `docs/file1.html`.
+This will generate `docs/index.html` plus source-code pages when prettify is enabled.
 
 #### Custom output
 
 ```bash
-$ commentjs -o api/ file1.js file2.js
+$ commentjs -o api/ file1.ts file2.ts
 ```
 
 #### Configuration file
@@ -54,7 +56,7 @@ $ commentjs docs.json
 
 ##### title
 
-Type: `String`
+Type: `string`
 
 The main title for the documentation page, will be rendered in an `<h1>` tag.
 
@@ -64,7 +66,7 @@ The main title for the documentation page, will be rendered in an `<h1>` tag.
 
 ##### logo
 
-Type: `String`
+Type: `string`
 
 The path of an image to use as the logo displayed in the header of your docs.
 
@@ -74,51 +76,27 @@ The path of an image to use as the logo displayed in the header of your docs.
 
 ##### output
 
-Type: `String`
+Type: `string`
 
 The output directory for the docs files.
-If only a directory name is provided, the generated `html` file will be named the same as the directory.
-But also a full path can be specified, for instance `docs/index.html`.
 
 ```
-"output": "docs" // Will generate docs/docs.html
-"output": "docs/index.html" // Will generate docs/index.html
+"output": "docs"
 ```
 
 ##### source
 
-Type: `String|Array`
+Type: `string | string[]`
 
-The `.js` files to be parsed. This option can be setted in several ways:
+The `.js`, `.ts`, and `.tsx` files to be parsed. This option can be set in several ways:
 
-As a string: `"file1.js"`.
+As a string: `"file1.ts"`.
 
-As an array of files: `["file1.js", "file2.js"]`.
-
-As an array with objects:
-
-```
-"source": [{
-  "path": "file1.js"
-}, {
-  "path": "file2.js"
-}]
-```
-
-Using an array of objects there is an extra option called `link` which tells comment.js to what source link the definitions.
-
-If no link is provided `commentjs` will generate a beautiful view of the source code and will link definitions to this file using prettify.
-
-```
-"source": [{
-  "path": "xxspubsub.js",
-  "link": "https://github.com/dciccale/xxspubsub/blob/master/xxspubsub.js"
-}]
-```
+As an array of files: `["file1.ts", "file2.ts"]`.
 
 ##### regex
 
-Type: `RegExp`
+Type: `string`
 
 Specify a regex to filter the source files.
 
@@ -128,16 +106,16 @@ In the case that the `output` option is a directory, this regex will be used to 
 "regex": "^c_"
 ```
 
-This will only match files starting with `c_`. So that if there is a list of files `["file1.js", "c_file2.js"]` inside the directory, the only file that will be parsed is `c_file2.js`.
+This will only match files starting with `c_`. So that if there is a list of files `["file1.ts", "c_file2.ts"]` inside the directory, the only file that will be parsed is `c_file2.ts`.
 
 ##### scripts
 
-Type: `Array`
+Type: `string[]`
 
 All script files in the `scripts` option will be appended with a `<script>` tag at the bottom of the generated `html`. This allows having live demos.
 
 ```
-"scripts": ["c_greet.js", "greet_demo.js"]
+"scripts": ["c_greet.ts", "greet_demo.ts"]
 ```
 
 ## comment.js block example
@@ -210,6 +188,19 @@ Use the pipe `|` to render code examples inside a `<pre>` tag that will be highl
 
 Add as many paragraphs, plain html blocks, headings, parameters, objects, returns and code examples as you want.
 The documentation will be generated following the order of the comments.
+
+## Development
+
+```bash
+bun install
+bun run check
+bun test
+bun run build
+bun run docs:example
+```
+
+`bun run build` replaces the old Grunt workflow: it compiles Stylus assets and emits TypeScript declarations and JavaScript into `dist/`.
+`bun run docs:example` generates a local preview at `docs/example-simple/index.html`.
 
 ## Author
 Denis Ciccale ([@tdecs](http://twitter.com/tdecs))
