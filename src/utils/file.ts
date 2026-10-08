@@ -33,10 +33,10 @@ export function readText(filepath: string): string {
   return read(filepath, 'utf-8') as string;
 }
 
-export function readJSON<T = unknown>(filepath: string): T {
+export function readJSON(filepath: string): unknown {
   const src = readText(filepath);
   try {
-    return JSON.parse(src) as T;
+    return JSON.parse(src);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(util.format('Unable to parse "%s" file (%s).', filepath, message));

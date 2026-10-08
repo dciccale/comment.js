@@ -18,7 +18,7 @@ Or browse the [examples](examples) directory
 $ bun install -g commentjs
 ```
 
-comment.js is built with TypeScript, Bun, and React server rendering. It targets Node.js 26 or newer.
+comment.js is built with TypeScript, Bun, and React server rendering. It targets Node.js 26 or newer. Building and testing require Bun 1.4.0 or newer.
 
 ## Usage
 
@@ -36,7 +36,7 @@ $ commentjs -h
 $ commentjs file1.ts
 ```
 
-This will generate `docs/index.html` plus source-code pages when prettify is enabled.
+This generates `docs/index.html` and source pages. Set `prettify` to `false` in a JSON configuration to omit source pages and their links.
 
 #### Custom output
 
@@ -44,9 +44,13 @@ This will generate `docs/index.html` plus source-code pages when prettify is ena
 $ commentjs -o api/ file1.ts file2.ts
 ```
 
+The generator records its files in `.commentjs-manifest.json`. It preserves unrelated files and removes only unchanged files from a previous generation. It refuses to overwrite unrelated or edited files at generated paths.
+
+The output directory must not contain source files, demo scripts, theme assets, or the current working directory. For output from an older version without a manifest, use a new directory or move the old output aside first.
+
 #### Configuration file
 
-A `.json` file can be provided for configuration.
+A `.json` file can provide configuration. Paths in the configuration are relative to the configuration file. The generator rejects unknown options and invalid values.
 
 ```bash
 $ commentjs docs.json
@@ -100,7 +104,7 @@ Type: `string`
 
 Specify a regex to filter the source files.
 
-In the case that the `output` option is a directory, this regex will be used to filter the files inside this directory.
+The regex filters source filenames, including files found in directories. Use a pattern such as `^c_` or a regex literal such as `/^c_/i`.
 
 ```
 "regex": "^c_"
@@ -112,11 +116,41 @@ This will only match files starting with `c_`. So that if there is a list of fil
 
 Type: `string[]`
 
-All script files in the `scripts` option will be appended with a `<script>` tag at the bottom of the generated `html`. This allows having live demos.
+The generator copies these browser-ready `.js` files into the output directory. It loads them in the listed order through `<script>` tags. Compile TypeScript scripts to JavaScript first.
 
 ```
-"scripts": ["c_greet.ts", "greet_demo.ts"]
+"scripts": ["c_greet.js", "greet_demo.js"]
 ```
+
+##### prettify
+
+Type: `boolean`, default: `true`.
+
+Generate source pages and links to implementation lines.
+
+##### homepage
+
+Type: `string`.
+
+The destination of the header logo link.
+
+##### trackingID
+
+Type: `string`.
+
+The ID passed to an existing `window.ga` function. The generator does not load an analytics library.
+
+### Library
+
+```js
+import Commentjs from 'commentjs';
+
+const generator = new Commentjs({ source: ['src/'], muted: true });
+const data = generator.run();
+console.log(data?.toc);
+```
+
+`run()` returns parsed documentation data. It returns `null` if no source files match. Each run scans the sources again.
 
 ## comment.js block example
 
@@ -178,7 +212,7 @@ o }
 
 Use the pipe `|` to render code examples inside a `<pre>` tag that will be highlighted with [google prettify](https://code.google.com/p/google-code-prettify/).
 ```
-| function example('example', {
+| example('example', {
 |    key1: 'hello world',
 |    key2: true
 |  });
@@ -187,20 +221,24 @@ Use the pipe `|` to render code examples inside a `<pre>` tag that will be highl
 `\*/` End comment.js block.
 
 Add as many paragraphs, plain html blocks, headings, parameters, objects, returns and code examples as you want.
-The documentation will be generated following the order of the comments.
+The generator sorts sections by name. It places each parent before its child sections across all source files. Section names must be unique.
 
 ## Development
 
 ```bash
 bun install
 bun run check
-bun test
+bun run test
+bun run coverage
 bun run build
 bun run docs:example
 ```
 
 `bun run build` replaces the old Grunt workflow: it compiles Stylus assets and emits TypeScript declarations and JavaScript into `dist/`.
 `bun run docs:example` generates a local preview at `docs/example-simple/index.html`.
+`bun run serve:docs` starts a local HTTP server and prints its address.
+The tests cover generation through the built Node CLI, all samples, and browser-script behavior.
+GitHub Actions runs the checks with Node.js 26.
 
 ## Author
 Denis Ciccale ([@tdecs](http://twitter.com/tdecs))

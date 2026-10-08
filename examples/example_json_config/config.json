@@ -2,5 +2,5 @@
   "title": "kimbo.ts API Docs",
   "source": ["kimbo.ts"],
   "output": "apidocs/",
-  "logo": "logo.png"
+  "logo": "custom-logo.png"
 }

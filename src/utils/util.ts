@@ -31,11 +31,7 @@ export function extend<T extends object>(obj: T, ...sources: Array<object | unde
 }
 
 export function format(value: unknown): string {
-  if (!value) {
-    return value as string;
-  }
-
-  return String(value)
+  return String(value ?? '')
     .replace(/</g, '&lt;')
     .replace(REGEX_AMP, '<em class="amp">&amp;</em>')
     .replace(REGEX_CODE, '<code class="prettyprint">$1</code>')
@@ -44,11 +40,11 @@ export function format(value: unknown): string {
 }
 
 export function has(obj: unknown[] | Record<string, unknown>, value: string): boolean {
-  return Array.isArray(obj) ? obj.indexOf(value) > -1 : value in obj;
+  return Array.isArray(obj) ? obj.indexOf(value) > -1 : Object.hasOwn(obj, value);
 }
 
 export function hash(keys: string[], values?: unknown[]): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
+  const result: Record<string, unknown> = Object.create(null);
   const vlen = values?.length || 0;
 
   for (let i = 0; i < keys.length; i += 1) {

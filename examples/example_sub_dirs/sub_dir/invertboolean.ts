@@ -6,8 +6,8 @@
  - state (boolean) some boolean...
  = (boolean) the opposite boolean passed in the arguments
  > Usage
- | something(true); // reeturns false
- | something(false); // reeturns true
+ | invertBoolean(true); // returns false
+ | invertBoolean(false); // returns true
 \*/
 function invertBoolean(bool) {
   return !bool;

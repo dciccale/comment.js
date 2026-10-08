@@ -71,7 +71,56 @@ o }
         { end: '}' },
       ],
     });
-    expect(section).toContainEqual({ return: { desc: ['No explicit return type'] } });
+    expect(section).toContainEqual({ return: { desc: 'No explicit return type' } });
     expect(section).toContainEqual({ code: ['const first = true;', 'const second = false;'] });
+  });
+});
+
+describe('Parser regressions', () => {
+  const block = (name: string, body = '') => `/*\\\n* ${name}\n${body}\n\\*/\nconst implementation = true;`;
+
+  test('supports built-in property names without changing Object.prototype', () => {
+    const names = ['constructor', 'toString', '__proto__', 'api.constructor', '__proto__.nested'];
+    const before = Object.getOwnPropertyNames(Object.prototype);
+    const filemap = Object.fromEntries(names.map((name, index) => [`/${index}.ts`, block(name)]));
+    expect(new Parser({ filemap }).parse().toc.map((item) => item.name).sort()).toEqual([...names].sort());
+    expect(Object.getOwnPropertyNames(Object.prototype)).toEqual(before);
+  });
+  test('orders parents before children across files', () => {
+    const filemap = { '/first.ts': block('api.child'), '/second.ts': block('api') };
+    expect(new Parser({ filemap }).parse().toc.map((item) => item.name)).toEqual(['api', 'api.child']);
+  });
+  test('returns independent results when reused', () => {
+    const parser = new Parser({ filemap: { '/old.ts': block('old') } });
+    const first = parser.parse();
+    const second = parser.parse({ '/new.ts': block('new') });
+    expect(first.toc.map((item) => item.name)).toEqual(['old']);
+    expect(second.toc.map((item) => item.name)).toEqual(['new']);
+  });
+  test('formats and escapes typed and untyped return descriptions', () => {
+    const filemap = { '/api.ts': block('api', '= (string|number) Use `value` from @api.other and <tag>\n= plain `code`') };
+    const lines = new Parser({ filemap }).parse().sections[0];
+    expect(lines).toContainEqual({ return: { types: ['string', 'number'], desc: 'Use <code class="prettyprint">value</code> from <a href="#api.other" class="cjs-link">api.other</a> and &lt;tag>' } });
+    expect(lines).toContainEqual({ return: { desc: 'plain <code class="prettyprint">code</code>' } });
+  });
+  test('retains overload signatures and nested object examples', () => {
+    const filemap = { '/api.ts': block('api', '[ method ]\n- first (string) First\n- second (number) #optional Second\n> Overload\n- options (object) Options\no {\no nested {\no value (boolean) #optional Value\no }\no }\n| one\n| two') };
+    const section = new Parser({ filemap }).parse().sections[0];
+    expect(section[0].brackets).toBe('(…)');
+    expect(section[0].params).toEqual([['first', '[second]'], ['options']]);
+    expect(section).toContainEqual({ code: ['one', 'two'] });
+  });
+  test('normalizes line endings and links to the implementation line', () => {
+    const source = block('api').replace(/\n/g, '\r\n');
+    const section = new Parser({ filemap: { '/api.ts': source } }).parse().sections[0];
+    expect(section[0].line).toBe(5);
+  });
+  test('caps deeply nested section headings at h6', () => {
+    expect(new Parser({ filemap: { '/api.ts': block('a.b.c.d.e.f.g') } }).parse().sections[0][0].level).toBe(6);
+  });
+  test('rejects unclosed, empty, untitled, duplicate, and malformed blocks', () => {
+    for (const content of ['/*\\\n* api', '/*\\\n\\*/', block(''), block('api', '- bad'), block('api') + '\n' + block('api'), '/*\\\n- arg (string) Missing title\n\\*/']) {
+      expect(() => new Parser({ filemap: { '/bad.ts': content } }).parse()).toThrow();
+    }
   });
 });

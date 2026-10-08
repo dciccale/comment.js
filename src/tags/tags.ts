@@ -1,4 +1,3 @@
-import * as utils from '../utils/index.js';
 import { defineTags } from './definitions.js';
 import type { ParserSection } from '../types.js';
 
@@ -9,28 +8,30 @@ export interface TagDefinition {
 }
 
 export class Tag implements TagDefinition {
-  symbol!: string;
+  symbol: string;
   single?: boolean;
-  process!: (value: string, section: ParserSection) => void;
+  process: TagDefinition['process'];
 
   constructor(public name: string, definition: TagDefinition) {
-    utils._.extend(this, definition as unknown as Record<string, unknown>);
+    this.symbol = definition.symbol;
+    this.single = definition.single;
+    this.process = definition.process;
   }
 }
 
-const tagsBySymbol: Record<string, Tag> = {};
-const symbolsByName: Record<string, string> = {};
+const tagsBySymbol = new Map<string, Tag>();
+const symbolsByName = new Map<string, string>();
 
 export const tags = {
   define(name: string, definition: TagDefinition): Tag {
     const tag = new Tag(name, definition);
-    tagsBySymbol[tag.symbol] = tag;
-    symbolsByName[name] = tag.symbol;
+    tagsBySymbol.set(tag.symbol, tag);
+    symbolsByName.set(name, tag.symbol);
     return tag;
   },
 
   get(q: string): Tag | string | null {
-    return utils._.has(tagsBySymbol, q) ? tagsBySymbol[q] : utils._.has(symbolsByName, q) ? symbolsByName[q] : null;
+    return tagsBySymbol.get(q) ?? symbolsByName.get(q) ?? null;
   },
 };
 

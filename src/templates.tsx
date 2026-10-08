@@ -1,26 +1,27 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import type { DocumentationData, JsonItem, ParamItem, ReturnItem, SectionData, SectionLine, TocItem } from './types.js';
+import type { DocumentationData, JsonItem, ParamItem, ReturnItem, SectionData, SectionContent, TocItem } from './types.js';
 
 function Raw({ html }: { html: string }): React.ReactElement {
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-function SectionHeading({ sectionData }: { sectionData: SectionData }): React.ReactElement {
-  const Tag = `h${sectionData.level}` as React.ElementType;
+function SectionHeading({ sectionData, sourceLinks }: { sectionData: SectionData; sourceLinks: boolean }): React.ReactElement {
+  const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
+  const Tag = headings[Math.min(Math.max(sectionData.level, 1), 6) - 1];
   return (
     <Tag
       className={`cjs-title${sectionData.type ? ` cjs-${sectionData.type}` : ''}`}
       id={sectionData.name}
     >
-      <Raw html={`${sectionData.name}${sectionData.brackets || ''}`} />
+      <span>{sectionData.name}{sectionData.brackets || ''}</span>
       <a href={`#${sectionData.name}`} title="Link to this section" className="cjs-hash">#</a>
-      <span className="cjs-sourceline">
+      {sourceLinks ? <span className="cjs-sourceline">
         Defined in:{' '}
-        <a title={`Go to line ${sectionData.line} in the source`} href={`${sectionData.srclink}-src.html#L${sectionData.line}`}>
+        <a title={`Go to line ${sectionData.line} in the source`} href={`${encodeURIComponent(sectionData.srclink)}-src.html#L${sectionData.line}`}>
           {sectionData.filename}:{sectionData.line}
         </a>
-      </span>
+      </span> : null}
     </Tag>
   );
 }
@@ -108,9 +109,9 @@ function Returns({ returns }: { returns: ReturnItem }): React.ReactElement {
   );
 }
 
-function SectionLineView({ line }: { line: SectionLine }): React.ReactElement | null {
+function SectionLineView({ line }: { line: SectionContent }): React.ReactElement | null {
   if ('text' in line) return <p className="cjs-text"><Raw html={line.text} /></p>;
-  if ('params' in line) return <Params params={line.params as ParamItem[]} />;
+  if ('params' in line) return <Params params={line.params} />;
   if ('html' in line) return <div dangerouslySetInnerHTML={{ __html: line.html }} />;
   if ('head' in line) return <p className="cjs-header"><Raw html={line.head} /></p>;
   if ('code' in line) return <pre className="prettyprint linenums cjs-pre"><code className="cjs-code">{line.code.join('\n')}</code></pre>;
@@ -152,11 +153,11 @@ function DocumentationPage({ data }: { data: DocumentationData }): React.ReactEl
         <div id="cjs-documentation" className="cjs-panel">
           <h1>{title}</h1>
           {data.sections.map((section) => {
-            const sectionData = section[0] as SectionData;
+            const [sectionData, ...lines] = section;
             return (
               <div className={`cjs-section ${sectionData.title}-section`} key={sectionData.name}>
-                <SectionHeading sectionData={sectionData} />
-                {section.slice(1).map((line, index) => <SectionLineView line={line} key={index} />)}
+                <SectionHeading sectionData={sectionData} sourceLinks={data.sourceLinks !== false} />
+                {lines.map((line, index) => <SectionLineView line={line} key={index} />)}
               </div>
             );
           })}
@@ -164,8 +165,8 @@ function DocumentationPage({ data }: { data: DocumentationData }): React.ReactEl
         <div id="cjs-nav">
           <div className="cjs-nav-header">
             <form>
-              <input type="text" id="cjs-filter" />
-              <span role="button" id="cjs-search-reset">x</span>
+              <input type="search" id="cjs-filter" aria-label="Filter API sections" />
+              <button type="button" id="cjs-search-reset" aria-label="Clear filter">x</button>
             </form>
           </div>
           <Toc toc={data.toc} />
@@ -173,7 +174,7 @@ function DocumentationPage({ data }: { data: DocumentationData }): React.ReactEl
         <script src="js/prettify.js" />
         <script src="js/toc-filter.js" />
         {(data.scripts || []).map((src) => <script src={src} key={src} />)}
-        {data.trackingID ? <script dangerouslySetInnerHTML={{ __html: `window.ga&&ga('create','${data.trackingID}');` }} /> : null}
+        {data.trackingID ? <script dangerouslySetInnerHTML={{ __html: `window.ga&&ga('create',${JSON.stringify(data.trackingID).replace(/</g, '\\u003c')});` }} /> : null}
       </body>
     </html>
   );

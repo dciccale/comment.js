@@ -1,100 +1,97 @@
 import path from 'node:path';
-import * as utils from './utils/index.js';
-import { findPackageRoot } from './package-root.js';
+import { readJSON } from './utils/file.js';
+import { parseRegex } from './scanner.js';
 import type { CommentjsOptions } from './types.js';
 
-interface PackageInfo {
-  version: string;
+function stringValue(value: unknown, key: string): string {
+  if (typeof value !== 'string' || !value.trim()) throw new Error(`${key} must be a non-empty string`);
+  return value;
 }
 
-const packageInfo = utils.file.readJSON<PackageInfo>(
-  path.join(findPackageRoot(import.meta.url), 'package.json'),
-);
+function strings(value: unknown, key: string): string[] {
+  if (!Array.isArray(value)) throw new Error(`${key} must be an array of strings`);
+  return value.map((item) => stringValue(item, key));
+}
 
-export class Options {
-  constructor(args: string[]) {
-    const options: CommentjsOptions = {};
-
-    if (!args.length) {
-      Options.help();
-      process.exit(1);
+export function parseConfig(value: unknown, baseDir = process.cwd()): CommentjsOptions {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Configuration must be a JSON object');
+  const options: CommentjsOptions = {};
+  for (const [key, raw] of Object.entries(value)) {
+    switch (key) {
+      case 'source':
+        options.source = (typeof raw === 'string' ? [stringValue(raw, key)] : strings(raw, key)).map((item) => path.resolve(baseDir, item));
+        break;
+      case 'scripts': options.scripts = strings(raw, key).map((item) => path.resolve(baseDir, item)); break;
+      case 'output': case 'logo': case 'themesdir': options[key] = path.resolve(baseDir, stringValue(raw, key)); break;
+      case 'title': case 'homepage': case 'trackingID': case 'extension': case 'exclude': options[key] = stringValue(raw, key); break;
+      case 'regex': options.regex = raw === null ? null : parseRegex(stringValue(raw, key)); break;
+      case 'muted': case 'recurse': case 'prettify':
+        if (typeof raw !== 'boolean') throw new Error(`${key} must be a boolean`);
+        options[key] = raw;
+        break;
+      default: throw new Error(`Unknown configuration option: ${key}`);
     }
-
-    if (args.length === 1 && path.extname(args[0]) === '.json' && utils.file.isFile(args[0])) {
-      return utils.file.readJSON<CommentjsOptions>(args[0]) as this;
-    }
-
-    while (args.length > 0) {
-      const arg = args.shift();
-
-      switch (arg) {
-        case '--help':
-        case '-h':
-          Options.help();
-          process.exit(1);
-          break;
-        case '--output':
-        case '-o':
-          options.output = args.shift();
-          break;
-        case '--norecurse':
-        case '-n':
-          options.recurse = false;
-          break;
-        case '--extension':
-        case '-e':
-          options.extension = args.shift();
-          break;
-        case '--exclude':
-        case '-x':
-          options.exclude = args.shift();
-          break;
-        case '--regex':
-        case '-r':
-          options.regex = args.shift();
-          break;
-        case '--muted':
-        case '-m':
-          options.muted = true;
-          break;
-        case '--version':
-        case '-v':
-          console.log(packageInfo.version);
-          process.exit(0);
-          break;
-        default:
-          if (!options.source) {
-            options.source = [];
-          }
-          if (arg && arg.indexOf('-') === 0) {
-            throw new Error(`Unknown option: ${arg}`);
-          }
-          (options.source as string[]).push(arg!);
-      }
-    }
-
-    return options as this;
   }
+  requireSource(options);
+  return options;
+}
 
-  static help(): void {
-    utils.log.writeln();
-    utils.log.writeln('Usage: commentjs [options] <file1.ts *.ts dir/> or <.json config file>');
-    utils.log.writeln();
-    utils.log.writeln('   -h, --help       show this help');
-    utils.log.writeln('   -o, --output     set the output directory for the doc files');
-    utils.log.writeln('   -n, --norecurse  prevent recurse nested directories');
-    utils.log.writeln('   -e, --extension  set file extensions to be scanned separated by comma');
-    utils.log.writeln('   -x, --exclude    specify directories or files to exclude');
-    utils.log.writeln('   -r, --regex      use a javascript /regex/ to filter paths to be scanned');
-    utils.log.writeln('   -m, --muted      less log messages from commentjs');
-    utils.log.writeln('   -v, --version    display the version number');
-    utils.log.writeln();
-    utils.log.writeln('Example usage:');
-    utils.log.writeln('   commentjs file1.ts file2.ts');
-    utils.log.writeln('   commentjs -o docs/index.html src/**/*.ts');
-    utils.log.writeln('   commentjs -r /^c_/ js/');
-    utils.log.writeln('   commentjs -x build/ -m src/ test/ main.ts');
-    utils.log.writeln('   commentjs config.json');
-    utils.log.writeln();
+function requireSource(options: CommentjsOptions): void {
+  if (!options.source || options.source.length === 0) throw new Error('Specify at least one source file or directory');
+}
+
+export type Command = { kind: 'help' } | { kind: 'version' } | { kind: 'generate'; options: CommentjsOptions };
+
+export function parseArgs(args: readonly string[]): Command {
+  if (args.includes('--help') || args.includes('-h')) return { kind: 'help' };
+  if (args.includes('--version') || args.includes('-v')) return { kind: 'version' };
+  if (args.length === 1 && path.extname(args[0]) === '.json') {
+    const configPath = path.resolve(args[0]);
+    return { kind: 'generate', options: parseConfig(readJSON(configPath), path.dirname(configPath)) };
   }
+  const source: string[] = [];
+  const options: CommentjsOptions = { source };
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+    const takeValue = (): string => {
+      const next = args[i + 1];
+      if (!next || next.startsWith('-')) throw new Error(`Missing value for ${arg}`);
+      i += 1;
+      return next;
+    };
+    switch (arg) {
+      case '--': source.push(...args.slice(i + 1)); i = args.length; break;
+      case '--output': case '-o': options.output = takeValue(); break;
+      case '--norecurse': case '-n': options.recurse = false; break;
+      case '--extension': case '-e': options.extension = takeValue(); break;
+      case '--exclude': case '-x': options.exclude = takeValue(); break;
+      case '--regex': case '-r': options.regex = parseRegex(takeValue()); break;
+      case '--muted': case '-m': options.muted = true; break;
+      default:
+        if (arg.startsWith('-')) throw new Error(`Unknown option: ${arg}`);
+        source.push(arg);
+    }
+  }
+  requireSource(options);
+  return { kind: 'generate', options };
+}
+
+export function help(): string {
+  return `Usage: commentjs [options] <files or directories> or <config.json>
+
+  -h, --help       show this help
+  -o, --output     set the output directory
+  -n, --norecurse  scan only the first directory level
+  -e, --extension  select file extensions, separated by commas
+  -x, --exclude    exclude directory names or paths, separated by commas
+  -r, --regex      filter filenames with a regex pattern or /pattern/flags
+  -m, --muted      suppress progress messages
+  -v, --version    display the package version
+
+Examples:
+  commentjs -o docs src/
+  commentjs -r '^c_' js/
+  commentjs -x build -m src/ test/ main.ts
+  commentjs config.json
+`;
 }

@@ -1,59 +1,44 @@
-import net from 'node:net';
+import fs from 'node:fs/promises';
 import path from 'node:path';
-
-const root = path.resolve(process.argv[2] || 'docs');
-const requestedPort = process.env.PORT ? Number(process.env.PORT) : undefined;
+import { isWithin } from '../src/output.js';
 
 const mimeTypes: Record<string, string> = {
-  '.css': 'text/css; charset=utf-8',
-  '.html': 'text/html; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.png': 'image/png',
-  '.svg': 'image/svg+xml',
+  '.css': 'text/css; charset=utf-8', '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml',
 };
 
-async function handleRequest(request: Request): Promise<Response> {
-  const url = new URL(request.url);
-  const pathname = decodeURIComponent(url.pathname);
-  const requested = pathname === '/' ? '/index.html' : pathname;
-  const filepath = path.normalize(path.join(root, requested));
-
-  if (!filepath.startsWith(root)) {
-    return new Response('Forbidden', { status: 403 });
-  }
-
-  const file = Bun.file(filepath);
-  if (!(await file.exists())) {
-    return new Response('Not found', { status: 404 });
-  }
-
-  return new Response(file, {
-    headers: {
-      'content-type': mimeTypes[path.extname(filepath)] || 'application/octet-stream',
-    },
-  });
-}
-
-async function findOpenPort(): Promise<number> {
-  if (requestedPort) {
-    return requestedPort;
-  }
-
-  return new Promise((resolve, reject) => {
-    const probe = net.createServer();
-    probe.once('error', reject);
-    probe.listen(0, () => {
-      const address = probe.address();
-      probe.close(() => {
-        if (address && typeof address === 'object') {
-          resolve(address.port);
-        } else {
-          reject(new Error('Unable to reserve a preview port'));
-        }
+export function createHandler(directory: string): (request: Request) => Promise<Response> {
+  const root = path.resolve(directory);
+  return async (request) => {
+    let pathname: string;
+    try {
+      pathname = decodeURIComponent(new URL(request.url).pathname);
+    } catch {
+      return new Response('Invalid URL', { status: 400 });
+    }
+    if (pathname.includes('\0') || pathname.includes('\\')) return new Response('Invalid URL', { status: 400 });
+    const filepath = path.resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+    if (!isWithin(root, filepath)) return new Response('Forbidden', { status: 403 });
+    try {
+      const [realRoot, realFile] = await Promise.all([fs.realpath(root), fs.realpath(filepath)]);
+      if (!isWithin(realRoot, realFile)) return new Response('Forbidden', { status: 403 });
+      if (!(await fs.stat(realFile)).isFile()) return new Response('Not found', { status: 404 });
+      return new Response(await fs.readFile(realFile), {
+        headers: { 'content-type': mimeTypes[path.extname(realFile)] ?? 'application/octet-stream' },
       });
-    });
-  });
+    } catch (error) {
+      if (error instanceof Error && 'code' in error && (error.code === 'ENOENT' || error.code === 'ENOTDIR')) {
+        return new Response('Not found', { status: 404 });
+      }
+      throw error;
+    }
+  };
 }
 
-const server = Bun.serve({ port: await findOpenPort(), fetch: handleRequest });
-console.log(`Serving ${root} at ${server.url}`);
+if (import.meta.main) {
+  const root = path.resolve(process.argv[2] || 'docs');
+  const port = process.env.PORT === undefined ? 0 : Number(process.env.PORT);
+  if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('PORT must be an integer from 0 to 65535');
+  const server = Bun.serve({ hostname: '127.0.0.1', port, fetch: createHandler(root) });
+  console.log(`Serving ${root} at ${server.url}`);
+}

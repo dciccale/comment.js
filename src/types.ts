@@ -29,8 +29,7 @@ export interface ReturnItem {
   desc: string | string[];
 }
 
-export type SectionLine =
-  | SectionData
+export type SectionContent =
   | { head: string }
   | { text: string }
   | { params: ParamItem[] }
@@ -38,6 +37,9 @@ export type SectionLine =
   | { html: string }
   | { return: ReturnItem }
   | { code: string[] };
+
+export type SectionLine = SectionData | SectionContent;
+export type DocumentationSection = [SectionData, ...SectionContent[]];
 
 export interface SectionData {
   name: string;
@@ -52,9 +54,8 @@ export interface SectionData {
 }
 
 export interface ParserSection {
-  data: Partial<SectionData>;
-  current: SectionLine[] | ParamItem[] | Array<JsonItem | string> | string[];
-  prev: SectionLine[];
+  data: SectionData;
+  lines: DocumentationSection;
   mode: string;
 }
 
@@ -66,11 +67,12 @@ export interface TocItem {
 }
 
 export interface DocumentationData {
+  sourceLinks?: boolean;
   docsname?: string;
   title?: string;
   homepage?: string;
   logo?: string;
-  sections: SectionLine[][];
+  sections: DocumentationSection[];
   toc: TocItem[];
   scripts?: string[];
   trackingID?: string;

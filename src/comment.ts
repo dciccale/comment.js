@@ -1,5 +1,6 @@
 import * as utils from './utils/index.js';
 import { Parser } from './parser.js';
+import { version } from './package-info.js';
 import { Scanner } from './scanner.js';
 import type { CommentjsOptions, DocumentationData, FileMap } from './types.js';
 
@@ -13,7 +14,7 @@ const defaults: Required<Pick<CommentjsOptions, 'muted' | 'source' | 'extension'
 };
 
 export class Commentjs {
-  version = '0.1.0';
+  version = version;
   options: CommentjsOptions;
   scanner: Scanner;
   filemap: FileMap = {};
@@ -21,7 +22,7 @@ export class Commentjs {
   endtime?: number;
 
   constructor(options: CommentjsOptions = {}) {
-    this.options = utils._.extend({}, defaults, options);
+    this.options = { ...defaults, ...options };
     utils.log.setMuted(Boolean(this.options.muted));
     this.scanner = new Scanner(this.options);
   }

@@ -1,192 +1,108 @@
 import path from 'node:path';
-import { tags, type Tag } from './tags/tags.js';
-import type { CommentBlock, CommentMap, DocumentationData, FileMap, ParserSection, SectionData, SectionLine, TocItem } from './types.js';
+import { tags } from './tags/tags.js';
+import { sourcePageNames } from './source-pages.js';
+import type { CommentBlock, CommentMap, DocumentationData, DocumentationSection, FileMap, ParserSection, TocItem } from './types.js';
 
-const REGEX_START_COMMENT = /^\s*\/\*\\\s*$/;
-const REGEX_END_COMMENT = /^\s*\\\*\/\s*$/;
-const REGEX_ROW_DATA = /^\s*(\S)(?:(?!\n)\s(.*))?$/;
-const REGEX_LINES = /\n/;
-
-export interface ParserOptions {
-  filemap: FileMap;
+const START_COMMENT = /^\s*\/\*\\\s*$/;
+const END_COMMENT = /^\s*\\\*\/\s*$/;
+const ROW_DATA = /^\s*(\S)(?:(?!\n)\s(.*))?$/;
+export interface ParserOptions { filemap: FileMap }
+interface SectionNode {
+  children: Map<string, SectionNode>;
+  section?: DocumentationSection;
 }
 
 export class Parser {
-  private tags = tags;
-  private section: ParserSection = { data: {}, current: [], prev: [], mode: '' };
-  private sections: SectionLine[][] = [];
-  private commentmap: CommentMap = {};
-  private toc: TocItem[] = [];
-  private utoc: Record<string, number> = {};
-  private tocData: Record<string, SectionData> = {};
-  private blockData: Record<string, SectionLine[]> = {};
-  private lvl: string[] = [];
-  private root: Record<string, Record<string, unknown>> = {};
-  private pointer: Record<string, Record<string, unknown>> | null = null;
-  private docsname?: string;
-
   constructor(private options: ParserOptions) {}
 
   parse(filemap = this.options.filemap): DocumentationData {
-    this.transform(this.extract(filemap));
-
-    return {
-      docsname: this.docsname,
-      sections: this.sections,
-      toc: this.toc,
+    const root: SectionNode = { children: new Map() };
+    const sourceNames = sourcePageNames(filemap);
+    for (const blocks of Object.values(this.extract(filemap))) {
+      for (const block of blocks) {
+        const section = this.processBlock(block, sourceNames.get(block.filename) ?? 'index');
+        let node = root;
+        for (const part of section[0].name.split('.')) {
+          let child = node.children.get(part);
+          if (!child) {
+            child = { children: new Map() };
+            node.children.set(part, child);
+          }
+          node = child;
+        }
+        if (node.section) throw new Error(`Duplicate section: ${section[0].name}`);
+        node.section = section;
+      }
+    }
+    const sections: DocumentationSection[] = [];
+    const toc: TocItem[] = [];
+    const visit = (node: SectionNode, depth: number): void => {
+      if (node.section) {
+        const data = node.section[0];
+        const isMethod = data.type?.includes('method') ?? false;
+        data.brackets = isMethod ? methodBrackets(data.params) : '';
+        sections.push(node.section);
+        toc.push({ indent: depth - 1, name: data.name, type: data.type, brackets: isMethod ? '()' : '' });
+      }
+      for (const name of [...node.children.keys()].sort()) {
+        const child = node.children.get(name);
+        if (child) visit(child, depth + 1);
+      }
     };
+    visit(root, 0);
+    const firstFile = Object.keys(filemap)[0];
+    return { docsname: firstFile ? path.basename(firstFile) : undefined, sections, toc };
   }
 
   extract(filemap = this.options.filemap): CommentMap {
-    let docsname: string | undefined;
-
-    for (const filename in filemap) {
-      docsname = docsname || filename;
-      const content = filemap[filename].replace(/\r\n?/gm, '\n');
-      const lines = content.split(REGEX_LINES);
-
+    const comments: CommentMap = Object.create(null);
+    for (const [filename, content] of Object.entries(filemap)) {
+      const lines = content.replace(/\r\n?/g, '\n').split('\n');
       for (let i = 0; i < lines.length; i += 1) {
-        let line = lines[i];
-
-        if (REGEX_START_COMMENT.test(line)) {
-          const commentlines: string[] = [];
-          let linenum = i + 1;
-
-          while (i < lines.length && !REGEX_END_COMMENT.test(line)) {
-            commentlines.push(line);
-            i += 1;
-            line = lines[i];
-            linenum = i + 2;
-          }
-
-          commentlines.shift();
-          const comment = commentlines.join('\n');
-          this.commentmap[filename] = this.commentmap[filename] || [];
-          this.commentmap[filename].push({ comment, line: linenum, filename });
+        if (!START_COMMENT.test(lines[i])) continue;
+        const start = i;
+        const commentLines: string[] = [];
+        i += 1;
+        while (i < lines.length && !END_COMMENT.test(lines[i])) {
+          commentLines.push(lines[i]);
+          i += 1;
         }
+        if (i === lines.length) throw new Error(`Unclosed comment block in ${filename}:${start + 1}`);
+        (comments[filename] ??= []).push({ comment: commentLines.join('\n'), line: i + 2, filename });
       }
     }
-
-    this.docsname = docsname ? path.basename(docsname) : undefined;
-    return this.commentmap;
+    return comments;
   }
 
-  processBlock(block: CommentBlock): void {
-    const blocklines = block.comment.split(REGEX_LINES);
-    let firstline = false;
-
-    for (let i = 0; i < blocklines.length; i += 1) {
-      const line = blocklines[i];
-      const data = line.match(REGEX_ROW_DATA);
-
-      if (i === 0) {
-        firstline = true;
-        this.pointer = this.root;
-      }
-
-      if (!data) {
-        continue;
-      }
-
-      const symbol = data[1];
-      const value = data[2] || '';
-
-      if (symbol === this.tags.get('text') && firstline) {
-        firstline = false;
-        const title = value.split('.');
-        for (const titlePart of title) {
-          this.pointer![titlePart] = (this.pointer![titlePart] || {}) as Record<string, unknown>;
-          this.pointer = this.pointer![titlePart] as Record<string, Record<string, unknown>>;
+  processBlock(block: CommentBlock, srclink = path.basename(block.filename, path.extname(block.filename))): DocumentationSection {
+    let section: ParserSection | undefined;
+    for (const line of block.comment.split('\n')) {
+      const row = line.match(ROW_DATA);
+      if (!row) continue;
+      const symbol = row[1];
+      const value = row[2] ?? '';
+      if (!section) {
+        if (symbol !== '*' || !value.trim() || value.split('.').some((part) => !part.trim())) {
+          throw new Error(`Expected a section name in ${block.filename}:${block.line}`);
         }
-
-        this.section = {
-          data: {
-            name: value,
-            title: value.replace(/\./g, '-'),
-            line: block.line,
-            filename: path.basename(block.filename),
-            srclink: path.basename(block.filename, path.extname(block.filename)),
-            level: title.length + 1,
-          },
-          current: [],
-          prev: [],
-          mode: '',
+        const data = {
+          name: value, title: value.replace(/\./g, '-'), line: block.line,
+          filename: path.basename(block.filename), srclink, level: Math.min(value.split('.').length + 1, 6),
         };
-        this.section.current = this.section.prev = [this.section.data as SectionData];
-      } else {
-        const tag = this.tags.get(symbol) as Tag | null;
-        if (!tag) {
-          continue;
-        }
-
-        if (this.section.mode !== tag.name) {
-          this.section.current = this.section.prev;
-        }
-
-        tag.process(value, this.section);
-        this.section.mode = tag.name;
-      }
-    }
-
-    if (!this.section.data.name) {
-      return;
-    }
-
-    this.tocData[this.section.data.name] = this.section.data as SectionData;
-    this.blockData[this.section.data.name] = this.section.prev;
-  }
-
-  transform(commentmap = this.commentmap): void {
-    for (const file in commentmap) {
-      const blocks = commentmap[file];
-      for (const block of blocks) {
-        this.processBlock(block);
-      }
-
-      this.generateTOC(this.root);
-    }
-  }
-
-  generateTOC(pointer: Record<string, unknown>): void {
-    const levels = Object.keys(pointer).sort();
-
-    for (const level of levels) {
-      this.lvl.push(level);
-      const name = this.lvl.join('.');
-      const sectionData = this.tocData[name];
-      if (!sectionData) {
-        this.generateTOC(pointer[level] as Record<string, unknown>);
-        this.lvl.pop();
+        section = { data, lines: [data], mode: '' };
         continue;
       }
-
-      const isMethod = Boolean(sectionData.type && sectionData.type.indexOf('method') + 1);
-      const indent = this.lvl.length - 1;
-      let brackets = '';
-
-      if (isMethod) {
-        if (sectionData.params?.length) {
-          brackets = sectionData.params.length === 1 ? `(${sectionData.params[0].join(', ')})` : '(…)';
-        } else {
-          brackets = '()';
-        }
-      }
-
-      sectionData.brackets = brackets;
-
-      if (!this.utoc[name]) {
-        this.sections.push(this.blockData[name]);
-        this.toc.push({
-          indent,
-          name,
-          type: sectionData.type,
-          brackets: isMethod ? '()' : '',
-        });
-        this.utoc[name] = 1;
-      }
-
-      this.generateTOC(pointer[level] as Record<string, unknown>);
-      this.lvl.pop();
+      const tag = tags.get(symbol);
+      if (!tag || typeof tag === 'string') continue;
+      tag.process(value, section);
+      section.mode = tag.name;
     }
+    if (!section) throw new Error(`Empty comment block in ${block.filename}:${block.line}`);
+    return section.lines;
   }
+}
+
+function methodBrackets(params?: string[][]): string {
+  if (!params?.length) return '()';
+  return params.length === 1 ? `(${params[0].join(', ')})` : '(…)';
 }

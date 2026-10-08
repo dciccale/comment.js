@@ -1,154 +1,73 @@
-import * as utils from '../utils/index.js';
-import type { JsonItem, ParamItem, ParserSection, ReturnItem } from '../types.js';
+import { format } from '../utils/util.js';
+import type { JsonItem, ParamItem } from '../types.js';
 import type { tags } from './tags.js';
 
-const REGEX_OPTIONAL_PARAM = /#optional\s*/g;
-const REGEX_PARAM_INFO = /(\s*[()]\s*)/;
-const REGEX_TYPES = /\s*\|\s*/;
-const REGEX_JSON_PARAM_INFO = /^\s*([^\(\s]+)\s*\(([^\)]+)\)\s*(.*?)\s*$/;
-const REGEX_JSON_START = /\s*\{\s*$/;
-const REGEX_JSON_END = /\s*\}\s*,?\s*$/;
-const REGEX_OBJECT_TYPES = /\(([^\)]+)\)/;
+const OPTIONAL = /#optional\s*/g;
+const TYPES = /\s*\|\s*/;
+const PARAM = /^\s*(\S+)\s*\(([^)]+)\)\s*(.*)$/;
 
-type TagsRegistry = typeof tags;
-
-export function defineTags(registry: TagsRegistry): void {
+export function defineTags(registry: typeof tags): void {
   registry.define('type', {
     symbol: '[',
     process(value, section) {
-      value = utils._.format(value).replace(REGEX_OBJECT_TYPES, () => '');
-      section.data.type = value.replace(/\s*\]\s*$/, '');
+      section.data.type = format(value.replace(/\(([^)]+)\)/, '').replace(/\s*\]\s*$/, '').trim());
     },
   });
-
-  registry.define('head', {
-    symbol: '>',
-    process(value, section) {
-      section.current.push({ head: utils._.format(value) } as never);
-    },
-  });
-
-  registry.define('text', {
-    symbol: '*',
-    single: true,
-    process(value, section) {
-      section.current.push({ text: utils._.format(value) } as never);
-    },
-  });
-
+  registry.define('head', { symbol: '>', process(value, section) { section.lines.push({ head: format(value) }); } });
+  registry.define('text', { symbol: '*', single: true, process(value, section) { section.lines.push({ text: format(value) }); } });
+  registry.define('html', { symbol: '#', process(value, section) { section.lines.push({ html: `${value}\n` }); } });
   registry.define('params', {
     symbol: '-',
     process(value, section) {
-      let optional = false;
-      const param: Partial<ParamItem> = {};
-
-      section.data.params = section.data.params || [];
-
-      if (section.mode !== this.name) {
-        const host: ParamItem[] = [];
-        section.data.params.push([]);
-        section.current.push({ params: host } as never);
-        section.current = host;
+      const match = value.match(PARAM);
+      if (!match) throw new Error(`Invalid parameter in ${section.data.name}: ${value}`);
+      const optional = value.includes('#optional');
+      const param: ParamItem = {
+        name: match[1], types: match[2].split(TYPES), desc: format(match[3].replace(OPTIONAL, '')) || '&#160;',
+        ...(optional ? { optional: true } : {}),
+      };
+      const last = section.lines.at(-1);
+      if (section.mode === this.name && last && 'params' in last && !('name' in last)) {
+        last.params.push(param);
+      } else {
+        section.lines.push({ params: [param] });
+        (section.data.params ??= []).push([]);
       }
-
-      const sectionData = section.data.params[section.data.params.length - 1];
-      value = value.replace(REGEX_OPTIONAL_PARAM, () => {
-        optional = true;
-        return '';
-      });
-
-      if (optional) {
-        param.optional = true;
-      }
-
-      const desc = value.split(REGEX_PARAM_INFO);
-      param.name = desc.shift() || '';
-      sectionData.push(`${optional ? '[' : ''}${param.name}${optional ? ']' : ''}`);
-      desc.shift();
-      param.types = (desc.shift() || '').split(REGEX_TYPES);
-      desc.shift();
-      param.desc = utils._.format(desc.join('')) || '&#160;';
-      (section.current as ParamItem[]).push(param as ParamItem);
+      section.data.params?.at(-1)?.push(optional ? `[${param.name}]` : param.name);
     },
   });
-
   registry.define('json', {
     symbol: 'o',
     process(value, section) {
-      const desc = value.match(REGEX_JSON_PARAM_INFO);
-      const start = value.match(REGEX_JSON_START);
-      const end = value.match(REGEX_JSON_END);
-      let item: JsonItem | string = {};
-
-      if (section.mode !== this.name) {
-        const host: Array<JsonItem | string> = [];
-        section.current.push({ json: host } as never);
-        section.current = host;
-      }
-
-      if (desc) {
-        desc.shift();
-        const key = desc.shift() || '';
-        const types = (desc.shift() || '').split(REGEX_TYPES);
-        let optional = false;
-        const text = (desc.shift() || '').replace(REGEX_OPTIONAL_PARAM, () => {
-          optional = true;
-          return '';
-        });
-        item = { key, types, desc: utils._.format(text) };
-        if (optional) {
-          item.optional = true;
-        }
-      } else if (!end) {
-        item = value;
-      }
-
-      if (start) {
-        item = { start: value };
-      }
-      if (end) {
-        item = { end: value };
-      }
-
-      (section.current as Array<JsonItem | string>).push(item);
+      const match = value.match(PARAM);
+      let item: JsonItem | string = value;
+      if (/\s*\{\s*$/.test(value)) item = { start: value };
+      else if (/\s*\}\s*,?\s*$/.test(value)) item = { end: value };
+      else if (match) item = {
+        key: match[1], types: match[2].split(TYPES), desc: format(match[3].replace(OPTIONAL, '')),
+        ...(match[3].includes('#optional') ? { optional: true } : {}),
+      };
+      const last = section.lines.at(-1);
+      if (section.mode === this.name && last && 'json' in last) last.json.push(item);
+      else section.lines.push({ json: [item] });
     },
   });
-
-  registry.define('html', {
-    symbol: '#',
-    process(value, section) {
-      section.current.push({ html: `${value}\n` } as never);
-    },
-  });
-
   registry.define('return', {
     symbol: '=',
     process(value, section) {
-      const desc = value.split(REGEX_PARAM_INFO);
-      const returns: ReturnItem = { desc };
-
-      if (desc.length > 1) {
-        desc.shift();
-        desc.shift();
-        returns.types = (desc.shift() || '').split(REGEX_TYPES);
-        desc.shift();
-      }
-
-      returns.desc = desc;
-      section.current.push({ return: returns } as never);
+      const match = value.match(/^\s*\(([^)]+)\)\s*(.*)$/);
+      section.lines.push({ return: {
+        ...(match ? { types: match[1].split(TYPES) } : {}),
+        desc: format(match ? match[2] : value),
+      } });
     },
   });
-
   registry.define('code', {
     symbol: '|',
     process(value, section) {
-      if (section.mode !== this.name) {
-        const host: string[] = [];
-        section.current.push({ code: host } as never);
-        section.current = host;
-      }
-
-      (section.current as string[]).push(value);
+      const last = section.lines.at(-1);
+      if (section.mode === this.name && last && 'code' in last) last.code.push(value);
+      else section.lines.push({ code: [value] });
     },
   });
 }

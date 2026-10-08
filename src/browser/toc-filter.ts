@@ -12,16 +12,16 @@ declare global {
 }
 
 const toc = document.getElementById('cjs-toc');
-const input = document.getElementById('cjs-filter') as HTMLInputElement | null;
+const input = document.getElementById('cjs-filter');
 const resetButton = document.getElementById('cjs-search-reset');
 
 initTheme();
 
-if (toc && input && resetButton) {
-  const nodes: TocNode[] = Array.from(toc.getElementsByTagName('a')).map((anchor) => ({
+if (toc && input instanceof HTMLInputElement && resetButton) {
+  const nodes: TocNode[] = Array.from(toc.getElementsByTagName('a')).flatMap((anchor) => anchor.parentElement ? [{
     text: (anchor.textContent || anchor.innerText).toLowerCase(),
-    li: anchor.parentNode as HTMLElement,
-  }));
+    li: anchor.parentElement,
+  }] : []);
 
   const filter = (): void => {
     const value = input.value.toLowerCase().trim();
@@ -37,7 +37,9 @@ if (toc && input && resetButton) {
     }
   };
 
-  input.onkeyup = filter;
+  input.addEventListener('input', filter);
+  input.addEventListener('keyup', filter);
+  input.form?.addEventListener('submit', (event) => event.preventDefault());
   resetButton.addEventListener('click', resetFilter);
 }
 

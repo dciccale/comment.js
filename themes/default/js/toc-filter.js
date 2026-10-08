@@ -1,10 +1,11 @@
 // src/browser/theme.ts
 var STORAGE_KEY = "commentjs-theme";
 function preferredTheme() {
-  const saved = window.localStorage.getItem(STORAGE_KEY);
-  if (saved === "light" || saved === "dark") {
-    return saved;
-  }
+  try {
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved === "light" || saved === "dark")
+      return saved;
+  } catch {}
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 function applyTheme(theme, toggle) {
@@ -15,12 +16,15 @@ function applyTheme(theme, toggle) {
   }
 }
 function initTheme() {
-  const toggle = document.getElementById("cjs-theme-toggle");
+  const element = document.getElementById("cjs-theme-toggle");
+  const toggle = element instanceof HTMLButtonElement ? element : null;
   applyTheme(preferredTheme(), toggle);
   toggle?.addEventListener("click", () => {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    window.localStorage.setItem(STORAGE_KEY, next);
     applyTheme(next, toggle);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {}
   });
 }
 
@@ -29,11 +33,11 @@ var toc = document.getElementById("cjs-toc");
 var input = document.getElementById("cjs-filter");
 var resetButton = document.getElementById("cjs-search-reset");
 initTheme();
-if (toc && input && resetButton) {
-  const nodes = Array.from(toc.getElementsByTagName("a")).map((anchor) => ({
+if (toc && input instanceof HTMLInputElement && resetButton) {
+  const nodes = Array.from(toc.getElementsByTagName("a")).flatMap((anchor) => anchor.parentElement ? [{
     text: (anchor.textContent || anchor.innerText).toLowerCase(),
-    li: anchor.parentNode
-  }));
+    li: anchor.parentElement
+  }] : []);
   const filter = () => {
     const value = input.value.toLowerCase().trim();
     nodes.forEach((node) => {
@@ -46,7 +50,9 @@ if (toc && input && resetButton) {
       filter();
     }
   };
-  input.onkeyup = filter;
+  input.addEventListener("input", filter);
+  input.addEventListener("keyup", filter);
+  input.form?.addEventListener("submit", (event) => event.preventDefault());
   resetButton.addEventListener("click", resetFilter);
 }
 window.prettyPrint();

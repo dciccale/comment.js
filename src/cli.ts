@@ -1,25 +1,24 @@
 #!/usr/bin/env node
-import * as utils from './utils/index.js';
-import { Options } from './options.js';
+import { parseArgs, help } from './options.js';
 import { Commentjs } from './comment.js';
 import { View } from './view.js';
-import type { CommentjsOptions } from './types.js';
+import { version } from './package-info.js';
 
-const args = process.argv.slice(2);
-const options = new Options(args) as CommentjsOptions;
-const commentjs = new Commentjs(options);
-const data = commentjs.run();
-
-if (data) {
-  if (options.scripts && Array.isArray(options.scripts)) {
-    data.scripts = options.scripts;
+try {
+  const command = parseArgs(process.argv.slice(2));
+  switch (command.kind) {
+    case 'help': process.stdout.write(help()); break;
+    case 'version': process.stdout.write(`${version}\n`); break;
+    case 'generate': {
+      const generator = new Commentjs(command.options);
+      const data = generator.run();
+      if (!data) throw new Error('No source files found');
+      new View({ ...command.options, filemap: generator.filemap, data }).render();
+      break;
+    }
+    default: { const exhaustive: never = command; throw new Error(String(exhaustive)); }
   }
-
-  const viewOptions = utils._.extend(options, {
-    filemap: commentjs.filemap,
-    data,
-  });
-
-  const view = new View(viewOptions);
-  view.render();
+} catch (error) {
+  process.stderr.write(`commentjs: ${error instanceof Error ? error.message : String(error)}\n`);
+  process.exitCode = 1;
 }
