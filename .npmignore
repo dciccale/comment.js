@@ -1,7 +1,6 @@
 node_modules/
 test/
 src/
-assets/styl/
 .gitignore
 tsconfig.json
 tsconfig.test.json

@@ -32,9 +32,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "bun run clean && bun run build:css && bun run build:browser && tsc",
+    "build": "bun run clean && bun run build:browser && tsc",
     "build:browser": "bun build src/browser/toc-filter.ts --outfile themes/default/js/toc-filter.js --target browser && bun build src/browser/source-lines.ts --outfile themes/default/js/src.js --target browser",
-    "build:css": "stylus assets/styl/docs.styl --out themes/default/css --include-css",
     "check": "tsc --noEmit && tsc -p tsconfig.test.json",
     "coverage": "bun test --coverage",
     "docs:example": "bun run build && node dist/src/cli.js -m -o docs/example-simple examples/example_simple/kimbo.ts",
@@ -57,7 +56,6 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "happy-dom": "^21.0.4",
-    "stylus": "^0.64.0",
     "typescript": "^6.0.3"
   },
   "keywords": [
@@ -71,10 +69,5 @@
     "bun": ">=1.4.0"
   },
   "packageManager": "bun@1.4.0",
-  "preferGlobal": true,
-  "overrides": {
-    "stylus": {
-      "glob": "$glob"
-    }
-  }
+  "preferGlobal": true
 }
