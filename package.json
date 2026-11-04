@@ -1,7 +1,7 @@
 {
   "name": "commentjs",
   "description": "Simple API Documentation Generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "author": "Denis Ciccale",
   "homepage": "http://github.com/dciccale/comment.js",
@@ -56,7 +56,7 @@
     "@types/node": "^25.9.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "happy-dom": "^20.14.5",
+    "happy-dom": "^21.0.4",
     "stylus": "^0.64.0",
     "typescript": "^6.0.3"
   },
