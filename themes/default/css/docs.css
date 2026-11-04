@@ -756,66 +756,67 @@ em.cjs-param-optional {
   color: #fff;
 }
 #cjs-nav form {
-  position: relative;
-}
-#cjs-nav form input {
-  width: 100%;
-  height: 38px;
-  padding: 0 38px 0 36px;
-  border: 1px solid var(--cjs-border);
-  -webkit-border-radius: 999px;
-  -moz-border-radius: 999px;
-  -ms-border-radius: 999px;
-  -o-border-radius: 999px;
-  border-radius: 999px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -ms-box-sizing: border-box;
-  -o-box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 8px;
   box-sizing: border-box;
-  color: var(--cjs-text);
+  height: 38px;
+  padding-inline: 12px 4px;
+  border: 1px solid var(--cjs-border);
+  border-radius: 999px;
   background: var(--cjs-input-bg);
-  -webkit-box-shadow: 0 1px 2px rgba(15,23,42,0.04);
-  -moz-box-shadow: 0 1px 2px rgba(15,23,42,0.04);
-  -ms-box-shadow: 0 1px 2px rgba(15,23,42,0.04);
-  -o-box-shadow: 0 1px 2px rgba(15,23,42,0.04);
   box-shadow: 0 1px 2px rgba(15,23,42,0.04);
 }
-#cjs-nav form:before {
-  content: '⌕';
-  position: absolute;
-  top: 8px;
-  left: 14px;
-  color: var(--cjs-muted);
-  font-size: 16px;
-  z-index: 1;
-}
-#cjs-nav form input:focus {
+#cjs-nav form:focus-within {
   outline: 2px solid var(--cjs-accent-soft);
   border-color: var(--cjs-accent);
 }
-#cjs-search-reset {
-  position: absolute;
-  top: 6px;
-  right: 7px;
-  width: 26px;
-  height: 26px;
+#cjs-filter {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   padding: 0;
   border: 0;
-  -webkit-border-radius: 999px;
-  -moz-border-radius: 999px;
-  -ms-border-radius: 999px;
-  -o-border-radius: 999px;
+  outline: none;
+  background: transparent;
+  color: var(--cjs-text);
+  font-size: 14px;
+}
+#cjs-filter::placeholder,
+.cjs-search-icon {
+  color: var(--cjs-muted);
+}
+.cjs-search-icon,
+#cjs-search-reset svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+#cjs-search-reset {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
   border-radius: 999px;
   background: transparent;
   color: var(--cjs-muted);
   cursor: pointer;
-  font-size: 18px;
-  line-height: 24px;
+}
+#cjs-search-reset:not([hidden]) {
+  display: grid;
+  place-items: center;
 }
 #cjs-search-reset:hover {
   background: var(--cjs-accent-soft);
   color: var(--cjs-accent-strong);
+}
+#cjs-search-reset:focus-visible {
+  outline: 2px solid var(--cjs-accent);
 }
 #cjs-nav .cjs-lvl-0 a {
   padding-left: 12px;

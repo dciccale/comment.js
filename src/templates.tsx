@@ -164,9 +164,17 @@ function DocumentationPage({ data }: { data: DocumentationData }): React.ReactEl
         </div>
         <div id="cjs-nav">
           <div className="cjs-nav-header">
-            <form>
-              <input type="search" id="cjs-filter" aria-label="Filter API sections" />
-              <button type="button" id="cjs-search-reset" aria-label="Clear filter">x</button>
+            <form role="search" aria-label="API sections">
+              <svg className="cjs-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="m15.1 15.1 4.4 4.4" />
+              </svg>
+              <input type="search" id="cjs-filter" aria-label="Filter API sections" placeholder="Filter sections" />
+              <button type="button" id="cjs-search-reset" aria-label="Clear filter" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m6 6 12 12M18 6 6 18" />
+                </svg>
+              </button>
             </form>
           </div>
           <Toc toc={data.toc} />

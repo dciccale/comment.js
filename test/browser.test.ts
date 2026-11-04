@@ -33,10 +33,14 @@ describe('browser scripts', () => {
       const reset = window.document.getElementById('cjs-search-reset');
       if (!(input instanceof window.HTMLInputElement) || !(reset instanceof window.HTMLButtonElement)) throw new Error('Missing search controls');
       expect(input.getAttribute('aria-label')).toBe('Filter API sections');
+      expect(reset.hidden).toBe(true);
       input.value = ' TWO '; input.dispatchEvent(new window.Event('input'));
+      expect(reset.hidden).toBe(false);
       const items = window.document.querySelectorAll<HTMLElement>('#cjs-toc li');
       expect(items[0].style.display).toBe('none'); expect(items[1].style.display).toBe('block');
       reset.click(); expect(input.value).toBe('');
+      expect(reset.hidden).toBe(true);
+      expect(window.document.activeElement).toBe(input);
       expect([...items].every((item) => item.style.display === 'block')).toBe(true);
       expect(input.form?.dispatchEvent(new window.Event('submit', { cancelable: true }))).toBe(false);
     });
