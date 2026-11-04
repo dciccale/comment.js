@@ -8,9 +8,7 @@ The syntax for writing the comments was inspired by one of the firsts versions o
 There are some JavaScript and TypeScript documentation generators, but comment.js is different: it is not based on jsdoc syntax and adds a flexible way of writing your docs.
 
 ### Demo
-You can see a live example at http://api.kimbojs.com
-
-Or browse the [examples](examples) directory
+Follow the [development steps](#development) to generate and serve the demo locally, or browse the [examples](examples).
 
 ## Installation
 
@@ -234,7 +232,8 @@ bun run build
 bun run docs:example
 ```
 
-`bun run build` replaces the old Grunt workflow: it compiles Stylus assets and emits TypeScript declarations and JavaScript into `dist/`.
+`bun run build` bundles the browser scripts and emits JavaScript and TypeScript declarations into `dist/`.
+Edit `themes/default/css/docs.css` to change the default theme.
 `bun run docs:example` generates a local preview at `docs/example-simple/index.html`.
 `bun run serve:docs` starts a local HTTP server and prints its address.
 The tests cover generation through the built Node CLI, all samples, and browser-script behavior.
